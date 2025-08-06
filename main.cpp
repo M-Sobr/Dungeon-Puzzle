@@ -1,11 +1,12 @@
-#include "Level.cpp"
+#include "level/Level.h"
 
 #include <iostream>
 #include <string>
 
-char LEVEL_1[1000] = "PXX____\n_X1__X_\n___X+X_\nX+__X_1\n1___X__\n_X_X*__\n";
+#define LEVEL_COUNT 10
 
 int main(void) {
-    Level level_1(LEVEL_1);
-    level_1.printLevel();
+    Level levels[LEVEL_COUNT];
+    loadLevels(levels);
+    levels[0].printLevel();
 }

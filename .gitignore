@@ -1,6 +1,9 @@
 # VS Code
 .vscode
+.vs
 
 # C Code
 *.exe
 *.obj
+
+compile_commands.txt
