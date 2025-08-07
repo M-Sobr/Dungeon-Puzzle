@@ -11,17 +11,30 @@ char LEVEL_1[MAX_LEVEL_CHARACTERS] = "PXX____\n_X1__X_\n___X+X_\nX+__X_1\n1___X_
 Level::Level() {
 }    
 
-Level::Level(char level_name[MAX_LEVEL_NAME_LENGTH], char level_string[MAX_LEVEL_CHARACTERS]) {
+Level::Level(char level_name[MAX_LEVEL_NAME_LENGTH], char level_string[MAX_LEVEL_CHARACTERS], int level_rows, int level_cols) {
     int i;
     for (i=0; level_name[i] != '\0'; i++) {
         name[i] = level_name[i];
     }
     name[i] = '\0';
-    
+    rows = level_rows;
+    cols = level_cols;
+    int row = 0;
+    int col = 0;
     for (i=0; level_string[i] != '\0'; i++) {
-        contents[i] = level_string[i];
+        if (level_string[i] == '\n') {
+            while (col < level_cols) {
+                contents[row][col] = 'X';
+                col ++;
+            }
+            contents[row][col] = '\0';
+            row ++;
+            col = 0;
+        } else {
+            contents[row][col] = level_string[i];
+            col ++;
+        }
     }
-    contents[i] = '\0';
 }
 
 void Level::printName() {
@@ -29,7 +42,9 @@ void Level::printName() {
 }
     
 void Level::printLevel() {
-    std::cout << contents << '\n';
+    for (int i=0; i<rows; i++) {
+        std::cout << contents[i] << '\n';
+    }
 }
 
 void loadLevels(Level* levels) {
@@ -63,15 +78,23 @@ void loadLevels(Level* levels) {
         // Get level contents:
         int level_content_index = 0;
         int line_number = 0;
+        int max_col_count = 0;
+        int current_col_count = 0;
         while (line_number < level_line_count) {
             txt[level_content_index] = (char)levels_data.get();
             if (txt[level_content_index] == '\n' || txt[level_content_index] == EOF) {
                 line_number ++;
+                if (current_col_count > max_col_count) {
+                    max_col_count = current_col_count;
+                }
+                current_col_count = -1;
             }
+            current_col_count ++;
             level_content_index ++;
         }
+        txt[level_content_index - 1] = '\n';
         txt[level_content_index] = '\0';
-        levels[level_index] = Level::Level(level_name, txt);
+        levels[level_index] = Level::Level(level_name, txt, level_line_count, max_col_count);
         level_index ++;
     }
 
