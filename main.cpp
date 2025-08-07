@@ -8,5 +8,6 @@
 int main(void) {
     Level levels[LEVEL_COUNT];
     loadLevels(levels);
+    levels[0].printName();
     levels[0].printLevel();
 }
