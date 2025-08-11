@@ -22,8 +22,11 @@ class Level {
         Level(char level_name[], char level_string[], int level_rows, int level_cols);
         void printLevel();
         void printName();
+        int getRowCount();
+        int getColCount();
+        char getPosition(int row, int col);
 };
 
-void loadLevels(Level* levels);
+int loadLevels(Level* levels);
 
 #endif

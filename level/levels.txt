@@ -1,8 +1,11 @@
-1
-"Level 1" 6
+2
+"Map Level 1" 6
 PXX____
 _X1__X_
 ___X+X_
 X+__X_1
 1___X__
 _X_X*__
+"Map Level 2" 2
+XPX
+___

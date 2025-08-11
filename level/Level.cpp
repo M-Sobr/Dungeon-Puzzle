@@ -45,9 +45,20 @@ void Level::printLevel() {
     for (int i=0; i<rows; i++) {
         std::cout << contents[i] << '\n';
     }
+    std::cout << '\n';
 }
 
-void loadLevels(Level* levels) {
+int Level::getRowCount() {
+    return rows;
+}
+int Level::getColCount() {
+    return cols;
+}
+char Level::getPosition(int row, int col) {
+    return contents[row][col];
+}
+
+int loadLevels(Level* levels) {
     char txt[1000];
     std::ifstream levels_data("level/levels.txt");
     
@@ -100,4 +111,5 @@ void loadLevels(Level* levels) {
 
 
     levels_data.close();
+    return level_count;
 }
