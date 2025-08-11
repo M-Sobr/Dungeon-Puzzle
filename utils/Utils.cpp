@@ -1,0 +1,20 @@
+#include "Utils.h"
+
+bool equalsIgnoreCase(char char1, char char2) {
+    if (('a' <= char1) && (char1 <= 'z')) {
+        char1 -= 32;
+    }
+    if (('a' <= char2) && (char2 <= 'z')) {
+        char2 -= 32;
+    }
+    return char1 == char2;
+}
+
+bool equalsIgnoreCase(char text1[], char text2[], int charCount) {
+    for (int i=0; i<charCount; i++) {
+        if (!equalsIgnoreCase(text1[i], text2[i])) {
+            return false;
+        }
+    }
+    return true;
+}

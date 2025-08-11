@@ -1,5 +1,6 @@
 #include "level/Level.h"
 #include "player/Player.h"
+#include "player/Action.h"
 
 #include <iostream>
 #include <string>
@@ -23,9 +24,9 @@ void playLevel(Level level) {
             std::cout << "Action: ";
             char s[100];
             std::cin >> s;
-        
-            // Temporary code to escape loop for testing
-            if (s[0] == 'E' && s[1] == 'X' && s[2] == 'I' && s[3] == 'T') {
+            
+            Action action = Action::fromText(s);
+            if (action.getType() == ActionType::EXIT) {
                 return;
             }
         }
