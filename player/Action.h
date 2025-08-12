@@ -6,7 +6,8 @@ enum ActionType {
     MOVE_RIGHT,
     MOVE_DOWN,
     MOVE_LEFT,
-    EXIT
+    EXIT,
+    NULL_ACTION
 };
 
 class Action {

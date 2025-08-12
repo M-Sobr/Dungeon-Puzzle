@@ -12,6 +12,8 @@ Action Action::fromText(char text[]) {
         return Action::Action(ActionType::MOVE_RIGHT);
     } else if (equalsIgnoreCase(text, "exit", 4)) {
         return Action::Action(ActionType::EXIT);
+    } else {
+        return Action::Action(ActionType::NULL_ACTION);
     }
 }
 

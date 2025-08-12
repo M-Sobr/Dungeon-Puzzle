@@ -18,8 +18,7 @@ void playLevel(Level level) {
         // Print Player Details
         player.printDetails();
 
-        bool input_required = true;
-        while (input_required) {
+        while (true) {
             // Get input from player
             std::cout << "Action: ";
             char s[100];
@@ -29,10 +28,11 @@ void playLevel(Level level) {
             if (action.getType() == ActionType::EXIT) {
                 return;
             }
+            if (action.getType() != ActionType::NULL_ACTION) {
+                break;
+            }
         }
-        
     }
-
 }
 
 
