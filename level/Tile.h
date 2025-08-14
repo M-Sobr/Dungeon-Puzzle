@@ -3,20 +3,18 @@
 
 #include "../player/Player.h"
 
-enum TileType {
-    NULL_TYPE,
-    MONSTER
-};
-
-class Tile {
-    protected:
-        TileType tileType;
-    
+class Tile {    
     public:
         // Create a tile from an input character
         static Tile tileFromChar(char c);
-        Tile();
         virtual void resolveEffects(Player player);
+};
+
+// Exists for a tile with no special effects
+class NullTile : public Tile {
+    public:
+        NullTile() {};
+        void resolveEffects(Player player) override {};
 };
 
 class Monster : public Tile {

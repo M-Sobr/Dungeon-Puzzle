@@ -18,6 +18,8 @@ class Player {
         Player(std::string input_name);
         void printDetails();
         int getMovement();
+        void takeDamage(int health);
+        void gainExperience(int experience);
 };
 
 #endif

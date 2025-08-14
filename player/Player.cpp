@@ -19,3 +19,12 @@ void Player::printDetails() {
 int Player::getMovement() {
     return this->movement;
 }
+
+void Player::takeDamage(int health) {
+    this->health -= health;
+}
+
+
+void Player::gainExperience(int xp) {
+    currentXp += xp;
+}
