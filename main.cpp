@@ -29,6 +29,7 @@ void playLevel(Level level) {
                 return;
             }
             if (action.getType() != ActionType::NULL_ACTION) {
+                action.resolveAction(level, player);
                 break;
             }
         }

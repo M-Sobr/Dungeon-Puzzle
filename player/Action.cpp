@@ -19,8 +19,47 @@ Action Action::fromText(char text[]) {
 
 Action::Action(ActionType actionType) {
     type = actionType;
+    
+    // Fill in direction of the action from its type.
+    switch (actionType) {
+        case ActionType::MOVE_UP:
+            row_direction = -1;
+            col_direction = 0;
+            break;
+        case ActionType::MOVE_RIGHT:
+            row_direction = 0;
+            col_direction = 1;
+            break;
+        case ActionType::MOVE_DOWN:
+            row_direction = 1;
+            col_direction = 0;
+            break;
+        case ActionType::MOVE_LEFT:
+            row_direction = 0;
+            col_direction = -1;
+            break;
+        default:
+            row_direction = 0;
+            col_direction = 0;                
+    }
+}
+
+bool Action::involvesMovement() {
+    return (row_direction || col_direction);
 }
 
 ActionType Action::getType() {
     return type;
+}
+
+void Action::resolveAction(Level level, Player player) {
+    if (this->involvesMovement()) {
+        int destination[2];
+        
+        if (level.calculateMovementDestination(&destination[0], &destination[1],
+        this->row_direction, this->col_direction, player.getMovement())) {
+            std::cout << "Destination: (" << destination[0] << ", " << destination[1] << ")\n";
+        }
+    }
+
 }

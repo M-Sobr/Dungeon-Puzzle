@@ -30,6 +30,12 @@ Level::Level(char level_name[MAX_LEVEL_NAME_LENGTH], char level_string[MAX_LEVEL
             contents[row][col] = '\0';
             row ++;
             col = 0;
+        } else if (level_string[i] == 'P') {
+            player_pos[0] = row;
+            player_pos[1] = col;
+            symbolUnderPlayer = '_';
+            contents[row][col] = 'P';
+            col ++;
         } else {
             contents[row][col] = level_string[i];
             col ++;
@@ -56,6 +62,14 @@ int Level::getColCount() {
 }
 char Level::getPosition(int row, int col) {
     return contents[row][col];
+}
+
+bool inline Level::tileOutsideLevel(int row, int col) {
+    return (row < 0 || row >= this->rows || col < 0 || col >= this->cols);
+}
+
+bool inline Level::tileIsWall(int row, int col) {
+    return (tileOutsideLevel(row, col) || contents[row][col] == 'X');
 }
 
 int loadLevels(Level* levels) {
@@ -112,4 +126,25 @@ int loadLevels(Level* levels) {
 
     levels_data.close();
     return level_count;
+}
+
+bool Level::calculateMovementDestination(int* dest_row, int* dest_col, 
+int row_direction, int col_direction, int movement) {
+
+    *dest_row = player_pos[0];
+    *dest_col = player_pos[1];
+    
+    // Find any '#' tiles for the player to move to
+    for (int i=0; i<movement; i++) {
+        *dest_row += row_direction;
+        *dest_col += col_direction;
+        if (this->tileOutsideLevel(*dest_row, *dest_col)) {
+            return false;
+        }
+        if (contents[*dest_row][*dest_col] == '#') {
+            return true;
+        }
+    }
+
+    return !this->tileIsWall(*dest_row, *dest_col);
 }

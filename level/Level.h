@@ -16,15 +16,23 @@ class Level {
         char contents[MAX_LEVEL_ROWS][MAX_LEVEL_COLS];
         int rows;
         int cols;
+        int player_pos[2];
+        char symbolUnderPlayer;
 
+        bool tileOutsideLevel(int row, int col);
+        bool tileIsWall(int row, int col);
+    
     public:
         Level();
-        Level(char level_name[], char level_string[], int level_rows, int level_cols);
+        Level(char level_name[MAX_LEVEL_NAME_LENGTH], char level_string[MAX_LEVEL_CHARACTERS], int level_rows, int level_cols);
         void printLevel();
         void printName();
         int getRowCount();
         int getColCount();
         char getPosition(int row, int col);
+        
+        // Find where the movement should end and put in dest_row and dest_col. Return false if movement is invalid.
+        bool calculateMovementDestination(int* dest_row, int* dest_col, int row_direction, int col_direction, int movement);
 };
 
 int loadLevels(Level* levels);

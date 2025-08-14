@@ -11,10 +11,13 @@ class Player {
         int health;
         int max_health;
         int movement;
+        int currentXp;
+        int xpRequired;
     
     public:
         Player(std::string input_name);
         void printDetails();
+        int getMovement();
 };
 
 #endif
