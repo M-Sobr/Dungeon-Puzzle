@@ -58,7 +58,10 @@ void Action::resolveAction(Level level, Player player) {
         
         if (level.calculateMovementDestination(&destination[0], &destination[1],
         this->row_direction, this->col_direction, player.getMovement())) {
-            std::cout << "Destination: (" << destination[0] << ", " << destination[1] << ")\n";
+            
+            // Tile tile = level.getTileAt(destination[0], destination[1]);
+            // level.movePlayerTo(destination[0], destination[1]);
+            // tile.resolveEffects(player);
         }
     }
 
