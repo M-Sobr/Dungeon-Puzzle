@@ -25,7 +25,7 @@ class Action {
         bool involvesMovement(); 
         static Action fromText(char text[]);
         ActionType getType();
-        void resolveAction(Level level, Player player);
+        void resolveAction(Level* level, Player* player);
         
 };
 

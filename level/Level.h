@@ -1,6 +1,7 @@
 #ifndef LEVEL_H
 #define LEVEL_H
 
+#include "Tile.h"
 #include <string>
 #include <fstream>
 
@@ -29,8 +30,11 @@ class Level {
         void printName();
         int getRowCount();
         int getColCount();
-        char getPosition(int row, int col);
+        Tile getTileAtPosition(int row, int col);
         
+        // Move player to the specified position
+        void movePlayerTo(int row, int col);
+
         // Find where the movement should end and put in dest_row and dest_col. Return false if movement is invalid.
         bool calculateMovementDestination(int* dest_row, int* dest_col, int row_direction, int col_direction, int movement);
 };

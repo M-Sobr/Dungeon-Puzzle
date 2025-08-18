@@ -11,7 +11,7 @@ Monster::Monster(int h) {
     this->health = h;
 }
 
-void Monster::resolveEffects(Player p) {
-    p.takeDamage(this->health);
-    p.gainExperience(this->health);
+void Monster::resolveEffects(Player* p) {
+    p->takeDamage(this->health);
+    p->gainExperience(this->health);
 }

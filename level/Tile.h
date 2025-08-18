@@ -7,14 +7,14 @@ class Tile {
     public:
         // Create a tile from an input character
         static Tile tileFromChar(char c);
-        virtual void resolveEffects(Player player);
+        virtual void resolveEffects(Player* /*player*/) {};
 };
 
 // Exists for a tile with no special effects
 class NullTile : public Tile {
     public:
         NullTile() {};
-        void resolveEffects(Player player) override {};
+        void resolveEffects(Player* /*player*/) override {};
 };
 
 class Monster : public Tile {
@@ -25,7 +25,7 @@ class Monster : public Tile {
         // Create a monster with specified health
         Monster(int health);
 
-        void resolveEffects(Player player) override;
+        void resolveEffects(Player* player) override;
 };
 
 #endif

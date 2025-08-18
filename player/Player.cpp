@@ -20,8 +20,8 @@ int Player::getMovement() {
     return this->movement;
 }
 
-void Player::takeDamage(int health) {
-    this->health -= health;
+void Player::takeDamage(int damage) {
+    this->health -= damage;
 }
 
 

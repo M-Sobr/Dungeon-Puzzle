@@ -7,13 +7,13 @@
 
 #define LEVEL_COUNT 10
 
-void playLevel(Level level) {
+void playLevel(Level* level) {
     bool level_ongoing = true;
     Player player = Player::Player("Player");
     while (level_ongoing) {
         // Print level details
-        level.printName();
-        level.printLevel();
+        level->printName();
+        level->printLevel();
         
         // Print Player Details
         player.printDetails();
@@ -29,7 +29,7 @@ void playLevel(Level level) {
                 return;
             }
             if (action.getType() != ActionType::NULL_ACTION) {
-                action.resolveAction(level, player);
+                action.resolveAction(level, &player);
                 break;
             }
         }
@@ -44,7 +44,7 @@ int main(void) {
     
     // Play levels
     while (currentLevelIndex < levelQuantity) {
-        playLevel(levels[currentLevelIndex]);
+        playLevel(&levels[currentLevelIndex]);
         currentLevelIndex ++;
     }
 }

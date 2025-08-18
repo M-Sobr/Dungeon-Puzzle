@@ -1,5 +1,6 @@
 #include "Action.h"
 #include "../utils/Utils.h"
+#include "../level/Tile.h"
 
 Action Action::fromText(char text[]) {
     if (equalsIgnoreCase(text[0], 'w')) {
@@ -52,16 +53,17 @@ ActionType Action::getType() {
     return type;
 }
 
-void Action::resolveAction(Level level, Player player) {
+void Action::resolveAction(Level* level, Player* player) {
     if (this->involvesMovement()) {
         int destination[2];
         
-        if (level.calculateMovementDestination(&destination[0], &destination[1],
-        this->row_direction, this->col_direction, player.getMovement())) {
+        if (level->calculateMovementDestination(&destination[0], &destination[1],
+        this->row_direction, this->col_direction, player->getMovement())) {
             
-            // Tile tile = level.getTileAt(destination[0], destination[1]);
-            // level.movePlayerTo(destination[0], destination[1]);
-            // tile.resolveEffects(player);
+            Tile tile = level->getTileAtPosition(destination[0], destination[1]);
+            //std::cout << destination[0] << destination[1] << "\n\n";
+            level->movePlayerTo(destination[0], destination[1]);
+            tile.resolveEffects(player);
         }
     }
 

@@ -5,8 +5,10 @@
 #include <fstream>
 #include <cstdlib>
 
+#define PLAYER_TILE 'P'
+#define EMPTY_TILE '_'
 
-char LEVEL_1[MAX_LEVEL_CHARACTERS] = "PXX____\n_X1__X_\n___X+X_\nX+__X_1\n1___X__\n_X_X*__\n";
+const char LEVEL_1[MAX_LEVEL_CHARACTERS] = "PXX____\n_X1__X_\n___X+X_\nX+__X_1\n1___X__\n_X_X*__\n";
 
 Level::Level() {
 }    
@@ -30,11 +32,11 @@ Level::Level(char level_name[MAX_LEVEL_NAME_LENGTH], char level_string[MAX_LEVEL
             contents[row][col] = '\0';
             row ++;
             col = 0;
-        } else if (level_string[i] == 'P') {
+        } else if (level_string[i] == PLAYER_TILE) {
             player_pos[0] = row;
             player_pos[1] = col;
-            symbolUnderPlayer = '_';
-            contents[row][col] = 'P';
+            symbolUnderPlayer = EMPTY_TILE;
+            contents[row][col] = PLAYER_TILE;
             col ++;
         } else {
             contents[row][col] = level_string[i];
@@ -54,14 +56,29 @@ void Level::printLevel() {
     std::cout << '\n';
 }
 
-int Level::getRowCount() {
+int inline Level::getRowCount() {
     return rows;
 }
-int Level::getColCount() {
+int inline Level::getColCount() {
     return cols;
 }
-char Level::getPosition(int row, int col) {
-    return contents[row][col];
+
+Tile Level::getTileAtPosition(int row, int col) {
+    return Tile::tileFromChar(contents[row][col]);
+}
+
+void Level::movePlayerTo(int row, int col) {
+    contents[player_pos[0]][player_pos[1]] = symbolUnderPlayer;
+    symbolUnderPlayer = contents[row][col];
+    contents[row][col] = PLAYER_TILE;
+    
+    player_pos[0] = row;
+    player_pos[1] = col;
+
+    // Check symbol and change to empty if it was a monster
+    if (('0' <= symbolUnderPlayer) && (symbolUnderPlayer <= '9')) {
+        symbolUnderPlayer = EMPTY_TILE;
+    }
 }
 
 bool inline Level::tileOutsideLevel(int row, int col) {
