@@ -2,16 +2,18 @@
 
 Tile_Type tileTypeFromChar(char c) {
     if ('0' <= c && c <= '9') {
-        return Tile_Type::MONSTER;
+        return Tile_Type::MONSTER_TILE;
     } else if (c == '+') {
         return Tile_Type::HEAL_TILE;
+    } else if (c == '*') {
+        return Tile_Type::OBJECTIVE_TILE;
     }
     return Tile_Type::NULL_TILE;
 }
 
 Tile* Tile::tileFromChar(char c) {
     switch (tileTypeFromChar(c)) {
-        case Tile_Type::MONSTER:
+        case Tile_Type::MONSTER_TILE:
             return new Monster(c - '0'); 
         case Tile_Type::HEAL_TILE:
             return new HealTile();

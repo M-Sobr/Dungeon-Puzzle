@@ -5,8 +5,9 @@
 
 enum Tile_Type {
     NULL_TILE,
-    MONSTER,
-    HEAL_TILE
+    MONSTER_TILE,
+    HEAL_TILE,
+    OBJECTIVE_TILE
 };
 
 Tile_Type tileTypeFromChar(char c);

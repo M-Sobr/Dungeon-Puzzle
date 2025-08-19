@@ -1,10 +1,10 @@
 2
 "Map Level 1" 6
-PXX____
-_X1__X_
-___X+X_
-X+__X_1
-1___X__
+PXX1+__
+_X___X_
+___X_X_
+X_1_X_1
+_+__X__
 _X_X*__
 "Map Level 2" 2
 XPX

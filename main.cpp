@@ -37,6 +37,10 @@ bool playLevel(Level* level) {
             std::cout << "The player is dead!" << "\n\n";
             return false;
         }
+        if (level->isBeaten()) {
+            std::cout << "The level has been beaten!" << "\n\n";
+            return true;
+        }
     }
     return true;
 }

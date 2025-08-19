@@ -21,27 +21,39 @@ Level::Level(char level_name[MAX_LEVEL_NAME_LENGTH], char level_string[MAX_LEVEL
     name[i] = '\0';
     rows = level_rows;
     cols = level_cols;
+    objective_tiles = 0;
+    level_beaten = false;
+
     int row = 0;
     int col = 0;
     for (i=0; level_string[i] != '\0'; i++) {
-        if (level_string[i] == '\n') {
-            while (col < level_cols) {
-                contents[row][col] = 'X';
+        switch (level_string[i]) {
+            case '\n':
+                while (col < level_cols) {
+                    contents[row][col] = 'X';
+                    col ++;
+                }
+                contents[row][col] = '\0';
+                row ++;
+                col = 0;
+                break;
+            case PLAYER_TILE:
+                player_pos[0] = row;
+                player_pos[1] = col;
+                symbolUnderPlayer = EMPTY_TILE;
+                contents[row][col] = PLAYER_TILE;
                 col ++;
-            }
-            contents[row][col] = '\0';
-            row ++;
-            col = 0;
-        } else if (level_string[i] == PLAYER_TILE) {
-            player_pos[0] = row;
-            player_pos[1] = col;
-            symbolUnderPlayer = EMPTY_TILE;
-            contents[row][col] = PLAYER_TILE;
-            col ++;
-        } else {
-            contents[row][col] = level_string[i];
-            col ++;
+                break;
+            default:
+                contents[row][col] = level_string[i];
+                col ++;
         }
+        switch (tileTypeFromChar(level_string[i])) {
+            case Tile_Type::MONSTER_TILE:
+            case Tile_Type::HEAL_TILE:
+                objective_tiles += 1;
+        }
+
     }
 }
 
@@ -67,6 +79,10 @@ Tile* Level::getTileAtPosition(int row, int col) {
     return Tile::tileFromChar(contents[row][col]);
 }
 
+bool Level::isBeaten() {
+    return level_beaten;
+}
+
 void Level::movePlayerTo(int row, int col) {
     contents[player_pos[0]][player_pos[1]] = symbolUnderPlayer;
     symbolUnderPlayer = contents[row][col];
@@ -75,11 +91,17 @@ void Level::movePlayerTo(int row, int col) {
     player_pos[0] = row;
     player_pos[1] = col;
 
-    // Check symbol and change to empty if it was a monster or heal tile.
+    // Resolve effects from moving onto a special tile type.
     switch (tileTypeFromChar(symbolUnderPlayer)) {
-        case Tile_Type::MONSTER:
+        case Tile_Type::MONSTER_TILE:
         case Tile_Type::HEAL_TILE:
             symbolUnderPlayer = EMPTY_TILE;
+            objective_tiles -= 1;
+            break;
+        case Tile_Type::OBJECTIVE_TILE:
+            if (objective_tiles == 0) {
+                level_beaten = true;
+            }    
     }
 }
 

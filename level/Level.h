@@ -20,6 +20,9 @@ class Level {
         int player_pos[2];
         char symbolUnderPlayer;
 
+        int objective_tiles;
+        bool level_beaten;
+
         bool tileOutsideLevel(int row, int col);
         bool tileIsWall(int row, int col);
     
@@ -32,6 +35,9 @@ class Level {
         int getColCount();
         Tile* getTileAtPosition(int row, int col);
         
+        // Check if the level has been beaten or not.
+        bool isBeaten();
+
         // Move player to the specified position
         void movePlayerTo(int row, int col);
 
