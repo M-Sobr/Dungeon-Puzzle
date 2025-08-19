@@ -7,7 +7,7 @@
 
 #define LEVEL_COUNT 10
 
-void playLevel(Level* level) {
+bool playLevel(Level* level) {
     bool level_ongoing = true;
     Player player = Player::Player("Player");
     while (level_ongoing) {
@@ -26,14 +26,19 @@ void playLevel(Level* level) {
             
             Action action = Action::fromText(s);
             if (action.getType() == ActionType::EXIT) {
-                return;
+                return false;
             }
             if (action.getType() != ActionType::NULL_ACTION) {
                 action.resolveAction(level, &player);
                 break;
             }
         }
+        if (!player.isAlive()) {
+            std::cout << "The player is dead!" << "\n\n";
+            return false;
+        }
     }
+    return true;
 }
 
 
@@ -44,7 +49,9 @@ int main(void) {
     
     // Play levels
     while (currentLevelIndex < levelQuantity) {
-        playLevel(&levels[currentLevelIndex]);
+        if (!playLevel(&levels[currentLevelIndex])) {
+            break;
+        }
         currentLevelIndex ++;
     }
 }

@@ -13,6 +13,7 @@ class Player {
         int movement;
         int currentXp;
         int xpRequired;
+        bool is_alive;
     
     public:
         Player(std::string input_name);
@@ -21,6 +22,7 @@ class Player {
         void takeDamage(int damage);
         void gainExperience(int experience);
         void heal();
+        bool isAlive();
 };
 
 #endif

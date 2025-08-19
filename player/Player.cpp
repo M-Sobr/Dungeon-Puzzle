@@ -8,6 +8,7 @@ Player::Player(std::string input_name) {
     movement = 1;
     currentXp = 0;
     xpRequired = 2;
+    is_alive = true;
 }
 
 void Player::printDetails() {
@@ -22,6 +23,9 @@ int Player::getMovement() {
 
 void Player::takeDamage(int damage) {
     this->health -= damage;
+    if (this->health <= 0) {
+        this->is_alive = false;
+    }
 }
 
 void Player::heal() {
@@ -31,4 +35,8 @@ void Player::heal() {
 
 void Player::gainExperience(int xp) {
     currentXp += xp;
+}
+
+bool Player::isAlive() {
+    return is_alive;
 }
