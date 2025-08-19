@@ -32,9 +32,31 @@ void Player::heal() {
     this->health = this->max_health;
 }
 
+void Player::heal(int h) {
+    this->health += h;
+    if (this->health > this->max_health) {
+        this->health = this->max_health;
+    }
+}
+
+void Player::levelUp() {
+    this->currentXp -= this->xpRequired;
+    this->xpRequired *= 2;
+    this->level += 1;
+    this->movement += 1;
+    this->increaseMaxHealth(5);
+}
+
+void Player::increaseMaxHealth(int h) {
+    this->health += h;
+    this->max_health += h;
+}
 
 void Player::gainExperience(int xp) {
     currentXp += xp;
+    if (this->currentXp >= this->xpRequired) {
+        this->levelUp();
+    }
 }
 
 bool Player::isAlive() {

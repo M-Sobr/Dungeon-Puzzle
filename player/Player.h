@@ -14,6 +14,9 @@ class Player {
         int currentXp;
         int xpRequired;
         bool is_alive;
+
+        void levelUp();
+        void increaseMaxHealth(int health);
     
     public:
         Player(std::string input_name);
@@ -22,6 +25,7 @@ class Player {
         void takeDamage(int damage);
         void gainExperience(int experience);
         void heal();
+        void heal(int health);
         bool isAlive();
 };
 
