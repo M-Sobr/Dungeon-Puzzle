@@ -57,12 +57,15 @@ void Action::resolveAction(Level* level, Player* player) {
     if (this->involvesMovement()) {
         int destination[2];
         
-        if (level->calculateMovementDestination(&destination[0], &destination[1],
-        this->row_direction, this->col_direction, player->getMovement())) {
+        int move_count = level->calculateMovementDestination(&destination[0], &destination[1],
+            this->row_direction, this->col_direction, player->getMovement());
+        
+            if (move_count) {
             
             Tile* tile = level->getTileAtPosition(destination[0], destination[1]);
             level->movePlayerTo(destination[0], destination[1]);
-            tile->resolveEffects(player);
+            player->takeDamage(move_count);
+            tile->resolveEffects(player);          
         }
     }
 

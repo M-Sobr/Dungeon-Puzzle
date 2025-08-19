@@ -79,7 +79,7 @@ void Level::movePlayerTo(int row, int col) {
     switch (tileTypeFromChar(symbolUnderPlayer)) {
         case Tile_Type::MONSTER:
         case Tile_Type::HEAL_TILE:
-        symbolUnderPlayer = EMPTY_TILE;
+            symbolUnderPlayer = EMPTY_TILE;
     }
 }
 
@@ -147,7 +147,7 @@ int loadLevels(Level* levels) {
     return level_count;
 }
 
-bool Level::calculateMovementDestination(int* dest_row, int* dest_col, 
+int Level::calculateMovementDestination(int* dest_row, int* dest_col, 
 int row_direction, int col_direction, int movement) {
 
     *dest_row = player_pos[0];
@@ -158,12 +158,12 @@ int row_direction, int col_direction, int movement) {
         *dest_row += row_direction;
         *dest_col += col_direction;
         if (this->tileOutsideLevel(*dest_row, *dest_col)) {
-            return false;
+            return 0;
         }
         if (contents[*dest_row][*dest_col] == '#') {
-            return true;
+            return i + 1;
         }
     }
 
-    return !this->tileIsWall(*dest_row, *dest_col);
+    return this->tileIsWall(*dest_row, *dest_col) ? 0 : movement;
 }
