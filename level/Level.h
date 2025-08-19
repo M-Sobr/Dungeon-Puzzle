@@ -30,7 +30,7 @@ class Level {
         void printName();
         int getRowCount();
         int getColCount();
-        Tile getTileAtPosition(int row, int col);
+        Tile* getTileAtPosition(int row, int col);
         
         // Move player to the specified position
         void movePlayerTo(int row, int col);

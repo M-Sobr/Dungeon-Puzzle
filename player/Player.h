@@ -20,6 +20,7 @@ class Player {
         int getMovement();
         void takeDamage(int damage);
         void gainExperience(int experience);
+        void heal();
 };
 
 #endif

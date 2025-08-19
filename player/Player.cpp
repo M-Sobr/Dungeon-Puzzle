@@ -24,6 +24,10 @@ void Player::takeDamage(int damage) {
     this->health -= damage;
 }
 
+void Player::heal() {
+    this->health = this->max_health;
+}
+
 
 void Player::gainExperience(int xp) {
     currentXp += xp;

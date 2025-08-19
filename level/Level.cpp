@@ -63,7 +63,7 @@ int inline Level::getColCount() {
     return cols;
 }
 
-Tile Level::getTileAtPosition(int row, int col) {
+Tile* Level::getTileAtPosition(int row, int col) {
     return Tile::tileFromChar(contents[row][col]);
 }
 
@@ -75,8 +75,10 @@ void Level::movePlayerTo(int row, int col) {
     player_pos[0] = row;
     player_pos[1] = col;
 
-    // Check symbol and change to empty if it was a monster
-    if (('0' <= symbolUnderPlayer) && (symbolUnderPlayer <= '9')) {
+    // Check symbol and change to empty if it was a monster or heal tile.
+    switch (tileTypeFromChar(symbolUnderPlayer)) {
+        case Tile_Type::MONSTER:
+        case Tile_Type::HEAL_TILE:
         symbolUnderPlayer = EMPTY_TILE;
     }
 }
