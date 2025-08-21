@@ -10,6 +10,7 @@ enum ActionType {
     MOVE_DOWN,
     MOVE_LEFT,
     EXIT,
+    RESET,
     NULL_ACTION
 };
 

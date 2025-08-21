@@ -8,13 +8,19 @@
 #define LEVEL_COUNT 10
 #define START_LEVEL 2  // Temporary while saves are not implemented
 
-bool playLevel(Level* level) {
+enum LevelFinishResult {
+    LEVEL_VICTORY,
+    LEVEL_RESET,
+    LEVEL_EXIT
+};
+
+LevelFinishResult playLevel(Level level) {
     bool level_ongoing = true;
     Player player = Player::Player("Player");
     while (level_ongoing) {
         // Print level details
-        level->printName();
-        level->printLevel();
+        level.printName();
+        level.printLevel();
         
         // Print Player Details
         player.printDetails();
@@ -27,23 +33,26 @@ bool playLevel(Level* level) {
             
             Action action = Action::fromText(s);
             if (action.getType() == ActionType::EXIT) {
-                return false;
-            }
-            if (action.getType() != ActionType::NULL_ACTION) {
-                action.resolveAction(level, &player);
+                return LevelFinishResult::LEVEL_EXIT;
+            
+            } else if (action.getType() == ActionType::RESET) {
+                return LevelFinishResult::LEVEL_RESET;
+
+            } else if (action.getType() != ActionType::NULL_ACTION) {
+                action.resolveAction(&level, &player);
                 break;
             }
         }
         if (!player.isAlive()) {
             std::cout << "The player is dead!" << "\n\n";
-            return false;
+            return LevelFinishResult::LEVEL_RESET;
         }
-        if (level->isBeaten()) {
+        if (level.isBeaten()) {
             std::cout << "The level has been beaten!" << "\n\n";
-            return true;
+            return LevelFinishResult::LEVEL_VICTORY;
         }
     }
-    return true;
+    return LevelFinishResult::LEVEL_VICTORY;
 }
 
 
@@ -54,9 +63,12 @@ int main(void) {
     
     // Play levels
     while (currentLevelIndex < levelQuantity) {
-        if (!playLevel(&levels[currentLevelIndex])) {
-            break;
-        }
-        currentLevelIndex ++;
+        switch (playLevel(levels[currentLevelIndex])) {
+            case LevelFinishResult::LEVEL_EXIT:
+                currentLevelIndex = levelQuantity;
+                break;
+            case LevelFinishResult::LEVEL_VICTORY:
+                currentLevelIndex ++;
+        }   
     }
 }

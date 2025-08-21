@@ -11,6 +11,8 @@ Action Action::fromText(char text[]) {
         return Action::Action(ActionType::MOVE_DOWN);
     } else if (equalsIgnoreCase(text[0], 'd')) {
         return Action::Action(ActionType::MOVE_RIGHT);
+    } else if (equalsIgnoreCase(text[0], 'r')) {
+        return Action::Action(ActionType::RESET);
     } else if (equalsIgnoreCase(text, "exit", 4)) {
         return Action::Action(ActionType::EXIT);
     } else {
@@ -68,5 +70,4 @@ void Action::resolveAction(Level* level, Player* player) {
             tile->resolveEffects(player);          
         }
     }
-
 }
