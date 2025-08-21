@@ -6,6 +6,7 @@
 #include <string>
 
 #define LEVEL_COUNT 10
+#define START_LEVEL 2  // Temporary while saves are not implemented
 
 bool playLevel(Level* level) {
     bool level_ongoing = true;
@@ -49,7 +50,7 @@ bool playLevel(Level* level) {
 int main(void) {
     Level levels[LEVEL_COUNT];
     int levelQuantity = loadLevels(levels);
-    int currentLevelIndex = 0;
+    int currentLevelIndex = START_LEVEL - 1;
     
     // Play levels
     while (currentLevelIndex < levelQuantity) {

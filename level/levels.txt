@@ -6,6 +6,9 @@ ___X_X_
 X_1_X_1
 _+__X__
 _X_X*__
-"Map Level 2" 2
-XPX
-___
+"Map Level 2" 5
+#1__2
+X2__X
+__+#_
+P#XX_
+_+X*_
