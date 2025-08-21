@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "../effect/LevelUpEffects.h"
 
 Player::Player(std::string input_name) {
     name = input_name;
@@ -45,6 +46,7 @@ void Player::levelUp() {
     this->level += 1;
     this->movement += 1;
     this->increaseMaxHealth(5);
+    getEffectsListFromLevel(this->level)->chooseEffect("You have levelled up to Level 2!").applyEffect(this);
 }
 
 void Player::increaseMaxHealth(int h) {
