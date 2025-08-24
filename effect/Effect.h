@@ -1,7 +1,6 @@
 #ifndef EFFECT_H
 #define EFFECT_H
 
-#include "../player/Player.h"
 #include <vector>
 #include <string>
 
@@ -11,6 +10,8 @@ enum EffectTypes {
     GAIN_MAX_HEALTH,
     GAIN_HEALTH
 };
+
+class Player;
 
 class Effect {
     private:
@@ -25,12 +26,13 @@ class Effect {
 
 class EffectsList {
     private:
-        std::vector<Effect> effects;
+        std::vector<Effect*> effects;
     
     public:
         EffectsList();
         void addEffect(Effect* effect);
-        Effect chooseEffect(char title[]);
+        Effect* popEffect();
+        Effect* chooseEffect(char title[]);
 };
 
 

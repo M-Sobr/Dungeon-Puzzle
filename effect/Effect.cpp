@@ -1,4 +1,5 @@
 #include "Effect.h" 
+#include "../player/Player.h"
 
 Effect::Effect(EffectTypes t, int v) {
     this->type = t;
@@ -33,14 +34,20 @@ EffectsList::EffectsList() {
 }
 
 void EffectsList::addEffect(Effect* e) {
-    this->effects.push_back(*e);
+    this->effects.push_back(e);
 }
 
-Effect EffectsList::chooseEffect(char title[]) {
+Effect* EffectsList::popEffect() {
+    Effect* e = this->effects.back();
+    this->effects.pop_back();
+    return e;
+}
+
+Effect* EffectsList::chooseEffect(char title[]) {
     // Print out dialogue for effect choosing
     std::cout << title << '\n';
     for (int i=0; i < this->effects.size(); i++) {
-        std::cout << i+1 << ") " << this->effects.at(i).toString() << '\n';
+        std::cout << i+1 << ") " << this->effects.at(i)->toString() << '\n';
     }
     char s[10];
     while (true) {

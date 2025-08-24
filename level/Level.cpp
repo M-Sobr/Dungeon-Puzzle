@@ -1,5 +1,6 @@
 #include "Level.h"
 
+
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -7,8 +8,6 @@
 
 #define PLAYER_TILE 'P'
 #define EMPTY_TILE '_'
-
-const char LEVEL_1[MAX_LEVEL_CHARACTERS] = "PXX____\n_X1__X_\n___X+X_\nX+__X_1\n1___X__\n_X_X*__\n";
 
 Level::Level() {
 }    

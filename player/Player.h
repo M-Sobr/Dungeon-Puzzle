@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string>
+#include "../effect/Effect.h"
 
 class Player {
     private:
@@ -14,6 +15,7 @@ class Player {
         int currentXp;
         int xpRequired;
         bool is_alive;
+        EffectsList appliedEffects;
 
         void levelUp();
     
@@ -27,6 +29,8 @@ class Player {
         void heal(int health);
         void increaseMaxHealth(int health);
         bool isAlive();
+        void applyEffect(Effect* e);
+        void undoEffect();
 };
 
 #endif

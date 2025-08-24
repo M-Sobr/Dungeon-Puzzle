@@ -46,7 +46,9 @@ void Player::levelUp() {
     this->level += 1;
     this->movement += 1;
     this->increaseMaxHealth(5);
-    getEffectsListFromLevel(this->level)->chooseEffect("You have levelled up to Level 2!").applyEffect(this);
+    EffectsList* effects = getEffectsListFromLevel(this->level);
+    this->applyEffect(effects->chooseEffect("You have levelled up to Level 2!"));
+    delete effects;
 }
 
 void Player::increaseMaxHealth(int h) {
@@ -63,4 +65,13 @@ void Player::gainExperience(int xp) {
 
 bool Player::isAlive() {
     return is_alive;
+}
+
+void Player::applyEffect(Effect* e) {
+    e->applyEffect(this);
+    this->appliedEffects.addEffect(e);
+}
+
+void Player::undoEffect() {
+    
 }
