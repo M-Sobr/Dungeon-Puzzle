@@ -12,8 +12,31 @@ void Effect::applyEffect(Player* player) {
             player->increaseMaxHealth(this->value);
             break;
         case EffectTypes::GAIN_HEALTH:
+            this->value = player->heal(this->value);
+            break;   
+        case EffectTypes::GAIN_EXPERIENCE:
+            player->gainExperience(this->value);
+            break;
+        case EffectTypes::TAKE_DAMAGE:
+            player->takeDamage(this->value);
+            break;         
+    }
+}
+
+void Effect::undoEffect(Player* player) {
+    switch (this->type) {
+        case EffectTypes::GAIN_MAX_HEALTH:
+            player->increaseMaxHealth(-this->value);
+            break;
+        case EffectTypes::GAIN_HEALTH:
+            player->heal(-this->value);
+            break;
+        case EffectTypes::GAIN_EXPERIENCE:
+            player->gainExperience(-this->value);
+            break;
+            case EffectTypes::TAKE_DAMAGE:
             player->heal(this->value);
-            break;    
+            break;              
     }
 }
 
@@ -24,8 +47,14 @@ std::string Effect::toString() {
             sprintf_s(s, "+%d Max Health", this->value);
             break;
         case EffectTypes::GAIN_HEALTH:
-            sprintf_s(s, "+%d Health", this->value);      
-
+            sprintf_s(s, "+%d Health", this->value);  
+            break;
+        case EffectTypes::GAIN_EXPERIENCE:
+            sprintf_s(s, "+%d XP", this->value);
+            break;
+        case EffectTypes::TAKE_DAMAGE:
+            sprintf_s(s, "-%d Health", this->value);
+            break;
     }
     return s;
 }
@@ -59,4 +88,5 @@ Effect* EffectsList::chooseEffect(char title[]) {
         }
     }
 }
+
 

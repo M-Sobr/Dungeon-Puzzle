@@ -5,6 +5,8 @@
 #include <string>
 #include "../effect/Effect.h"
 
+#define PLAYER_MAXIMUM_HEALTH 255
+
 class Player {
     private:
         std::string name;
@@ -25,8 +27,8 @@ class Player {
         int getMovement();
         void takeDamage(int damage);
         void gainExperience(int experience);
-        void heal();
-        void heal(int health);
+        int heal();
+        int heal(int health);
         void increaseMaxHealth(int health);
         bool isAlive();
         void applyEffect(Effect* e);

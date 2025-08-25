@@ -8,7 +8,9 @@
 
 enum EffectTypes {
     GAIN_MAX_HEALTH,
-    GAIN_HEALTH
+    GAIN_HEALTH,
+    GAIN_EXPERIENCE,
+    TAKE_DAMAGE
 };
 
 class Player;
@@ -21,6 +23,7 @@ class Effect {
     public:
         Effect(EffectTypes type, int value);
         void applyEffect(Player* player);
+        void undoEffect(Player* player);
         std::string toString();
 };
 

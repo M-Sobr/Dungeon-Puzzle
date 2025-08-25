@@ -27,10 +27,10 @@ Monster::Monster(int h) {
 }
 
 void Monster::resolveEffects(Player* p) {
-    p->takeDamage(this->health);
-    p->gainExperience(this->health);
+    p->applyEffect(new Effect(EffectTypes::TAKE_DAMAGE, this->health));
+    p->applyEffect(new Effect(EffectTypes::GAIN_EXPERIENCE, this->health));
 }
 
 void HealTile::resolveEffects(Player* p) {
-    p->heal();
+    p->applyEffect(new Effect(EffectTypes::GAIN_HEALTH, PLAYER_MAXIMUM_HEALTH));
 }

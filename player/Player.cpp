@@ -29,15 +29,19 @@ void Player::takeDamage(int damage) {
     }
 }
 
-void Player::heal() {
+int Player::heal() {
+    int original_health = this->health;
     this->health = this->max_health;
+    return this->max_health - original_health;
 }
 
-void Player::heal(int h) {
+int Player::heal(int h) {
+    int original_health = this->health;
     this->health += h;
     if (this->health > this->max_health) {
         this->health = this->max_health;
     }
+    return this->health - original_health;
 }
 
 void Player::levelUp() {
@@ -73,5 +77,6 @@ void Player::applyEffect(Effect* e) {
 }
 
 void Player::undoEffect() {
-    
+    Effect* e = appliedEffects.popEffect();
+    e->undoEffect(this);
 }
