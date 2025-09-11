@@ -22,7 +22,7 @@ class Effect {
 
     public:
         Effect(EffectTypes type, int value);
-        void applyEffect(Player* player);
+        int applyEffect(Player* player);
         void undoEffect(Player* player);
         std::string toString();
 };

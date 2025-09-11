@@ -1,14 +1,16 @@
 #ifndef ACTION_H
 #define ACTION_H
 
-#include "../level/Level.h"
-#include "Player.h"
+class Level;
+class Player;
+class PastAction;
 
 enum ActionType {
     MOVE_UP,
     MOVE_RIGHT,
     MOVE_DOWN,
     MOVE_LEFT,
+    UNDO,
     EXIT,
     RESET,
     NULL_ACTION
@@ -26,7 +28,7 @@ class Action {
         bool involvesMovement(); 
         static Action fromText(char text[]);
         ActionType getType();
-        void resolveAction(Level* level, Player* player);
+        PastAction* resolveAction(Level* level, Player* player);
         
 };
 

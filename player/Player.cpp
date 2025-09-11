@@ -10,6 +10,7 @@ Player::Player(std::string input_name) {
     currentXp = 0;
     xpRequired = 2;
     is_alive = true;
+    effect_counter = 0;
 }
 
 void Player::printDetails() {
@@ -49,10 +50,17 @@ void Player::levelUp() {
     this->xpRequired *= 2;
     this->level += 1;
     this->movement += 1;
-    this->increaseMaxHealth(5);
+    this->applyEffect(new Effect(EffectTypes::GAIN_MAX_HEALTH, 5));
     EffectsList* effects = getEffectsListFromLevel(this->level);
     this->applyEffect(effects->chooseEffect("You have levelled up to Level 2!"));
     delete effects;
+}
+
+void Player::levelDown() {
+    this->xpRequired /= 2;
+    this->currentXp += this->xpRequired;
+    this->level -= 1;
+    this->movement -= 1;
 }
 
 void Player::increaseMaxHealth(int h) {
@@ -62,8 +70,11 @@ void Player::increaseMaxHealth(int h) {
 
 void Player::gainExperience(int xp) {
     currentXp += xp;
-    if (this->currentXp >= this->xpRequired) {
+    while (this->currentXp >= this->xpRequired) {
         this->levelUp();
+    } 
+    while (this->currentXp < 0) {
+        this->levelDown();
     }
 }
 
@@ -73,10 +84,12 @@ bool Player::isAlive() {
 
 void Player::applyEffect(Effect* e) {
     e->applyEffect(this);
+    this->effect_counter += 1;
     this->appliedEffects.addEffect(e);
 }
 
 void Player::undoEffect() {
     Effect* e = appliedEffects.popEffect();
     e->undoEffect(this);
+    delete e;
 }

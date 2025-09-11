@@ -1,6 +1,7 @@
 #include "level/Level.h"
 #include "player/Player.h"
 #include "player/Action.h"
+#include "player/PastAction.h"
 
 #include <iostream>
 #include <string>
@@ -17,6 +18,7 @@ enum LevelFinishResult {
 LevelFinishResult playLevel(Level level) {
     bool level_ongoing = true;
     Player player = Player::Player("Player");
+    std::vector<PastAction*> previousActions;
     while (level_ongoing) {
         // Print level details
         level.printName();
@@ -32,14 +34,24 @@ LevelFinishResult playLevel(Level level) {
             std::cin >> s;
             
             Action action = Action::fromText(s);
-            if (action.getType() == ActionType::EXIT) {
-                return LevelFinishResult::LEVEL_EXIT;
-            
-            } else if (action.getType() == ActionType::RESET) {
-                return LevelFinishResult::LEVEL_RESET;
+            switch (action.getType()) {
+                case ActionType::EXIT:
+                    return LevelFinishResult::LEVEL_EXIT;
+                case ActionType::RESET:
+                    return LevelFinishResult::LEVEL_RESET;
+            }   
+            if ((action.getType() == ActionType::UNDO) && (previousActions.size() == 0)) {
+                continue; 
 
+            } else if ((action.getType() == ActionType::UNDO)) {
+                PastAction* past_action = previousActions.back();
+                previousActions.pop_back();
+                past_action->undoAction(&level, &player);
+                delete past_action;
+                break;
+            
             } else if (action.getType() != ActionType::NULL_ACTION) {
-                action.resolveAction(&level, &player);
+                previousActions.push_back(action.resolveAction(&level, &player));
                 break;
             }
         }

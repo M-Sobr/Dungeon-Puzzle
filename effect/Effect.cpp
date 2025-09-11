@@ -6,7 +6,7 @@ Effect::Effect(EffectTypes t, int v) {
     this->value = v;
 }
 
-void Effect::applyEffect(Player* player) {
+int Effect::applyEffect(Player* player) {
     switch (this->type) {
         case EffectTypes::GAIN_MAX_HEALTH:
             player->increaseMaxHealth(this->value);
@@ -21,6 +21,7 @@ void Effect::applyEffect(Player* player) {
             player->takeDamage(this->value);
             break;         
     }
+    return 0;
 }
 
 void Effect::undoEffect(Player* player) {
@@ -34,7 +35,7 @@ void Effect::undoEffect(Player* player) {
         case EffectTypes::GAIN_EXPERIENCE:
             player->gainExperience(-this->value);
             break;
-            case EffectTypes::TAKE_DAMAGE:
+        case EffectTypes::TAKE_DAMAGE:
             player->heal(this->value);
             break;              
     }

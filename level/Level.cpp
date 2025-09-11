@@ -1,13 +1,10 @@
 #include "Level.h"
-
+#include "Tile.h"
 
 #include <iostream>
 #include <string>
 #include <fstream>
 #include <cstdlib>
-
-#define PLAYER_TILE 'P'
-#define EMPTY_TILE '_'
 
 Level::Level() {
 }    
@@ -48,8 +45,8 @@ Level::Level(char level_name[MAX_LEVEL_NAME_LENGTH], char level_string[MAX_LEVEL
                 col ++;
         }
         switch (tileTypeFromChar(level_string[i])) {
-            case Tile_Type::MONSTER_TILE:
-            case Tile_Type::HEAL_TILE:
+            case Tile_Type::MONSTER:
+            case Tile_Type::HEAL:
                 objective_tiles += 1;
         }
 
@@ -74,6 +71,11 @@ int inline Level::getColCount() {
     return cols;
 }
 
+void Level::getPlayerPos(int pos_ptr[2]) {
+    pos_ptr[0] = this->player_pos[0];
+    pos_ptr[1] = this->player_pos[1];
+}
+
 Tile* Level::getTileAtPosition(int row, int col) {
     return Tile::tileFromChar(contents[row][col]);
 }
@@ -83,6 +85,12 @@ bool Level::isBeaten() {
 }
 
 void Level::movePlayerTo(int row, int col) {
+    // Check if there is any movement
+    if (contents[row][col] == PLAYER_TILE) {
+        return;
+    }
+
+    // Move the player and update symbolUnderPlayer
     contents[player_pos[0]][player_pos[1]] = symbolUnderPlayer;
     symbolUnderPlayer = contents[row][col];
     contents[row][col] = PLAYER_TILE;
@@ -92,15 +100,34 @@ void Level::movePlayerTo(int row, int col) {
 
     // Resolve effects from moving onto a special tile type.
     switch (tileTypeFromChar(symbolUnderPlayer)) {
-        case Tile_Type::MONSTER_TILE:
-        case Tile_Type::HEAL_TILE:
+        case Tile_Type::MONSTER:
+        case Tile_Type::HEAL:
             symbolUnderPlayer = EMPTY_TILE;
             objective_tiles -= 1;
             break;
-        case Tile_Type::OBJECTIVE_TILE:
+        case Tile_Type::OBJECTIVE:
             if (objective_tiles == 0) {
                 level_beaten = true;
             }    
+    }
+}
+
+void Level::resetPlayerTo(int row, int col, Tile* tile_at_player) {
+    // Check if there is any movement
+    if (contents[row][col] == PLAYER_TILE) {
+        return;
+    }
+
+    // Move the player and update tiles
+    contents[player_pos[0]][player_pos[1]] = tile_at_player->getChar();
+    symbolUnderPlayer = contents[row][col];
+    contents[row][col] = PLAYER_TILE;
+    
+    player_pos[0] = row;
+    player_pos[1] = col;
+
+    if (tile_at_player->isObjective()) {
+        objective_tiles += 1;
     }
 }
 

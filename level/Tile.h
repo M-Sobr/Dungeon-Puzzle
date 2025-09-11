@@ -1,29 +1,44 @@
 #ifndef TILE_H
 #define TILE_H
 
-#include "../player/Player.h"
+class Player;
+
+#define PLAYER_TILE 'P'
+#define EMPTY_TILE '_'
+#define HEAL_TILE '+'
 
 enum Tile_Type {
     NULL_TILE,
-    MONSTER_TILE,
-    HEAL_TILE,
-    OBJECTIVE_TILE
+    MONSTER,
+    HEAL,
+    OBJECTIVE
 };
 
 Tile_Type tileTypeFromChar(char c);
 
 class Tile {    
+    private:
+        char c;
+    
     public:
+        Tile(char c);
+        char getChar();
+
+        virtual bool isObjective() = 0;
+
         // Create a tile from an input character
         static Tile* tileFromChar(char c);
-        virtual void resolveEffects(Player* /*player*/) {};
+        
+        // Returns the number of effects applied
+        virtual void resolveEffects(Player* /*player*/) = 0;
 };
 
 // Exists for a tile with no special effects
 class NullTile : public Tile {
     public:
-        NullTile() {};
-        void resolveEffects(Player* /*player*/) override {};
+        NullTile(char c);
+        bool isObjective() override;
+        void resolveEffects(Player* /*player*/) override;
 };
 
 class Monster : public Tile {
@@ -32,7 +47,8 @@ class Monster : public Tile {
 
     public:
         // Create a monster with specified health
-        Monster(int health);
+        Monster(char c);
+        bool isObjective() override;
 
         void resolveEffects(Player* player) override;
 };
@@ -41,8 +57,10 @@ class HealTile : public Tile {
     private:
 
     public:
-        HealTile() {};
+        HealTile();
+        bool isObjective() override;
+
         void resolveEffects(Player* player) override;
 };
 
-#endif
+#endif // TILE_H

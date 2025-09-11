@@ -1,4 +1,5 @@
 #include "LevelUpEffects.h"
+#include "Effect.h"
 
 EffectsList* getEffectsListFromLevel(int level) {
     switch (level) {

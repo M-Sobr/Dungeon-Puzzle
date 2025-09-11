@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string>
+
 #include "../effect/Effect.h"
 
 #define PLAYER_MAXIMUM_HEALTH 255
@@ -20,8 +21,13 @@ class Player {
         EffectsList appliedEffects;
 
         void levelUp();
+        void levelDown();
     
     public:
+
+        /** A counter for how many effects have been applied to this player this turn. */
+        int effect_counter;
+
         Player(std::string input_name);
         void printDetails();
         int getMovement();

@@ -1,7 +1,7 @@
 #ifndef LEVEL_UP_EFFECTS_H
 #define LEVEL_UP_EFFECTS_H
 
-#include "Effect.h"
+class EffectsList;
 
 EffectsList* getEffectsListFromLevel(int level);
 

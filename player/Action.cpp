@@ -1,6 +1,9 @@
 #include "Action.h"
+#include "PastAction.h"
 #include "../utils/Utils.h"
 #include "../level/Tile.h"
+#include "../level/Level.h"
+#include "Player.h"
 
 Action Action::fromText(char text[]) {
     if (equalsIgnoreCase(text[0], 'w')) {
@@ -11,6 +14,8 @@ Action Action::fromText(char text[]) {
         return Action::Action(ActionType::MOVE_DOWN);
     } else if (equalsIgnoreCase(text[0], 'd')) {
         return Action::Action(ActionType::MOVE_RIGHT);
+    } else if (equalsIgnoreCase(text[0], 'z')) {
+        return Action::Action(ActionType::UNDO);
     } else if (equalsIgnoreCase(text[0], 'r')) {
         return Action::Action(ActionType::RESET);
     } else if (equalsIgnoreCase(text, "exit", 4)) {
@@ -55,19 +60,42 @@ ActionType Action::getType() {
     return type;
 }
 
-void Action::resolveAction(Level* level, Player* player) {
+PastAction* Action::resolveAction(Level* level, Player* player) {
+    // Initialise variables
+    int prev_pos[2];
+    level->getPlayerPos(prev_pos);
+    Tile* tile = new NullTile(PLAYER_TILE);
+    
+    // Do action components relevant to movement
     if (this->involvesMovement()) {
         int destination[2];
         
         int move_count = level->calculateMovementDestination(&destination[0], &destination[1],
             this->row_direction, this->col_direction, player->getMovement());
         
-            if (move_count) {
+        if (move_count) {
             
-            Tile* tile = level->getTileAtPosition(destination[0], destination[1]);
+            tile = level->getTileAtPosition(destination[0], destination[1]);
             level->movePlayerTo(destination[0], destination[1]);
-            player->takeDamage(move_count);
+            player->applyEffect(new Effect(EffectTypes::TAKE_DAMAGE, move_count));
             tile->resolveEffects(player);          
         }
+    }
+    int effect_count = player->effect_counter;
+    player->effect_counter = 0;
+    return new PastAction(prev_pos[0], prev_pos[1], tile, effect_count);
+}
+
+PastAction::PastAction(int prev_row, int prev_col, Tile* tile, int effect_count) {
+    this->prev_row_pos = prev_row;
+    this->prev_col_pos = prev_col;
+    this->tile_at_pos = tile;
+    this->effects_applied_count = effect_count;
+}
+
+void PastAction::undoAction(Level* level, Player* player) {
+    level->resetPlayerTo(this->prev_row_pos, this->prev_col_pos, this->tile_at_pos);
+    for (int i=0; i < this->effects_applied_count; i++) {
+        player->undoEffect();
     }
 }

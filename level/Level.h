@@ -1,7 +1,6 @@
 #ifndef LEVEL_H
 #define LEVEL_H
 
-#include "Tile.h"
 #include <string>
 #include <fstream>
 
@@ -10,6 +9,8 @@
 
 #define MAX_LEVEL_ROWS 10
 #define MAX_LEVEL_COLS 12
+
+class Tile;
 
 class Level {
     private:
@@ -33,6 +34,7 @@ class Level {
         void printName();
         int getRowCount();
         int getColCount();
+        void Level::getPlayerPos(int pos_ptr[2]);
         Tile* getTileAtPosition(int row, int col);
         
         // Check if the level has been beaten or not.
@@ -40,6 +42,9 @@ class Level {
 
         // Move player to the specified position
         void movePlayerTo(int row, int col);
+
+        // Move the player to the specified position as an undo of a previous move
+        void resetPlayerTo(int row, int col, Tile* tile_at_player);
 
         // Find where the movement should end and put in dest_row and dest_col. Return the number of spaces moved.
         int calculateMovementDestination(int* dest_row, int* dest_col, int row_direction, int col_direction, int movement);
