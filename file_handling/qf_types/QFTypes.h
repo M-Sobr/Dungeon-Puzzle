@@ -21,6 +21,16 @@ class QFValue {
         QFValue(QFTypes value_type);
 };
 
+/** Represents a pair of key and value which are a key part of file formats */
+class QFPair {
+    private:
+        std::string key;
+        QFValue* value;
+
+    public:
+        QFPair(std::string key, QFValue* value);    
+};
+
 /** A string which can be a value. */
 class QFString: QFValue {
     private:
@@ -57,16 +67,6 @@ class QFDict: QFValue {
 
     public:
         QFDict();
-};
-
-/** Represents a pair of key and value which are a key part of file formats */
-class QFPair {
-    private:
-        std::string key;
-        QFValue value;
-
-    public:
-        QFPair(std::string key, QFValue value);    
 };
 
 #endif // QF_TYPES_H

@@ -2,6 +2,8 @@
 #include "player/Player.h"
 #include "player/Action.h"
 #include "player/PastAction.h"
+#include "file_handling/FileReader.h"
+#include "file_handling/qf_types/QFTypes.h"
 
 #include <iostream>
 #include <string>
@@ -72,7 +74,10 @@ int main(void) {
     Level levels[LEVEL_COUNT];
     int levelQuantity = loadLevels(levels);
     int currentLevelIndex = START_LEVEL - 1;
-    
+    FileReader level_file_reader("config/player_levels.txt");
+    QFDict level_file_contents;
+    printf("%d", level_file_reader.readFile(&level_file_contents));
+
     // Play levels
     while (currentLevelIndex < levelQuantity) {
         switch (playLevel(levels[currentLevelIndex])) {
