@@ -76,7 +76,7 @@ int main(void) {
     int currentLevelIndex = START_LEVEL - 1;
     FileReader level_file_reader("config/player_levels.txt");
     QFDict level_file_contents;
-    printf("%d", level_file_reader.readFile(&level_file_contents));
+    printf("Return Value: %d\n\n", level_file_reader.readFile(&level_file_contents));
 
     // Play levels
     while (currentLevelIndex < levelQuantity) {

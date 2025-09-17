@@ -8,12 +8,15 @@ class QFDict;
 
 /** Contains the possible results of reading a file */
 enum FileReaderErrorCode {
-    SUCCESS
+    SUCCESS,
+    EMPTY_OR_INVALID_FILE
 };
 
 class FileReader {
     private:
         std::ifstream file_data;
+
+        
 
     public:
         /** Read a file and store it in a new QFDict. 
