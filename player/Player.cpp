@@ -1,16 +1,16 @@
 #include "Player.h"
 #include "../effect/LevelUpEffects.h"
 
-Player::Player(std::string input_name) {
-    name = input_name;
-    level = 1;
-    health = 10;
-    max_health = 10;
-    movement = 1;
-    currentXp = 0;
-    xpRequired = 2;
-    is_alive = true;
-    effect_counter = 0;
+Player::Player(std::string input_name) :
+    name(input_name), 
+    level(1), 
+    health(10), max_health(10),
+    movement(1), 
+    currentXp(0), xpRequired(2), 
+    is_alive(true), 
+    effect_counter(0) {
+    
+    ;
 }
 
 void Player::printDetails() {

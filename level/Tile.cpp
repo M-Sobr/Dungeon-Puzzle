@@ -13,8 +13,8 @@ Tile_Type tileTypeFromChar(char c) {
     return Tile_Type::NULL_TILE;
 }
 
-Tile::Tile(char ch) {
-    this->c = ch;
+Tile::Tile(char ch) : c(ch) {
+    ;
 }
 
 char Tile::getChar() {
@@ -32,7 +32,9 @@ Tile* Tile::tileFromChar(char c) {
     }
 }
 
-NullTile::NullTile(char ch) : Tile::Tile(ch) {};
+NullTile::NullTile(char ch) : Tile::Tile(ch) {
+    ;
+};
 
 void NullTile::resolveEffects(Player*) {};
 
@@ -40,8 +42,10 @@ bool NullTile::isObjective() {
     return false;
 }
 
-Monster::Monster(char ch) : Tile::Tile(ch) {
-    this->health = ch - '0';
+Monster::Monster(char ch) : 
+    Tile::Tile(ch), health(ch - '0') {
+    
+    ;
 }
 
 void Monster::resolveEffects(Player* p) {
@@ -53,7 +57,9 @@ bool Monster::isObjective() {
     return true;
 }
 
-HealTile::HealTile() : Tile::Tile(HEAL_TILE) {};
+HealTile::HealTile() : Tile::Tile(HEAL_TILE) {
+    ;
+};
 
 void HealTile::resolveEffects(Player* p) {
     p->applyEffect(new Effect(EffectTypes::GAIN_HEALTH, PLAYER_MAXIMUM_HEALTH));

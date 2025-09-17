@@ -25,8 +25,7 @@ Action Action::fromText(char text[]) {
     }
 }
 
-Action::Action(ActionType actionType) {
-    type = actionType;
+Action::Action(ActionType actionType) : type(actionType) {
     
     // Fill in direction of the action from its type.
     switch (actionType) {
@@ -86,11 +85,10 @@ PastAction* Action::resolveAction(Level* level, Player* player) {
     return new PastAction(prev_pos[0], prev_pos[1], tile, effect_count);
 }
 
-PastAction::PastAction(int prev_row, int prev_col, Tile* tile, int effect_count) {
-    this->prev_row_pos = prev_row;
-    this->prev_col_pos = prev_col;
-    this->tile_at_pos = tile;
-    this->effects_applied_count = effect_count;
+PastAction::PastAction(int prev_row, int prev_col, Tile* tile, int effect_count) :
+    prev_row_pos(prev_row), prev_col_pos(prev_col), tile_at_pos(tile), effects_applied_count(effect_count) {
+        
+    ;
 }
 
 void PastAction::undoAction(Level* level, Player* player) {

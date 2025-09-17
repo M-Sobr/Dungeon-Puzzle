@@ -1,9 +1,8 @@
 #include "Effect.h" 
 #include "../player/Player.h"
 
-Effect::Effect(EffectTypes t, int v) {
-    this->type = t;
-    this->value = v;
+Effect::Effect(EffectTypes t, int v) : 
+    type(t), value(v) {
 }
 
 int Effect::applyEffect(Player* player) {
