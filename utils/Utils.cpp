@@ -1,5 +1,15 @@
 #include "Utils.h"
 
+bool isBlank(char ch) {
+    switch (ch) {
+        case ' ':
+        case '\n':
+            return 1;
+        default:
+            return 0;    
+    }
+}
+
 bool equalsIgnoreCase(char char1, char char2) {
     if (('a' <= char1) && (char1 <= 'z')) {
         char1 -= 32;

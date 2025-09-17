@@ -16,7 +16,8 @@ class FileReader {
     private:
         std::ifstream file_data;
 
-        
+        /** Get the next character from the file, ignoring blanks. */
+        char getNextChar();
 
     public:
         /** Read a file and store it in a new QFDict. 
