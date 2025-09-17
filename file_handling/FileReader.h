@@ -9,7 +9,7 @@ class QFDict;
 /** Contains the possible results of reading a file */
 enum FileReaderErrorCode {
     SUCCESS,
-    EMPTY_OR_INVALID_FILE
+    INVALID_FILE
 };
 
 class FileReader {
