@@ -14,16 +14,21 @@ char FileReader::getNextChar() {
     return ch;
 }
 
+FileReaderErrorCode FileReader::readPair(QFPair* qf_pair) {
+    return FileReaderErrorCode::SUCCESS;
+}
+
+FileReaderErrorCode FileReader::readDict(QFDict* qf_dict) {
+    char ch;
+    while ((ch = this->getNextChar()) != '}' && ch != EOF) {
+        printf("%c", ch);
+    }
+    return FileReaderErrorCode::SUCCESS;
+}
+
 FileReaderErrorCode FileReader::readFile(QFDict* qf_dict) {    
     if (!file_data) {
         return FileReaderErrorCode::INVALID_FILE;
     }
-    
-    char ch;
-    while (ch != EOF) {
-        ch = this->getNextChar();
-        printf("%c", ch);
-    }
-    printf("\n");
-    return FileReaderErrorCode::SUCCESS;
+    return this->readDict(qf_dict);
 }

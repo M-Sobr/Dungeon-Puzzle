@@ -1,8 +1,8 @@
 "Player Levels": {
-    "Effects": {
-        "2": {
+    "Effects": [
+        [
             "GAIN_MAX_HEALTH": 2,
             "GAIN_HEALTH": 5
-        }
-    }
+        ]
+    ]
 }
