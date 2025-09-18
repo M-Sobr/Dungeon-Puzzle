@@ -6,6 +6,7 @@
 
 class QFDict;
 class QFPair;
+class QFValue;
 
 /** Contains the possible results of reading a file */
 enum FileReaderErrorCode {
@@ -27,6 +28,12 @@ class FileReader {
         
         /** Get the next character from the file, ignoring blanks. */
         char nextChar();
+
+        /** Fill in the following empty string from file details */
+        FileReaderErrorCode readKey(std::string* string);
+
+        /** Fill in the following QFValue from file details */
+        FileReaderErrorCode readValue(QFValue* qf_value);
 
         /** Fill in the following QFPair from the file details */
         FileReaderErrorCode readPair(QFPair* qf_pair);
