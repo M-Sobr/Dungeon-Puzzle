@@ -67,6 +67,7 @@ class QFDict: QFValue {
 
     public:
         QFDict();
+        void addPair(QFPair* pair);
 };
 
 #endif // QF_TYPES_H

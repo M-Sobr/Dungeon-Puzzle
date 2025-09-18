@@ -28,3 +28,7 @@ QFList::QFList() : QFValue::QFValue(QFTypes::QF_LIST) {
 QFDict::QFDict() : QFValue::QFValue(QFTypes::QF_DICT) {
     ;
 }
+
+void QFDict::addPair(QFPair* pair) {
+    pairs.push_back(pair);
+}
