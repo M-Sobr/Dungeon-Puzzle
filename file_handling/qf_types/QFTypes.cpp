@@ -21,8 +21,17 @@ QFInt::QFInt(int v) :
     ;
 }
 
+QFDouble::QFDouble(double v) :
+    QFValue::QFValue(QFTypes::QF_DOUBLE), value(v) {
+    ;
+}
+
 QFList::QFList() : QFValue::QFValue(QFTypes::QF_LIST) {
     ;
+}
+
+void QFList::addValue(QFValue* value) {
+    values.push_back(value);
 }
 
 QFDict::QFDict() : QFValue::QFValue(QFTypes::QF_DICT) {

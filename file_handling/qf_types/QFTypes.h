@@ -8,6 +8,7 @@ enum QFTypes {
     QF_VALUE,
     QF_STRING,
     QF_INT,
+    QF_DOUBLE,
     QF_LIST,
     QF_DICT
 };
@@ -19,6 +20,7 @@ class QFValue {
 
     public:
         QFValue(QFTypes value_type);
+        virtual ~QFValue() {}
 };
 
 /** Represents a pair of key and value which are a key part of file formats */
@@ -32,7 +34,7 @@ class QFPair {
 };
 
 /** A string which can be a value. */
-class QFString: QFValue {
+class QFString: public QFValue {
     private:
         std::string value;
 
@@ -41,7 +43,7 @@ class QFString: QFValue {
 };
 
 /** An integer which can be a value. */
-class QFInt: QFValue {
+class QFInt: public QFValue {
     private:
         int value;
         
@@ -49,19 +51,29 @@ class QFInt: QFValue {
         QFInt(int value);  
 };
 
+/** A double which can be a value */
+class QFDouble : public QFValue {
+    private:
+        double value;
+    
+    public:
+        QFDouble(double value);
+};
+
 /** Represents a list of values associated with a key. 
  * These all have the same type. 
 */
-class QFList: QFValue {
+class QFList: public QFValue {
     private:
         std::vector<QFValue*> values;
 
     public:
         QFList();    
+        void addValue(QFValue* value);
 };
 
 /** Represents a list of key-value pairs. */
-class QFDict: QFValue {
+class QFDict: public QFValue {
     private:
         std::vector<QFPair*> pairs;
 

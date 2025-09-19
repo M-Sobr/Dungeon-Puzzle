@@ -24,13 +24,8 @@ char FileReader::nextChar() {
     return ch;
 }
 
-FileReaderErrorCode FileReader::readKey(std::string* s) {
-    // Check for a valid start of string
-    if (this->nextChar() != '"') {
-        return FileReaderErrorCode::INVALID_FILE_FORMAT;
-    }
-
-    // Read the key
+FileReaderErrorCode FileReader::readString(std::string* s) {
+    // Read the string
     char ch;
     while ((ch = this->peekChar()) != '"' && ch != EOF) {
         s->push_back(ch);
@@ -46,7 +41,102 @@ FileReaderErrorCode FileReader::readKey(std::string* s) {
     }
 }
 
+FileReaderErrorCode FileReader::readInt(int* i) {
+    
+    char ch;
+    *i = 0;
+    while ((ch = this->peekChar()) >= '0' && ch <= '9') {
+        *i *= 10;
+        *i += ch - '0';
+        this->skipChar();
+    }
+    return FileReaderErrorCode::SUCCESS;
+}
+
+FileReaderErrorCode FileReader::readDouble(double* d) {
+    char ch;
+    *d = 0;
+    while ((ch = this->peekChar()) >= '0' && ch <= '9') {
+        *d *= 10;
+        *d += ch - '0';
+        this->skipChar();
+    }
+    if (this->peekChar() == '.') {
+        this->skipChar();
+        double frac = 0.1;
+        while ((ch = this->peekChar()) >= '0' && ch <= '9') {
+            *d += (ch - '0') * frac;
+            frac /= 10;
+            this->skipChar();
+        }
+    }
+    return FileReaderErrorCode::SUCCESS;
+}
+
+FileReaderErrorCode FileReader::readKey(std::string* s) {
+    if (this->nextChar() != '"') {
+        return FileReaderErrorCode::INVALID_FILE_FORMAT;
+    }
+    return this->readString(s);
+}
+
 FileReaderErrorCode FileReader::readValue(QFValue* qf_value) {
+    FileReaderErrorCode errorCode;
+    char ch = this->nextChar();
+
+    if (ch == '"') {
+        std::string s;
+        errorCode = this->readString(&s);
+        qf_value = new QFString(s);
+
+    } else if (ch == 'i') {
+        int i;
+        errorCode = this->readInt(&i);
+        qf_value = new QFInt(i);    
+    
+    } else if (ch == 'd') {
+        double d;
+        errorCode = this->readDouble(&d);
+        qf_value = new QFDouble(d);
+    
+    } else if (ch == '[') {
+        qf_value = new QFList();
+        errorCode = this->readList(dynamic_cast<QFList*>(qf_value));
+    
+    } else if (ch == '{') {
+        qf_value = new QFDict();
+        errorCode = this->readDict(dynamic_cast<QFDict*>(qf_value));
+    
+    } else {
+        return FileReaderErrorCode::INVALID_FILE_FORMAT;
+    }
+
+    return errorCode;
+}
+
+FileReaderErrorCode FileReader::readList(QFList* qf_list) {
+    // Variable initialisation
+    char ch;
+    FileReaderErrorCode errorCode;
+    QFValue* qf_value = nullptr;
+
+    // Read qf_pairs and add to dict
+    while ((ch = this->peekChar()) != EOF && ch != ']') {
+        if (this->peekChar() == ',') {
+            return FileReaderErrorCode::INVALID_FILE_FORMAT;
+        }
+        errorCode = this->readValue(qf_value);
+        if (errorCode != FileReaderErrorCode::SUCCESS) {
+            return errorCode;
+        }
+        qf_list->addValue(qf_value);
+        if (this->peekChar() == ',') {
+            this->skipChar();
+        }
+    }
+    this->skipChar();
+
+    // Return success if everything is successful
     return FileReaderErrorCode::SUCCESS;
 }
 
@@ -54,7 +144,7 @@ FileReaderErrorCode FileReader::readDict(QFDict* qf_dict) {
     // Variable initialisation
     char ch;
     FileReaderErrorCode errorCode;
-    QFPair* qf_pair;
+    QFPair* qf_pair = nullptr;
 
     // Read qf_pairs and add to dict
     while ((ch = this->peekChar()) != EOF && ch != '}') {
@@ -78,17 +168,27 @@ FileReaderErrorCode FileReader::readDict(QFDict* qf_dict) {
 
 FileReaderErrorCode FileReader::readPair(QFPair* qf_pair) {
     std::string key;
+    QFValue* value = nullptr;
     FileReaderErrorCode errorCode;
 
+    // Get the key
     errorCode = this->readKey(&key);
-    printf("\n%s\n", key.c_str());
     if (errorCode != FileReaderErrorCode::SUCCESS) {
         return errorCode;
     }
 
-    while (this->peekChar() != EOF) {
-        printf("%c", this->nextChar());
+    // Check that the key and value are separated by a colon
+    if (this->nextChar() != ':') {
+        return FileReaderErrorCode::INVALID_FILE_FORMAT;
     }
+
+    // Get the value
+    errorCode = this->readValue(value);
+    if (errorCode != FileReaderErrorCode::SUCCESS) {
+        return errorCode;
+    }
+
+    qf_pair = new QFPair(key, value);
     return FileReaderErrorCode::SUCCESS;
 }
 
