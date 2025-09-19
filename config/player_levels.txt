@@ -2,7 +2,7 @@
     "Effects": [
         {
             "GAIN_MAX_HEALTH": i2,
-            "GAIN_HEALTH": d4.6
+            "GAIN_HEALTH": i5
         }
     ]
 }

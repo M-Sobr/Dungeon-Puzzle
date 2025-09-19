@@ -2,14 +2,13 @@
 #include "player/Player.h"
 #include "player/Action.h"
 #include "player/PastAction.h"
-#include "file_handling/FileReader.h"
-#include "file_handling/qf_types/QFTypes.h"
+#include "file_handling/FileInterpreter.h"
 
 #include <iostream>
 #include <string>
 
 #define LEVEL_COUNT 10
-#define START_LEVEL 2  // Temporary while saves are not implemented
+#define START_LEVEL 1  // Temporary while saves are not implemented
 
 enum LevelFinishResult {
     LEVEL_VICTORY,
@@ -72,11 +71,11 @@ LevelFinishResult playLevel(Level level) {
 
 int main(void) {
     Level levels[LEVEL_COUNT];
-    int levelQuantity = loadLevels(levels);
+    int levelQuantity = FileInterpreter::loadLevels(levels);
     int currentLevelIndex = START_LEVEL - 1;
-    FileReader level_file_reader("config/player_levels.txt");
-    QFDict level_file_contents;
-    printf("Return Value: %d\n\n", level_file_reader.readFile(&level_file_contents));
+    // FileReader level_file_reader("config/player_levels.txt");
+    // QFDict level_file_contents;
+    // printf("Return Value: %d\n\n", level_file_reader.readFile(&level_file_contents));
 
     // Play levels
     while (currentLevelIndex < levelQuantity) {
