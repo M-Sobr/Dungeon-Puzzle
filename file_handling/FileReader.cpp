@@ -80,52 +80,52 @@ FileReaderErrorCode FileReader::readKey(std::string* s) {
     return this->readString(s);
 }
 
-FileReaderErrorCode FileReader::readValue(QFValue* qf_value) {
-    FileReaderErrorCode errorCode;
+QFValue* FileReader::readValue(FileReaderErrorCode* errorCode) {
+    QFValue* qf_value;
     char ch = this->nextChar();
 
     if (ch == '"') {
         std::string s;
-        errorCode = this->readString(&s);
+        *errorCode = this->readString(&s);
         qf_value = new QFString(s);
 
     } else if (ch == 'i') {
         int i;
-        errorCode = this->readInt(&i);
+        *errorCode = this->readInt(&i);
         qf_value = new QFInt(i);    
     
     } else if (ch == 'd') {
         double d;
-        errorCode = this->readDouble(&d);
+        *errorCode = this->readDouble(&d);
         qf_value = new QFDouble(d);
     
     } else if (ch == '[') {
         qf_value = new QFList();
-        errorCode = this->readList(dynamic_cast<QFList*>(qf_value));
+        *errorCode = this->readList(dynamic_cast<QFList*>(qf_value));
     
     } else if (ch == '{') {
         qf_value = new QFDict();
-        errorCode = this->readDict(dynamic_cast<QFDict*>(qf_value));
+        *errorCode = this->readDict(dynamic_cast<QFDict*>(qf_value));
     
     } else {
-        return FileReaderErrorCode::INVALID_FILE_FORMAT;
+        *errorCode = FileReaderErrorCode::INVALID_FILE_FORMAT;
     }
 
-    return errorCode;
+    return qf_value;
 }
 
 FileReaderErrorCode FileReader::readList(QFList* qf_list) {
     // Variable initialisation
     char ch;
     FileReaderErrorCode errorCode;
-    QFValue* qf_value = nullptr;
+    QFValue* qf_value;
 
     // Read qf_pairs and add to dict
     while ((ch = this->peekChar()) != EOF && ch != ']') {
         if (this->peekChar() == ',') {
             return FileReaderErrorCode::INVALID_FILE_FORMAT;
         }
-        errorCode = this->readValue(qf_value);
+        qf_value = this->readValue(&errorCode);
         if (errorCode != FileReaderErrorCode::SUCCESS) {
             return errorCode;
         }
@@ -144,14 +144,14 @@ FileReaderErrorCode FileReader::readDict(QFDict* qf_dict) {
     // Variable initialisation
     char ch;
     FileReaderErrorCode errorCode;
-    QFPair* qf_pair = nullptr;
+    QFPair* qf_pair;
 
     // Read qf_pairs and add to dict
     while ((ch = this->peekChar()) != EOF && ch != '}') {
         if (this->peekChar() == ',') {
             return FileReaderErrorCode::INVALID_FILE_FORMAT;
         }
-        errorCode = this->readPair(qf_pair);
+        qf_pair = this->readPair(&errorCode);
         if (errorCode != FileReaderErrorCode::SUCCESS) {
             return errorCode;
         }
@@ -166,30 +166,30 @@ FileReaderErrorCode FileReader::readDict(QFDict* qf_dict) {
     return FileReaderErrorCode::SUCCESS;
 }
 
-FileReaderErrorCode FileReader::readPair(QFPair* qf_pair) {
+QFPair* FileReader::readPair(FileReaderErrorCode* errorCode) {
     std::string key;
-    QFValue* value = nullptr;
-    FileReaderErrorCode errorCode;
+    QFPair* qf_pair = nullptr;
 
     // Get the key
-    errorCode = this->readKey(&key);
-    if (errorCode != FileReaderErrorCode::SUCCESS) {
-        return errorCode;
+    *errorCode = this->readKey(&key);
+    if (*errorCode != FileReaderErrorCode::SUCCESS) {
+        return qf_pair;
     }
 
     // Check that the key and value are separated by a colon
     if (this->nextChar() != ':') {
-        return FileReaderErrorCode::INVALID_FILE_FORMAT;
+        return qf_pair;
     }
 
     // Get the value
-    errorCode = this->readValue(value);
-    if (errorCode != FileReaderErrorCode::SUCCESS) {
-        return errorCode;
+    QFValue* value = this->readValue(errorCode);
+    if (*errorCode != FileReaderErrorCode::SUCCESS) {
+        return qf_pair;
     }
 
     qf_pair = new QFPair(key, value);
-    return FileReaderErrorCode::SUCCESS;
+    *errorCode = FileReaderErrorCode::SUCCESS;
+    return qf_pair;
 }
 
 FileReaderErrorCode FileReader::readFile(QFDict* qf_dict) {    

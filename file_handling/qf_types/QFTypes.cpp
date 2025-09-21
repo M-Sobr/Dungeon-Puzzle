@@ -10,6 +10,14 @@ QFPair::QFPair(std::string k, QFValue* v) :
     ;
 }
 
+std::string QFPair::getKey() {
+    return this->key;
+}
+
+QFValue* QFPair::getValue() {
+    return this->value;
+}
+
 QFString::QFString(std::string v) : 
     QFValue::QFValue(QFTypes::QF_STRING), value(v) {
     
@@ -31,7 +39,11 @@ QFList::QFList() : QFValue::QFValue(QFTypes::QF_LIST) {
 }
 
 void QFList::addValue(QFValue* value) {
-    values.push_back(value);
+    this->values.push_back(value);
+}
+
+std::vector<QFValue*> QFList::getValues() {
+    return this->values;
 }
 
 QFDict::QFDict() : QFValue::QFValue(QFTypes::QF_DICT) {
@@ -39,5 +51,20 @@ QFDict::QFDict() : QFValue::QFValue(QFTypes::QF_DICT) {
 }
 
 void QFDict::addPair(QFPair* pair) {
-    pairs.push_back(pair);
+    this->pairs.push_back(pair);
+}
+
+std::vector<QFPair*> QFDict::getPairs() {
+    return this->pairs;
+}
+
+QFValue* QFDict::getValueFromKey(std::string key) {
+    QFPair* qf_pair;
+    for (int i=0; i < (this->pairs).size(); i++) {
+        qf_pair = (this->pairs)[i];
+        if (qf_pair->getKey().compare(key) == 0) {
+            return qf_pair->getValue();
+        }
+    }
+    return nullptr;
 }

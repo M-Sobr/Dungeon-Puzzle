@@ -43,10 +43,10 @@ class FileReader {
         FileReaderErrorCode readKey(std::string* string);
 
         /** Fill in the following QFValue from file details */
-        FileReaderErrorCode readValue(QFValue* qf_value);
+        QFValue* readValue(FileReaderErrorCode* errorCode);
 
         /** Fill in the following QFPair from the file details */
-        FileReaderErrorCode readPair(QFPair* qf_pair);
+        QFPair* readPair(FileReaderErrorCode* errorCode);
 
         /** Fill in the following QFList from the file details */
         FileReaderErrorCode readList(QFList* qf_list);

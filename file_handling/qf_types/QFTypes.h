@@ -30,7 +30,9 @@ class QFPair {
         QFValue* value;
 
     public:
-        QFPair(std::string key, QFValue* value);    
+        QFPair(std::string key, QFValue* value);   
+        std::string getKey();
+        QFValue* getValue(); 
 };
 
 /** A string which can be a value. */
@@ -70,6 +72,7 @@ class QFList: public QFValue {
     public:
         QFList();    
         void addValue(QFValue* value);
+        std::vector<QFValue*> getValues();
 };
 
 /** Represents a list of key-value pairs. */
@@ -80,6 +83,8 @@ class QFDict: public QFValue {
     public:
         QFDict();
         void addPair(QFPair* pair);
+        std::vector<QFPair*> getPairs();
+        QFValue* getValueFromKey(std::string key);
 };
 
 #endif // QF_TYPES_H
