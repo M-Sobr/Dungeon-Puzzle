@@ -8,12 +8,24 @@
 
 #define MAP_LEVEL_DIRECTORY  "config/map_levels.txt"
 
+int FileInterpreter::loadLevel(Level* levels, QFPair* level_info) {
+    return -1;
+}
+
+int FileInterpreter::countLevels(Level* levels, std::set<int> filled_levels) {
+    int count = 0;
+    while (filled_levels.count(count)) {
+        count ++;
+    }
+    return count;
+}
 
 int FileInterpreter::loadLevels(Level* levels) {
     
     // Intialise variables and read file
     FileReader level_file_reader(MAP_LEVEL_DIRECTORY);
     QFDict level_file_contents;
+    
     FileReaderErrorCode errorCode = level_file_reader.readFile(&level_file_contents);
     switch (errorCode) {
         case FileReaderErrorCode::INVALID_FILE:
@@ -24,14 +36,22 @@ int FileInterpreter::loadLevels(Level* levels) {
             return 0;    
     }
 
-    QFDict* map_levels = dynamic_cast<QFDict*>(level_file_contents.getValueFromKey("Map Levels"));
-    if (map_levels == nullptr) {
+    QFDict* map_levels_dict = dynamic_cast<QFDict*>(level_file_contents.getValueFromKey("Map Levels"));
+    if (map_levels_dict == nullptr) {
         printf("%s", "No QFDict in a \"Map Levels\" key found\n");
         return 0;
     }
 
-    printf("Success!\n");
-    
-    // printf("Return Value: %d\n\n", level_file_reader.readFile(&level_file_contents));
-    return 0;
+    printf("Success1!\n");
+
+    std::vector<QFPair*> map_level_pairs = map_levels_dict->getPairs();
+    std::set<int> filled_levels;
+
+    for (QFPair* pair : map_level_pairs) {
+        filled_levels.insert(loadLevel(levels, pair));
+    }
+
+    printf("Success2!\n");
+
+    return countLevels(levels, filled_levels);
 } 

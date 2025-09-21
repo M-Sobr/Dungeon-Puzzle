@@ -108,6 +108,7 @@ QFValue* FileReader::readValue(FileReaderErrorCode* errorCode) {
         *errorCode = this->readDict(dynamic_cast<QFDict*>(qf_value));
     
     } else {
+        qf_value = nullptr;
         *errorCode = FileReaderErrorCode::INVALID_FILE_FORMAT;
     }
 
