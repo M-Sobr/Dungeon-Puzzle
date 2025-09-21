@@ -45,17 +45,38 @@ FileReaderErrorCode FileReader::readInt(int* i) {
     
     char ch;
     *i = 0;
+    
+    // Check for negative
+    int negative = 0;
+    if (this->peekChar() == '-') {
+        negative = 1;
+        this->skipChar();
+    }
+
     while ((ch = this->peekChar()) >= '0' && ch <= '9') {
         *i *= 10;
         *i += ch - '0';
         this->skipChar();
     }
+
+    if (negative) {
+        *i = -(*i);
+    }
+
     return FileReaderErrorCode::SUCCESS;
 }
 
 FileReaderErrorCode FileReader::readDouble(double* d) {
     char ch;
     *d = 0;
+    
+    // Check for negative
+    int negative = 0;
+    if (this->peekChar() == '-') {
+        negative = 1;
+        this->skipChar();
+    }
+
     while ((ch = this->peekChar()) >= '0' && ch <= '9') {
         *d *= 10;
         *d += ch - '0';
@@ -70,6 +91,11 @@ FileReaderErrorCode FileReader::readDouble(double* d) {
             this->skipChar();
         }
     }
+
+    if (negative) {
+        *d = -(*d);
+    }
+
     return FileReaderErrorCode::SUCCESS;
 }
 

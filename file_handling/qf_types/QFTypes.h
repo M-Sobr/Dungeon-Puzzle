@@ -51,6 +51,9 @@ class QFInt: public QFValue {
         
     public:
         QFInt(int value);  
+        
+        /** Get the value associated with this QFInt (or -1 if null) */
+        int getValue();
 };
 
 /** A double which can be a value */

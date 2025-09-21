@@ -29,6 +29,13 @@ QFInt::QFInt(int v) :
     ;
 }
 
+int QFInt::getValue() {
+    if (this == nullptr) {
+        return -1;
+    }
+    return this->value;
+}
+
 QFDouble::QFDouble(double v) :
     QFValue::QFValue(QFTypes::QF_DOUBLE), value(v) {
     ;

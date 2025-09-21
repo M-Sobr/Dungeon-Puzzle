@@ -9,6 +9,32 @@
 #define MAP_LEVEL_DIRECTORY  "config/map_levels.txt"
 
 int FileInterpreter::loadLevel(Level* levels, QFPair* level_info) {
+    // Initialisation of variables
+    std::string level_name = level_info->getKey();
+    std::string level_string;
+    int level_rows;
+    int level_cols;
+
+    // Look at level_info
+    QFDict* level_contents = dynamic_cast<QFDict*>(level_info->getValue());
+    if (level_contents == nullptr) {
+        return -1;
+    }
+
+    // Get level number
+    int level_number = dynamic_cast<QFInt*>(level_contents->getValueFromKey("Level Number"))->getValue();
+    if (level_number <= 0) {
+        return -1;
+    }
+
+    QFList* layout = dynamic_cast<QFList*>(level_contents->getValueFromKey("Layout"));
+    if (layout == nullptr) {
+        return -1;
+    } 
+
+    printf("Success3\n");
+
+    //new Level(char level_name[MAX_LEVEL_NAME_LENGTH], char level_string[MAX_LEVEL_CHARACTERS], int level_rows, int level_cols);
     return -1;
 }
 
