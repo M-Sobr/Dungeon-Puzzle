@@ -35,8 +35,6 @@ Level* FileInterpreter::loadLevel(QFDict* level_contents) {
     // Initialisation of variables
     std::string level_name;
     std::string level_string;
-    int level_rows;
-    int level_cols;
     Level::LevelBuilder level_builder = Level::LevelBuilder();
 
     // Get level name
@@ -58,18 +56,10 @@ Level* FileInterpreter::loadLevel(QFDict* level_contents) {
     if (!layer_add_success) {
         return nullptr;
     }
-    level_builder.build();
+    printf("Success6");
 
     //new Level(char level_name[MAX_LEVEL_NAME_LENGTH], char level_string[MAX_LEVEL_CHARACTERS], int level_rows, int level_cols);
     return level_builder.build();;
-}
-
-int FileInterpreter::countLevels(Level* levels, std::set<int> filled_levels) {
-    int count = 0;
-    while (filled_levels.count(count)) {
-        count ++;
-    }
-    return count;
 }
 
 int FileInterpreter::loadLevels(std::vector<Level*> levels) {

@@ -17,6 +17,7 @@ enum LevelFinishResult {
 };
 
 LevelFinishResult playLevel(Level level) {
+    printf("In Level!");
     bool level_ongoing = true;
     Player player = Player::Player("Player");
     std::vector<PastAction*> previousActions;
@@ -79,7 +80,7 @@ int main(void) {
 
     // Play levels
     while (currentLevelIndex < levelQuantity) {
-        switch (playLevel(*levels[currentLevelIndex])) {
+        switch (playLevel(*(levels.at(currentLevelIndex)))) {
             case LevelFinishResult::LEVEL_EXIT:
                 currentLevelIndex = levelQuantity;
                 break;

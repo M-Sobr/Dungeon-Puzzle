@@ -15,8 +15,7 @@ class FileInterpreter {
 
         static LevelLayer loadLayer(QFList* layer_contents, bool* success);
         static Level* loadLevel(QFDict* level_info);
-
-        static int countLevels(Level* levels, std::set<int>);
+        
     public:
 
         /** Load the levels from the required file into the provided array

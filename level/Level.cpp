@@ -11,13 +11,14 @@ Level::Level() {
 
 Level::Level(std::string level_name, std::vector<LevelLayer> layers, int* p_pos, int start_layer, int obj_tiles) : 
     
-    name(level_name), layout_layers(layers), currentLayer(start_layer), 
+    name(level_name), layout_layers(layers), currentLayerIndex(start_layer), currentLayer(layers.at(start_layer)),
     symbolUnderPlayer(EMPTY_TILE), objective_tiles(obj_tiles), level_beaten(false) {
     
     player_pos[0] = p_pos[0];
     player_pos[1] = p_pos[1];
 }
 
+/**
 Level::Level(std::string level_name, char level_string[MAX_LEVEL_CHARACTERS], int level_rows, int level_cols) :
     name(level_name), rows(level_rows), cols(level_cols) {
     
@@ -58,23 +59,24 @@ Level::Level(std::string level_name, char level_string[MAX_LEVEL_CHARACTERS], in
 
     }
 }
+*/
 
 void Level::printName() {
     std::cout << name << '\n';
 }
     
 void Level::printLevel() {
-    for (int i=0; i<rows; i++) {
-        std::cout << contents[i] << '\n';
+    for (int i=0; i < currentLayer.rows; i++) {
+        std::cout << currentLayer.contents[i] << '\n';
     }
     std::cout << '\n';
 }
 
 int inline Level::getRowCount() {
-    return rows;
+    return currentLayer.rows;
 }
 int inline Level::getColCount() {
-    return cols;
+    return currentLayer.cols;
 }
 
 void Level::getPlayerPos(int pos_ptr[2]) {
@@ -83,7 +85,7 @@ void Level::getPlayerPos(int pos_ptr[2]) {
 }
 
 Tile* Level::getTileAtPosition(int row, int col) {
-    return Tile::tileFromChar(contents[row][col]);
+    return Tile::tileFromChar(currentLayer.contents[row][col]);
 }
 
 bool Level::isBeaten() {
@@ -92,14 +94,14 @@ bool Level::isBeaten() {
 
 void Level::movePlayerTo(int row, int col) {
     // Check if there is any movement
-    if (contents[row][col] == PLAYER_TILE) {
+    if (currentLayer.contents[row][col] == PLAYER_TILE) {
         return;
     }
 
     // Move the player and update symbolUnderPlayer
-    contents[player_pos[0]][player_pos[1]] = symbolUnderPlayer;
-    symbolUnderPlayer = contents[row][col];
-    contents[row][col] = PLAYER_TILE;
+    currentLayer.contents[player_pos[0]][player_pos[1]] = symbolUnderPlayer;
+    symbolUnderPlayer = currentLayer.contents[row][col];
+    currentLayer.contents[row][col] = PLAYER_TILE;
     
     player_pos[0] = row;
     player_pos[1] = col;
@@ -120,14 +122,14 @@ void Level::movePlayerTo(int row, int col) {
 
 void Level::resetPlayerTo(int row, int col, Tile* tile_at_player) {
     // Check if there is any movement
-    if (contents[row][col] == PLAYER_TILE) {
+    if (currentLayer.contents[row][col] == PLAYER_TILE) {
         return;
     }
 
     // Move the player and update tiles
-    contents[player_pos[0]][player_pos[1]] = tile_at_player->getChar();
-    symbolUnderPlayer = contents[row][col];
-    contents[row][col] = PLAYER_TILE;
+    currentLayer.contents[player_pos[0]][player_pos[1]] = tile_at_player->getChar();
+    symbolUnderPlayer = currentLayer.contents[row][col];
+    currentLayer.contents[row][col] = PLAYER_TILE;
     
     player_pos[0] = row;
     player_pos[1] = col;
@@ -138,13 +140,14 @@ void Level::resetPlayerTo(int row, int col, Tile* tile_at_player) {
 }
 
 bool inline Level::tileOutsideLevel(int row, int col) {
-    return (row < 0 || row >= this->rows || col < 0 || col >= this->cols);
+    return (row < 0 || row >= this->currentLayer.rows || col < 0 || col >= this->currentLayer.cols);
 }
 
 bool inline Level::tileIsWall(int row, int col) {
-    return (tileOutsideLevel(row, col) || contents[row][col] == 'X');
+    return (tileOutsideLevel(row, col) || currentLayer.contents[row][col] == 'X');
 }
 
+/**
 int loadLevels(Level* levels) {
     char txt[1000];
     std::ifstream levels_data("level/levels.txt");
@@ -200,6 +203,7 @@ int loadLevels(Level* levels) {
     levels_data.close();
     return level_count;
 }
+*/
 
 int Level::calculateMovementDestination(int* dest_row, int* dest_col, 
 int row_direction, int col_direction, int movement) {
@@ -214,7 +218,7 @@ int row_direction, int col_direction, int movement) {
         if (this->tileOutsideLevel(*dest_row, *dest_col)) {
             return 0;
         }
-        if (contents[*dest_row][*dest_col] == '#') {
+        if (currentLayer.contents[*dest_row][*dest_col] == '#') {
             return i + 1;
         }
     }

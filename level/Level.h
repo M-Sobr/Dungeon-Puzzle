@@ -32,12 +32,13 @@ class Level {
         std::string name;
         
         // Depreciated
-        char contents[MAX_LEVEL_ROWS][MAX_LEVEL_COLS];
-        int rows;
-        int cols;
+        //char contents[MAX_LEVEL_ROWS][MAX_LEVEL_COLS];
+        //int rows;
+        //int cols;
 
         std::vector<LevelLayer> layout_layers;
-        int currentLayer;
+        int currentLayerIndex;
+        LevelLayer currentLayer;
 
         int player_pos[2];
         char symbolUnderPlayer;
@@ -48,12 +49,14 @@ class Level {
         /** Create a new level with a name, layers, player_pos (row, col) and objective tiles. */
         Level(std::string level_name, std::vector<LevelLayer> layout_layers, int* player_pos, int start_layer, int objective_tiles);
 
+        
+
         bool tileOutsideLevel(int row, int col);
         bool tileIsWall(int row, int col);
     
     public:
         Level();
-        Level(std::string level_name, char level_string[MAX_LEVEL_CHARACTERS], int level_rows, int level_cols); // Depreciated
+        //Level(std::string level_name, char level_string[MAX_LEVEL_CHARACTERS], int level_rows, int level_cols); // Depreciated
         
         void printLevel();
         void printName();
@@ -79,12 +82,17 @@ class Level {
                 // Necessary fields
                 std::string level_name;
                 std::vector<LevelLayer> layout_layers;
-                int* player_pos;
+                int player_pos[2];
                 int start_layer;
                 int objective_tiles;
 
                 // A counter to make sure every level field required is set before building
                 int necessary_fields_set;
+                
+                /** Adds the player to the game. Returns true if player adding is successful and
+                 *   false if player has already been added.
+                 */
+                bool addPlayer(int row, int col, int layer);
 
             public:
                 LevelBuilder();
@@ -99,6 +107,6 @@ class Level {
         };
 };
 
-int loadLevels(Level* levels);
+// int loadLevels(Level* levels);
 
 #endif
