@@ -9,14 +9,11 @@
 Level::Level() {
 }    
 
-Level::Level(char level_name[MAX_LEVEL_NAME_LENGTH], char level_string[MAX_LEVEL_CHARACTERS], int level_rows, int level_cols) :
-    rows(level_rows), cols(level_cols) {
+Level::Level(std::string level_name, char level_string[MAX_LEVEL_CHARACTERS], int level_rows, int level_cols) :
+    name(level_name), rows(level_rows), cols(level_cols) {
     
     int i;
-    for (i=0; level_name[i] != '\0'; i++) {
-        name[i] = level_name[i];
-    }
-    name[i] = '\0';
+
     objective_tiles = 0;
     level_beaten = false;
 

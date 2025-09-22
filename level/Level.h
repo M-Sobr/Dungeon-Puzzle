@@ -14,7 +14,7 @@ class Tile;
 
 class Level {
     private:
-        char name[MAX_LEVEL_NAME_LENGTH];
+        std::string name;
         char contents[MAX_LEVEL_ROWS][MAX_LEVEL_COLS];
         int rows;
         int cols;
@@ -29,7 +29,7 @@ class Level {
     
     public:
         Level();
-        Level(char level_name[MAX_LEVEL_NAME_LENGTH], char level_string[MAX_LEVEL_CHARACTERS], int level_rows, int level_cols);
+        Level(std::string level_name, char level_string[MAX_LEVEL_CHARACTERS], int level_rows, int level_cols);
         void printLevel();
         void printName();
         int getRowCount();

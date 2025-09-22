@@ -1,6 +1,6 @@
-"Map Levels": {
-    "Map Level 1": {
-        "Level Number": i1,
+"Map Levels": [
+    {
+        "Level Name": "Map Level 1",
         "Layout": [
             [
                 "PXX1+__",
@@ -12,8 +12,8 @@
             ]
         ]
     },
-    "Map Level 2": {
-        "Level Number": i2,
+    {
+        "Level Name": "Map Level 2",
         "Layout": [
             [
                 "#1__2",
@@ -24,4 +24,4 @@
             ]
         ]
     }
-}
+]

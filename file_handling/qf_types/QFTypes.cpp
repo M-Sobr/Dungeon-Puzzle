@@ -24,6 +24,13 @@ QFString::QFString(std::string v) :
     ;
 }
 
+std::string QFString::getValue() {
+    if (this == nullptr) {
+        return "";
+    }
+    return this->value;
+}
+
 QFInt::QFInt(int v) : 
     QFValue::QFValue(QFTypes::QF_INT), value(v) {
     ;

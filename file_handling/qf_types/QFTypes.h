@@ -41,7 +41,9 @@ class QFString: public QFValue {
         std::string value;
 
     public:
-        QFString(std::string value);    
+        QFString(std::string value);   
+        
+        std::string getValue();
 };
 
 /** An integer which can be a value. */

@@ -8,25 +8,20 @@
 
 #define MAP_LEVEL_DIRECTORY  "config/map_levels.txt"
 
-int FileInterpreter::loadLevel(Level* levels, QFPair* level_info) {
+int FileInterpreter::loadLevel(Level* levels, QFDict* level_contents) {
     // Initialisation of variables
-    std::string level_name = level_info->getKey();
+    std::string level_name;
     std::string level_string;
     int level_rows;
     int level_cols;
 
-    // Look at level_info
-    QFDict* level_contents = dynamic_cast<QFDict*>(level_info->getValue());
-    if (level_contents == nullptr) {
+    // Get level name
+    level_name = dynamic_cast<QFString*>(level_contents->getValueFromKey("Level Name"))->getValue();
+    if (level_name == "") {
         return -1;
     }
 
-    // Get level number
-    int level_number = dynamic_cast<QFInt*>(level_contents->getValueFromKey("Level Number"))->getValue();
-    if (level_number <= 0) {
-        return -1;
-    }
-
+    // Get level layout
     QFList* layout = dynamic_cast<QFList*>(level_contents->getValueFromKey("Layout"));
     if (layout == nullptr) {
         return -1;
@@ -62,19 +57,19 @@ int FileInterpreter::loadLevels(Level* levels) {
             return 0;    
     }
 
-    QFDict* map_levels_dict = dynamic_cast<QFDict*>(level_file_contents.getValueFromKey("Map Levels"));
-    if (map_levels_dict == nullptr) {
-        printf("%s", "No QFDict in a \"Map Levels\" key found\n");
+    QFList* map_levels_list = dynamic_cast<QFList*>(level_file_contents.getValueFromKey("Map Levels"));
+    if (map_levels_list == nullptr) {
+        printf("%s", "No QFList in a \"Map Levels\" key found\n");
         return 0;
     }
 
     printf("Success1!\n");
 
-    std::vector<QFPair*> map_level_pairs = map_levels_dict->getPairs();
+    std::vector<QFValue*> map_level_values = map_levels_list->getValues();
     std::set<int> filled_levels;
 
-    for (QFPair* pair : map_level_pairs) {
-        filled_levels.insert(loadLevel(levels, pair));
+    for (QFValue* dict : map_level_values) {
+        filled_levels.insert(loadLevel(levels, dynamic_cast<QFDict*>(dict)));
     }
 
     printf("Success2!\n");

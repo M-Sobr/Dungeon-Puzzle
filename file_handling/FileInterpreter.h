@@ -5,10 +5,11 @@
 
 class Level;
 class QFPair;
+class QFDict;
 
 class FileInterpreter {
     private:
-        static int loadLevel(Level* levels, QFPair* level_info);
+        static int loadLevel(Level* levels, QFDict* level_info);
 
         static int countLevels(Level* levels, std::set<int>);
     public:
