@@ -13,10 +13,18 @@
 
 class Tile;
 
-struct LevelLayer {
-    char contents[MAX_LEVEL_ROWS][MAX_LEVEL_COLS];
-    int rows;
-    int cols;
+class LevelLayer {
+    private:
+        /** Fill blanks in ([0:rows-2], [cols:new_cols-1]) inclusive */
+        void fillBlanks(int new_cols);
+    
+    public:
+        char contents[MAX_LEVEL_ROWS][MAX_LEVEL_COLS];
+        int rows;
+        int cols;
+
+        LevelLayer();
+        void addRow(std::string row_string);
 };
 
 class Level {
@@ -81,6 +89,10 @@ class Level {
             public:
                 LevelBuilder();
                 
+                Level::LevelBuilder* setName(std::string name);
+                
+                Level::LevelBuilder* addLayer(LevelLayer layer);
+
                 /** Builds the level if all required fields have been set */
                 Level* build();
 

@@ -7,9 +7,13 @@
 class Level;
 class QFPair;
 class QFDict;
+class QFList;
+class LevelLayer;
 
 class FileInterpreter {
     private:
+
+        static LevelLayer loadLayer(QFList* layer_contents, bool* success);
         static Level* loadLevel(QFDict* level_info);
 
         static int countLevels(Level* levels, std::set<int>);

@@ -8,29 +8,60 @@
 
 #define MAP_LEVEL_DIRECTORY  "config/map_levels.txt"
 
+LevelLayer FileInterpreter::loadLayer(QFList* layer_contents, bool* success) {
+    LevelLayer layer;
+    if (layer_contents == nullptr) {
+        *success = 0;
+        return layer;
+    }
+    printf("Success4\n");
+    
+    // Create layer from strings
+    std::string layer_string;
+    for (QFValue* value : layer_contents->getValues()) {
+        printf("a");
+        layer_string = dynamic_cast<QFString*>(value)->getValue();
+        if (layer_string == "") {
+            *success = 0;
+            return layer;
+        }
+        layer.addRow(layer_string);
+    }
+    printf("Sucess5\n");
+    return layer;
+}
+
 Level* FileInterpreter::loadLevel(QFDict* level_contents) {
     // Initialisation of variables
     std::string level_name;
     std::string level_string;
     int level_rows;
     int level_cols;
+    Level::LevelBuilder level_builder = Level::LevelBuilder();
 
     // Get level name
     level_name = dynamic_cast<QFString*>(level_contents->getValueFromKey("Level Name"))->getValue();
     if (level_name == "") {
-        return new Level();
+        return nullptr;
     }
+    level_builder.setName(level_name);
 
     // Get level layout
     QFList* layout = dynamic_cast<QFList*>(level_contents->getValueFromKey("Layout"));
     if (layout == nullptr) {
-        return new Level();
-    } 
-
-    printf("Success3\n");
+        return nullptr;
+    }
+    bool layer_add_success = 1;
+    for (QFValue* layer : layout->getValues()) {
+        level_builder.addLayer(loadLayer(dynamic_cast<QFList*>(layer), &layer_add_success));
+    }
+    if (!layer_add_success) {
+        return nullptr;
+    }
+    level_builder.build();
 
     //new Level(char level_name[MAX_LEVEL_NAME_LENGTH], char level_string[MAX_LEVEL_CHARACTERS], int level_rows, int level_cols);
-    return new Level();
+    return level_builder.build();;
 }
 
 int FileInterpreter::countLevels(Level* levels, std::set<int> filled_levels) {
