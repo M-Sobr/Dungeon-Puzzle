@@ -2,6 +2,7 @@
 #define FILE_INTERPRETER_H
 
 #include <set>
+#include <vector>
 
 class Level;
 class QFPair;
@@ -9,7 +10,7 @@ class QFDict;
 
 class FileInterpreter {
     private:
-        static int loadLevel(Level* levels, QFDict* level_info);
+        static Level* loadLevel(QFDict* level_info);
 
         static int countLevels(Level* levels, std::set<int>);
     public:
@@ -17,7 +18,7 @@ class FileInterpreter {
         /** Load the levels from the required file into the provided array
          * - Returns the number of levels in the game. 
         */
-        static int loadLevels(Level* levels);
+        static int loadLevels(std::vector<Level*> levels);
 
         
 };

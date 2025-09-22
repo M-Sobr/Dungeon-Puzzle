@@ -3,6 +3,7 @@
 
 #include <string>
 #include <fstream>
+#include <vector>
 
 #define MAX_LEVEL_NAME_LENGTH 20
 #define MAX_LEVEL_CHARACTERS 1000
@@ -12,24 +13,40 @@
 
 class Tile;
 
+struct LevelLayer {
+    char contents[MAX_LEVEL_ROWS][MAX_LEVEL_COLS];
+    int rows;
+    int cols;
+};
+
 class Level {
     private:
         std::string name;
+        
+        // Depreciated
         char contents[MAX_LEVEL_ROWS][MAX_LEVEL_COLS];
         int rows;
         int cols;
+
+        std::vector<LevelLayer> layout_layers;
+        int currentLayer;
+
         int player_pos[2];
         char symbolUnderPlayer;
 
         int objective_tiles;
         bool level_beaten;
 
+        /** Create a new level with a name, layers, player_pos (row, col) and objective tiles. */
+        Level(std::string level_name, std::vector<LevelLayer> layout_layers, int* player_pos, int start_layer, int objective_tiles);
+
         bool tileOutsideLevel(int row, int col);
         bool tileIsWall(int row, int col);
     
     public:
         Level();
-        Level(std::string level_name, char level_string[MAX_LEVEL_CHARACTERS], int level_rows, int level_cols);
+        Level(std::string level_name, char level_string[MAX_LEVEL_CHARACTERS], int level_rows, int level_cols); // Depreciated
+        
         void printLevel();
         void printName();
         int getRowCount();
@@ -48,6 +65,26 @@ class Level {
 
         // Find where the movement should end and put in dest_row and dest_col. Return the number of spaces moved.
         int calculateMovementDestination(int* dest_row, int* dest_col, int row_direction, int col_direction, int movement);
+
+        class LevelBuilder {
+            private:
+                // Necessary fields
+                std::string level_name;
+                std::vector<LevelLayer> layout_layers;
+                int* player_pos;
+                int start_layer;
+                int objective_tiles;
+
+                // A counter to make sure every level field required is set before building
+                int necessary_fields_set;
+
+            public:
+                LevelBuilder();
+                
+                /** Builds the level if all required fields have been set */
+                Level* build();
+
+        };
 };
 
 int loadLevels(Level* levels);

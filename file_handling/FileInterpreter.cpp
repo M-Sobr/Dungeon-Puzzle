@@ -8,7 +8,7 @@
 
 #define MAP_LEVEL_DIRECTORY  "config/map_levels.txt"
 
-int FileInterpreter::loadLevel(Level* levels, QFDict* level_contents) {
+Level* FileInterpreter::loadLevel(QFDict* level_contents) {
     // Initialisation of variables
     std::string level_name;
     std::string level_string;
@@ -18,19 +18,19 @@ int FileInterpreter::loadLevel(Level* levels, QFDict* level_contents) {
     // Get level name
     level_name = dynamic_cast<QFString*>(level_contents->getValueFromKey("Level Name"))->getValue();
     if (level_name == "") {
-        return -1;
+        return new Level();
     }
 
     // Get level layout
     QFList* layout = dynamic_cast<QFList*>(level_contents->getValueFromKey("Layout"));
     if (layout == nullptr) {
-        return -1;
+        return new Level();
     } 
 
     printf("Success3\n");
 
     //new Level(char level_name[MAX_LEVEL_NAME_LENGTH], char level_string[MAX_LEVEL_CHARACTERS], int level_rows, int level_cols);
-    return -1;
+    return new Level();
 }
 
 int FileInterpreter::countLevels(Level* levels, std::set<int> filled_levels) {
@@ -41,7 +41,7 @@ int FileInterpreter::countLevels(Level* levels, std::set<int> filled_levels) {
     return count;
 }
 
-int FileInterpreter::loadLevels(Level* levels) {
+int FileInterpreter::loadLevels(std::vector<Level*> levels) {
     
     // Intialise variables and read file
     FileReader level_file_reader(MAP_LEVEL_DIRECTORY);
@@ -69,10 +69,10 @@ int FileInterpreter::loadLevels(Level* levels) {
     std::set<int> filled_levels;
 
     for (QFValue* dict : map_level_values) {
-        filled_levels.insert(loadLevel(levels, dynamic_cast<QFDict*>(dict)));
+        levels.push_back(loadLevel(dynamic_cast<QFDict*>(dict)));
     }
 
     printf("Success2!\n");
 
-    return countLevels(levels, filled_levels);
+    return (int)levels.size();
 } 

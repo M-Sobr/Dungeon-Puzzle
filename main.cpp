@@ -70,7 +70,7 @@ LevelFinishResult playLevel(Level level) {
 
 
 int main(void) {
-    Level levels[LEVEL_COUNT];
+    std::vector<Level*> levels;
     int levelQuantity = FileInterpreter::loadLevels(levels);
     int currentLevelIndex = START_LEVEL - 1;
     // FileReader level_file_reader("config/player_levels.txt");
@@ -79,7 +79,7 @@ int main(void) {
 
     // Play levels
     while (currentLevelIndex < levelQuantity) {
-        switch (playLevel(levels[currentLevelIndex])) {
+        switch (playLevel(*levels[currentLevelIndex])) {
             case LevelFinishResult::LEVEL_EXIT:
                 currentLevelIndex = levelQuantity;
                 break;

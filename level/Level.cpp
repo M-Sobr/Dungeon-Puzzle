@@ -9,6 +9,15 @@
 Level::Level() {
 }    
 
+Level::Level(std::string level_name, std::vector<LevelLayer> layers, int* p_pos, int start_layer, int obj_tiles) : 
+    
+    name(level_name), layout_layers(layers), currentLayer(start_layer), 
+    symbolUnderPlayer(EMPTY_TILE), objective_tiles(obj_tiles), level_beaten(false) {
+    
+    player_pos[0] = p_pos[0];
+    player_pos[1] = p_pos[1];
+}
+
 Level::Level(std::string level_name, char level_string[MAX_LEVEL_CHARACTERS], int level_rows, int level_cols) :
     name(level_name), rows(level_rows), cols(level_cols) {
     
