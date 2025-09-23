@@ -80,7 +80,11 @@ int main(void) {
     
     } catch (InvalidFileFormatException* e) {
         printf("%s\n",e->what());
+    
+    } catch (InvalidLevelException* e) {
+        printf("%s\n", e->what());
     }
+
     int currentLevelIndex = START_LEVEL - 1;
 
     // Play levels

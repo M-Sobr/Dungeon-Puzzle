@@ -9,11 +9,10 @@
 
 #define MAP_LEVEL_DIRECTORY  "config/map_levels.txt"
 
-LevelLayer FileInterpreter::loadLayer(QFList* layer_contents, bool* success) {
+LevelLayer FileInterpreter::loadLayer(QFList* layer_contents) {
     LevelLayer layer;
     if (layer_contents == nullptr) {
-        *success = 0;
-        return layer;
+        throw new InvalidLevelException("Layer contents are empty or not QFList!");
     }
     
     // Create layer from strings
@@ -21,8 +20,7 @@ LevelLayer FileInterpreter::loadLayer(QFList* layer_contents, bool* success) {
     for (QFValue* value : layer_contents->getValues()) {
         layer_string = dynamic_cast<QFString*>(value)->getValue();
         if (layer_string == "") {
-            *success = 0;
-            return layer;
+            throw new InvalidLevelException("Row is empty or not QFString!");
         }
         layer.addRow(layer_string);
     }
@@ -30,6 +28,11 @@ LevelLayer FileInterpreter::loadLayer(QFList* layer_contents, bool* success) {
 }
 
 Level* FileInterpreter::loadLevel(QFDict* level_contents) {
+    // Check if level_contents is null
+    if (level_contents == nullptr) {
+        throw new InvalidLevelException("Level contents is empty or not QFDict!");
+    }
+    
     // Initialisation of variables
     std::string level_name;
     std::string level_string;
@@ -38,21 +41,22 @@ Level* FileInterpreter::loadLevel(QFDict* level_contents) {
     // Get level name
     level_name = dynamic_cast<QFString*>(level_contents->getValueFromKey("Level Name"))->getValue();
     if (level_name == "") {
-        return nullptr;
+        throw new InvalidLevelException("Level name is empty or not QFString!");
     }
     level_builder.setName(level_name);
 
     // Get level layout
     QFList* layout = dynamic_cast<QFList*>(level_contents->getValueFromKey("Layout"));
     if (layout == nullptr) {
-        return nullptr;
+        throw new InvalidLevelException("Layout is empty or not QFList!");
     }
-    bool layer_add_success = 1;
-    for (QFValue* layer : layout->getValues()) {
-        level_builder.addLayer(loadLayer(dynamic_cast<QFList*>(layer), &layer_add_success));
-    }
-    if (!layer_add_success) {
-        return nullptr;
+    
+    try {
+        for (QFValue* layer : layout->getValues()) {
+            level_builder.addLayer(loadLayer(dynamic_cast<QFList*>(layer)));
+        }
+    } catch (InvalidLevelException* e) {
+        throw e;
     }
 
     //new Level(char level_name[MAX_LEVEL_NAME_LENGTH], char level_string[MAX_LEVEL_CHARACTERS], int level_rows, int level_cols);
@@ -69,7 +73,6 @@ int FileInterpreter::loadLevels(std::vector<Level*>* levels) {
     } catch (InvalidFileException* e) {
         throw e;
     }
-    printf("Yay");
 
     QFList* map_levels_list = dynamic_cast<QFList*>(level_file_contents.getValueFromKey("Map Levels"));
     if (map_levels_list == nullptr) {
@@ -79,8 +82,12 @@ int FileInterpreter::loadLevels(std::vector<Level*>* levels) {
     std::vector<QFValue*> map_level_values = map_levels_list->getValues();
     std::set<int> filled_levels;
 
-    for (QFValue* dict : map_level_values) {
-        levels->push_back(loadLevel(dynamic_cast<QFDict*>(dict)));
+    try {
+        for (QFValue* dict : map_level_values) {
+            levels->push_back(loadLevel(dynamic_cast<QFDict*>(dict)));
+        }
+    } catch (InvalidLevelException* e) {
+        throw e;
     }
 
     return (int)levels->size();

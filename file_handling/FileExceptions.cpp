@@ -15,3 +15,11 @@ InvalidFileFormatException::InvalidFileFormatException(const std::string m) {
 const char* InvalidFileFormatException::what() {
     return msg.c_str();
 }
+
+InvalidLevelException::InvalidLevelException(const std::string m) {
+    this->msg = m;
+}
+
+const char* InvalidLevelException::what() {
+    return msg.c_str();
+}

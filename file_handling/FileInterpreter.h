@@ -13,7 +13,7 @@ class LevelLayer;
 class FileInterpreter {
     private:
 
-        static LevelLayer loadLayer(QFList* layer_contents, bool* success);
+        static LevelLayer loadLayer(QFList* layer_contents);
         static Level* loadLevel(QFDict* level_info);
         
     public:

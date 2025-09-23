@@ -22,4 +22,13 @@ class InvalidFileFormatException : public std::exception {
         const char* what();
 };  
 
+class InvalidLevelException : public std::exception {
+    private:
+        std::string msg;
+    
+    public:
+    InvalidLevelException(const std::string msg);
+        const char* what();
+};  
+
 #endif
