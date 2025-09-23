@@ -9,7 +9,7 @@ class InvalidFileException : public std::exception {
         std::string msg;
     
     public:
-    InvalidFileException(const char* msg);
+    InvalidFileException(const std::string msg);
         const char* what();
 };  
 
@@ -18,7 +18,7 @@ class InvalidFileFormatException : public std::exception {
         std::string msg;
     
     public:
-        InvalidFileFormatException(const char* msg);
+        InvalidFileFormatException(const std::string msg);
         const char* what();
 };  
 

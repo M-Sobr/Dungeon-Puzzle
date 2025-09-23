@@ -1,6 +1,6 @@
 #include "FileExceptions.h"
 
-InvalidFileException::InvalidFileException(const char* m) {
+InvalidFileException::InvalidFileException(const std::string m) {
     this->msg = m;
 }
 
@@ -8,7 +8,7 @@ const char* InvalidFileException::what() {
     return msg.c_str();
 }
 
-InvalidFileFormatException::InvalidFileFormatException(const char* m) {
+InvalidFileFormatException::InvalidFileFormatException(const std::string m) {
     this->msg = m;
 }
 

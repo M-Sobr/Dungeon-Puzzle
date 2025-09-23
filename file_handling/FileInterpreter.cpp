@@ -69,10 +69,11 @@ int FileInterpreter::loadLevels(std::vector<Level*>* levels) {
     } catch (InvalidFileException* e) {
         throw e;
     }
+    printf("Yay");
 
     QFList* map_levels_list = dynamic_cast<QFList*>(level_file_contents.getValueFromKey("Map Levels"));
     if (map_levels_list == nullptr) {
-        throw InvalidFileFormatException("No QFList in a \"Map Levels\" key found.");
+        throw new InvalidFileFormatException("No QFList in a \"Map Levels\" key found.");
     }
 
     std::vector<QFValue*> map_level_values = map_levels_list->getValues();

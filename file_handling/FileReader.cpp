@@ -32,14 +32,7 @@ void FileReader::readString(std::string* s) {
         s->push_back(ch);
         this->currentChar = (char)file_data.get();
     }
-    
-    // Check if the string finishing was successful
-    if (ch == EOF) {
-        return;
-    } else {
-        this->skipChar();
-        return;
-    }
+    this->skipChar();
 }
 
 void FileReader::readInt(int* i) {
@@ -63,8 +56,6 @@ void FileReader::readInt(int* i) {
     if (negative) {
         *i = -(*i);
     }
-
-    return;
 }
 
 void FileReader::readDouble(double* d) {
@@ -96,13 +87,11 @@ void FileReader::readDouble(double* d) {
     if (negative) {
         *d = -(*d);
     }
-
-    return;
 }
 
 void FileReader::readKey(std::string* s) {
     if (this->nextChar() != '"') {
-        return;
+        throw new InvalidFileFormatException("Key must be a string!");
     }
     return this->readString(s);
 }
@@ -111,31 +100,35 @@ QFValue* FileReader::readValue() {
     QFValue* qf_value;
     char ch = this->nextChar();
 
-    if (ch == '"') {
-        std::string s;
-        this->readString(&s);
-        qf_value = new QFString(s);
+    try {
+        if (ch == '"') {
+            std::string s;
+            this->readString(&s);
+            qf_value = new QFString(s);
 
-    } else if (ch == 'i') {
-        int i;
-        this->readInt(&i);
-        qf_value = new QFInt(i);    
-    
-    } else if (ch == 'd') {
-        double d;
-        this->readDouble(&d);
-        qf_value = new QFDouble(d);
-    
-    } else if (ch == '[') {
-        qf_value = new QFList();
-        this->readList(dynamic_cast<QFList*>(qf_value));
-    
-    } else if (ch == '{') {
-        qf_value = new QFDict();
-        this->readDict(dynamic_cast<QFDict*>(qf_value));
-    
-    } else {
-        qf_value = nullptr;
+        } else if (ch == 'i') {
+            int i;
+            this->readInt(&i);
+            qf_value = new QFInt(i);    
+        
+        } else if (ch == 'd') {
+            double d;
+            this->readDouble(&d);
+            qf_value = new QFDouble(d);
+        
+        } else if (ch == '[') {
+            qf_value = new QFList();
+            this->readList(dynamic_cast<QFList*>(qf_value));
+        
+        } else if (ch == '{') {
+            qf_value = new QFDict();
+            this->readDict(dynamic_cast<QFDict*>(qf_value));
+        
+        } else {
+            throw new InvalidFileFormatException("Invalid value!");
+        }
+    } catch (InvalidFileFormatException* e) {
+        throw e;
     }
 
     return qf_value;
@@ -147,20 +140,21 @@ void FileReader::readList(QFList* qf_list) {
     QFValue* qf_value;
 
     // Read qf_pairs and add to dict
-    while ((ch = this->peekChar()) != EOF && ch != ']') {
-        if (this->peekChar() == ',') {
-            return;
+    try {
+        while ((ch = this->peekChar()) != EOF && ch != ']') {
+            if (this->peekChar() == ',') {
+                throw new InvalidFileFormatException("QFList has extra ','!");
+            }
+            qf_value = this->readValue();
+            qf_list->addValue(qf_value);
+            if (this->peekChar() == ',') {
+                this->skipChar();
+            }
         }
-        qf_value = this->readValue();
-        qf_list->addValue(qf_value);
-        if (this->peekChar() == ',') {
-            this->skipChar();
-        }
+    } catch (InvalidFileFormatException* e) {
+        throw e;
     }
     this->skipChar();
-
-    // Return success if everything is successful
-    return;
 }
 
 void FileReader::readDict(QFDict* qf_dict) {
@@ -169,44 +163,52 @@ void FileReader::readDict(QFDict* qf_dict) {
     QFPair* qf_pair;
 
     // Read qf_pairs and add to dict
-    while ((ch = this->peekChar()) != EOF && ch != '}') {
-        if (this->peekChar() == ',') {
-            return;
+    try {
+        while ((ch = this->peekChar()) != EOF && ch != '}') {
+            if (this->peekChar() == ',') {
+                throw new InvalidFileFormatException("QFDict has extra ','!");
+            }
+        
+            qf_pair = this->readPair();
+            qf_dict->addPair(qf_pair);
+            if (this->peekChar() == ',') {
+                this->skipChar();
+            }
         }
-        qf_pair = this->readPair();
-        qf_dict->addPair(qf_pair);
-        if (this->peekChar() == ',') {
-            this->skipChar();
-        }
+    } catch (InvalidFileFormatException* e) {
+        throw e;
     }
     this->skipChar();
-
-    // Return success if everything is successful
-    return;
 }
 
 QFPair* FileReader::readPair() {
     std::string key;
-    QFPair* qf_pair = nullptr;
-
+    
     // Get the key
-    this->readKey(&key);
+    try {
+        this->readKey(&key);
 
-    // Check that the key and value are separated by a colon
-    if (this->nextChar() != ':') {
-        return qf_pair;
+        // Check that the key and value are separated by a colon
+        if (this->nextChar() != ':') {
+            throw new InvalidFileFormatException("QFPair with key " + key + " has no value!");
+        }
+
+        // Get the value
+        QFValue* value = this->readValue();
+        return new QFPair(key, value);
+    
+    } catch (InvalidFileFormatException* e) {
+        throw e;
     }
-
-    // Get the value
-    QFValue* value = this->readValue();
-
-    qf_pair = new QFPair(key, value);
-    return qf_pair;
 }
 
 void FileReader::readFile(QFDict* qf_dict) {    
     if (!file_data) {
         throw new InvalidFileException("File selected has no data!");
     }
-    this->readDict(qf_dict);
+    try {
+        this->readDict(qf_dict);
+    } catch (InvalidFileFormatException* e) {
+        throw e;
+    }
 }
