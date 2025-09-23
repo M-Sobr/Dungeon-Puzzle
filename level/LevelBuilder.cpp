@@ -1,7 +1,7 @@
 #include "Level.h"
 #include "Tile.h"
 
-Level::LevelBuilder::LevelBuilder() : necessary_fields_set(0), start_layer(-1) {
+Level::LevelBuilder::LevelBuilder() : necessary_fields_set(0), start_layer(-1), objective_tiles(0) {
     ;
 }
 

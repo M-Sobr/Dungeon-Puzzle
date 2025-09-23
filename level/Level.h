@@ -56,7 +56,6 @@ class Level {
     
     public:
         Level();
-        //Level(std::string level_name, char level_string[MAX_LEVEL_CHARACTERS], int level_rows, int level_cols); // Depreciated
         
         void printLevel();
         void printName();
@@ -106,7 +105,5 @@ class Level {
 
         };
 };
-
-// int loadLevels(Level* levels);
 
 #endif

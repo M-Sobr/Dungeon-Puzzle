@@ -17,7 +17,6 @@ enum LevelFinishResult {
 };
 
 LevelFinishResult playLevel(Level level) {
-    printf("In Level!");
     bool level_ongoing = true;
     Player player = Player::Player("Player");
     std::vector<PastAction*> previousActions;
@@ -72,11 +71,8 @@ LevelFinishResult playLevel(Level level) {
 
 int main(void) {
     std::vector<Level*> levels;
-    int levelQuantity = FileInterpreter::loadLevels(levels);
+    int levelQuantity = FileInterpreter::loadLevels(&levels);
     int currentLevelIndex = START_LEVEL - 1;
-    // FileReader level_file_reader("config/player_levels.txt");
-    // QFDict level_file_contents;
-    // printf("Return Value: %d\n\n", level_file_reader.readFile(&level_file_contents));
 
     // Play levels
     while (currentLevelIndex < levelQuantity) {

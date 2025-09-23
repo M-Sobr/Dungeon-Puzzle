@@ -21,7 +21,7 @@ class FileInterpreter {
         /** Load the levels from the required file into the provided array
          * - Returns the number of levels in the game. 
         */
-        static int loadLevels(std::vector<Level*> levels);
+        static int loadLevels(std::vector<Level*>* levels);
 
         
 };

@@ -18,9 +18,7 @@ void LevelLayer::fillBlanks(int new_cols) {
 void LevelLayer::addRow(std::string row_string) {
     int row_string_size = (int)row_string.size();
     int j;
-
-    printf("%d", row_string_size);
-
+    
     // Add to contents
     for (j=0; j < row_string_size; j++) {
         contents[rows][j] = row_string.at(j);
@@ -29,7 +27,6 @@ void LevelLayer::addRow(std::string row_string) {
         contents[rows][j] = 'X';
     }
 
-    printf("e ");
     
     // Update rows and cols
     rows ++;
@@ -38,5 +35,4 @@ void LevelLayer::addRow(std::string row_string) {
         cols = row_string_size;
     }
     contents[rows-1][cols] = '\0';
-    printf("%s\n", contents[rows-1]);
 }

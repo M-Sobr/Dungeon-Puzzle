@@ -18,49 +18,6 @@ Level::Level(std::string level_name, std::vector<LevelLayer> layers, int* p_pos,
     player_pos[1] = p_pos[1];
 }
 
-/**
-Level::Level(std::string level_name, char level_string[MAX_LEVEL_CHARACTERS], int level_rows, int level_cols) :
-    name(level_name), rows(level_rows), cols(level_cols) {
-    
-    int i;
-
-    objective_tiles = 0;
-    level_beaten = false;
-
-    int row = 0;
-    int col = 0;
-    for (i=0; level_string[i] != '\0'; i++) {
-        switch (level_string[i]) {
-            case '\n':
-                while (col < level_cols) {
-                    contents[row][col] = 'X';
-                    col ++;
-                }
-                contents[row][col] = '\0';
-                row ++;
-                col = 0;
-                break;
-            case PLAYER_TILE:
-                player_pos[0] = row;
-                player_pos[1] = col;
-                symbolUnderPlayer = EMPTY_TILE;
-                contents[row][col] = PLAYER_TILE;
-                col ++;
-                break;
-            default:
-                contents[row][col] = level_string[i];
-                col ++;
-        }
-        switch (tileTypeFromChar(level_string[i])) {
-            case Tile_Type::MONSTER:
-            case Tile_Type::HEAL:
-                objective_tiles += 1;
-        }
-
-    }
-}
-*/
-
 void Level::printName() {
     std::cout << name << '\n';
 }
@@ -146,64 +103,6 @@ bool inline Level::tileOutsideLevel(int row, int col) {
 bool inline Level::tileIsWall(int row, int col) {
     return (tileOutsideLevel(row, col) || currentLayer.contents[row][col] == 'X');
 }
-
-/**
-int loadLevels(Level* levels) {
-    char txt[1000];
-    std::ifstream levels_data("level/levels.txt");
-    
-    int level_count;
-    // Get amount of levels
-    levels_data.getline(txt, 20);
-    level_count = atoi(txt);
-
-    int level_index = 0;
-    while (level_index < level_count) {
-        
-        // Get level name
-        char level_name[MAX_LEVEL_NAME_LENGTH];
-        int level_name_index = 0;
-        levels_data.get();
-        
-        while (levels_data.peek() != '"') {
-            level_name[level_name_index] = (char)levels_data.get();
-            level_name_index ++;
-        }
-        level_name[level_name_index] = '\0';
-        levels_data.get(txt, 2);
-
-        // Get amount of lines this level takes up
-        levels_data.getline(txt, 20);
-        int level_line_count = atoi(txt);
-
-        // Get level contents:
-        int level_content_index = 0;
-        int line_number = 0;
-        int max_col_count = 0;
-        int current_col_count = 0;
-        while (line_number < level_line_count) {
-            txt[level_content_index] = (char)levels_data.get();
-            if (txt[level_content_index] == '\n' || txt[level_content_index] == EOF) {
-                line_number ++;
-                if (current_col_count > max_col_count) {
-                    max_col_count = current_col_count;
-                }
-                current_col_count = -1;
-            }
-            current_col_count ++;
-            level_content_index ++;
-        }
-        txt[level_content_index - 1] = '\n';
-        txt[level_content_index] = '\0';
-        levels[level_index] = Level::Level(level_name, txt, level_line_count, max_col_count);
-        level_index ++;
-    }
-
-
-    levels_data.close();
-    return level_count;
-}
-*/
 
 int Level::calculateMovementDestination(int* dest_row, int* dest_col, 
 int row_direction, int col_direction, int movement) {
