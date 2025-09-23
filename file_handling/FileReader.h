@@ -9,13 +9,6 @@ class QFPair;
 class QFValue;
 class QFList;
 
-/** Contains the possible results of reading a file */
-enum FileReaderErrorCode {
-    SUCCESS,
-    INVALID_FILE,
-    INVALID_FILE_FORMAT
-};
-
 class FileReader {
     private:
         std::ifstream file_data;
@@ -31,34 +24,32 @@ class FileReader {
         char nextChar();
 
         /** Fill in the following string from the file details */
-        FileReaderErrorCode readString(std::string* string);
+        void readString(std::string* string);
 
         /** Fill in the following int from the file details */
-        FileReaderErrorCode readInt(int* value);
+        void readInt(int* value);
 
         /** Fill in the following double from the file details */
-        FileReaderErrorCode readDouble(double* value);
+        void readDouble(double* value);
 
         /** Fill in the following empty string from file details */
-        FileReaderErrorCode readKey(std::string* string);
+        void readKey(std::string* string);
 
         /** Fill in the following QFValue from file details */
-        QFValue* readValue(FileReaderErrorCode* errorCode);
+        QFValue* readValue();
 
         /** Fill in the following QFPair from the file details */
-        QFPair* readPair(FileReaderErrorCode* errorCode);
+        QFPair* readPair();
 
         /** Fill in the following QFList from the file details */
-        FileReaderErrorCode readList(QFList* qf_list);
+        void readList(QFList* qf_list);
 
         /** Fill in the following QFDict from the file details */
-        FileReaderErrorCode readDict(QFDict* qf_dict);
+        void readDict(QFDict* qf_dict);
 
     public:
-        /** Read a file and store it in a new QFDict. 
-         *  - Output corresponds to the result of the operation.
-        */
-        FileReaderErrorCode readFile(QFDict* qf_dict);
+        /** Read a file and store it in a new QFDict. */
+        void readFile(QFDict* qf_dict);
 
 
         FileReader(char filename[]);

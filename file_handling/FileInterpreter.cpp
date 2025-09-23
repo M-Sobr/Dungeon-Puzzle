@@ -5,6 +5,7 @@
 #include "FileReader.h"
 #include "../level/Level.h"
 #include "qf_types/QFTypes.h"
+#include "FileExceptions.h"
 
 #define MAP_LEVEL_DIRECTORY  "config/map_levels.txt"
 
@@ -63,21 +64,15 @@ int FileInterpreter::loadLevels(std::vector<Level*>* levels) {
     // Intialise variables and read file
     FileReader level_file_reader(MAP_LEVEL_DIRECTORY);
     QFDict level_file_contents;
-    
-    FileReaderErrorCode errorCode = level_file_reader.readFile(&level_file_contents);
-    switch (errorCode) {
-        case FileReaderErrorCode::INVALID_FILE:
-            printf("Invalid file!\n");    
-            return 0;
-            case FileReaderErrorCode::INVALID_FILE_FORMAT:
-            printf("Invalid file format!\n");    
-            return 0;    
+    try {
+        level_file_reader.readFile(&level_file_contents);
+    } catch (InvalidFileException* e) {
+        throw e;
     }
 
     QFList* map_levels_list = dynamic_cast<QFList*>(level_file_contents.getValueFromKey("Map Levels"));
     if (map_levels_list == nullptr) {
-        printf("%s", "No QFList in a \"Map Levels\" key found\n");
-        return 0;
+        throw InvalidFileFormatException("No QFList in a \"Map Levels\" key found.");
     }
 
     std::vector<QFValue*> map_level_values = map_levels_list->getValues();

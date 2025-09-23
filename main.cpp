@@ -3,6 +3,7 @@
 #include "player/Action.h"
 #include "player/PastAction.h"
 #include "file_handling/FileInterpreter.h"
+#include "file_handling/FileExceptions.h"
 
 #include <iostream>
 #include <string>
@@ -71,7 +72,15 @@ LevelFinishResult playLevel(Level level) {
 
 int main(void) {
     std::vector<Level*> levels;
-    int levelQuantity = FileInterpreter::loadLevels(&levels);
+    int levelQuantity = 0;
+    try {
+        levelQuantity = FileInterpreter::loadLevels(&levels);
+    } catch (InvalidFileException* e) {
+        printf("%s\n", e->what());
+    
+    } catch (InvalidFileFormatException* e) {
+        printf("%s\n",e->what());
+    }
     int currentLevelIndex = START_LEVEL - 1;
 
     // Play levels
