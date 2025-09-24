@@ -53,6 +53,7 @@ class FileReader {
 
 
         FileReader(char filename[]);
+        ~FileReader();
 };
 
 #endif // FILE_READER_H

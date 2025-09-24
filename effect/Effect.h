@@ -24,6 +24,8 @@ class Effect {
         Effect(EffectTypes type, int value);
         int applyEffect(Player* player);
         void undoEffect(Player* player);
+        /** Copy this effect and return a new effect */
+        Effect* copy();
         std::string toString();
 };
 
@@ -33,6 +35,7 @@ class EffectsList {
     
     public:
         EffectsList();
+        ~EffectsList();
         void addEffect(Effect* effect);
         Effect* popEffect();
         Effect* chooseEffect(char title[]);

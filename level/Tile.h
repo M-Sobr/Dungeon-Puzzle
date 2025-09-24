@@ -22,6 +22,7 @@ class Tile {
     
     public:
         Tile(char c);
+        virtual ~Tile() {};
         char getChar();
 
         virtual bool isObjective() = 0;
@@ -37,6 +38,7 @@ class Tile {
 class NullTile : public Tile {
     public:
         NullTile(char c);
+        ~NullTile() {};
         bool isObjective() override;
         void resolveEffects(Player* /*player*/) override;
 };
@@ -48,6 +50,7 @@ class Monster : public Tile {
     public:
         // Create a monster with specified health
         Monster(char c);
+        ~Monster() {};
         bool isObjective() override;
 
         void resolveEffects(Player* player) override;
@@ -58,6 +61,7 @@ class HealTile : public Tile {
 
     public:
         HealTile();
+        ~HealTile() {};
         bool isObjective() override;
 
         void resolveEffects(Player* player) override;

@@ -30,11 +30,6 @@ class LevelLayer {
 class Level {
     private:
         std::string name;
-        
-        // Depreciated
-        //char contents[MAX_LEVEL_ROWS][MAX_LEVEL_COLS];
-        //int rows;
-        //int cols;
 
         std::vector<LevelLayer> layout_layers;
         int currentLayerIndex;

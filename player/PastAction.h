@@ -27,6 +27,8 @@ class PastAction {
          */
         PastAction(int prev_row_pos, int prev_col_pos, Tile* tile_at_pos, int effects_applied_count);
 
+        ~PastAction();
+
         /** Undo the action represented by this PastAction. */
         void undoAction(Level* level, Player* player);
 };

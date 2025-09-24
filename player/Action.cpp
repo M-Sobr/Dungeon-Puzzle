@@ -91,6 +91,10 @@ PastAction::PastAction(int prev_row, int prev_col, Tile* tile, int effect_count)
     ;
 }
 
+PastAction::~PastAction() {
+    delete tile_at_pos;
+}
+
 void PastAction::undoAction(Level* level, Player* player) {
     level->resetPlayerTo(this->prev_row_pos, this->prev_col_pos, this->tile_at_pos);
     for (int i=0; i < this->effects_applied_count; i++) {

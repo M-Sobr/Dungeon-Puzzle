@@ -40,6 +40,10 @@ void Effect::undoEffect(Player* player) {
     }
 }
 
+Effect* Effect::copy() {
+    return new Effect(this->type, this->value);
+}
+
 std::string Effect::toString() {
     char s[MAX_EFFECT_LINE_LENGTH];
     switch (this->type) {
@@ -60,6 +64,12 @@ std::string Effect::toString() {
 }
 
 EffectsList::EffectsList() {
+}
+
+EffectsList::~EffectsList() {
+    while (effects.size() > 0) {
+        delete this->popEffect();
+    }
 }
 
 void EffectsList::addEffect(Effect* e) {
@@ -84,7 +94,7 @@ Effect* EffectsList::chooseEffect(char title[]) {
         std::cin >> s;
         int option = atoi(s);
         if (option > 0) {
-            return this->effects.at(option - 1);
+            return (this->effects.at(option - 1))->copy();
         }
     }
 }

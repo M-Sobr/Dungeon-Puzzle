@@ -7,6 +7,10 @@ FileReader::FileReader(char filename[]) : file_data(filename) {
     skipChar();
 }
 
+FileReader::~FileReader() {
+    file_data.close();
+}
+
 char inline FileReader::peekChar() {
     return currentChar;
 }
