@@ -16,11 +16,19 @@ const char* InvalidFileFormatException::what() {
     return msg.c_str();
 }
 
-InvalidLevelException::InvalidLevelException(const std::string m) {
+InvalidMapLevelException::InvalidMapLevelException(const std::string m) {
     this->msg = m;
 }
 
-const char* InvalidLevelException::what() {
+const char* InvalidMapLevelException::what() {
+    return msg.c_str();
+}
+
+InvalidPlayerLevelException::InvalidPlayerLevelException(const std::string m) {
+    this->msg = m;
+}
+
+const char* InvalidPlayerLevelException::what() {
     return msg.c_str();
 }
 

@@ -89,6 +89,14 @@ Effect* EffectsList::popEffect() {
     return e;
 }
 
+EffectsList* EffectsList::copy() {
+    EffectsList* e = new EffectsList();
+    for (Effect* effect : this->effects) {
+        e->addEffect(effect->copy());
+    }
+    return e;
+}
+
 std::string EffectsList::toString() {
     std::string s;
     int last_effect_index = (int)this->effects.size() - 1;

@@ -39,6 +39,7 @@ class EffectsList {
         int size();
         void addEffect(Effect* effect);
         Effect* popEffect();
+        EffectsList* copy();
         std::string toString();
 };
 

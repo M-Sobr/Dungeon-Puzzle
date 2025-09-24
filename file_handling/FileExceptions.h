@@ -22,14 +22,23 @@ class InvalidFileFormatException : public std::exception {
         const char* what();
 };  
 
-class InvalidLevelException : public std::exception {
+class InvalidMapLevelException : public std::exception {
     private:
         std::string msg;
     
     public:
-    InvalidLevelException(const std::string msg);
+    InvalidMapLevelException(const std::string msg);
         const char* what();
 };  
+
+class InvalidPlayerLevelException : public std::exception {
+    private:
+        std::string msg; 
+
+    public:
+        InvalidPlayerLevelException(const std::string msg);
+        const char* what();
+};
 
 class NullPointerException : public std::exception {
     private:

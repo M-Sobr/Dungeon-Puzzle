@@ -9,11 +9,10 @@
 #include <iostream>
 #include <string>
 
-#define LEVEL_COUNT 10
 #define START_LEVEL 1  // Temporary while saves are not implemented
 
 // Global variables
-LevelUpEffects level_up_effects = LevelUpEffects::LevelUpEffects();
+LevelUpEffects level_up_effects;
 
 enum LevelFinishResult {
     LEVEL_VICTORY,
@@ -78,14 +77,19 @@ int main(void) {
     std::vector<Level*> levels;
     int levelQuantity = 0;
     try {
-        levelQuantity = FileInterpreter::loadLevels(&levels);
+        levelQuantity = FileInterpreter::loadMapLevels(&levels);
+        FileInterpreter::loadPlayerLevels(&level_up_effects);
+    
     } catch (InvalidFileException* e) {
         printf("%s\n", e->what());
     
     } catch (InvalidFileFormatException* e) {
         printf("%s\n",e->what());
     
-    } catch (InvalidLevelException* e) {
+    } catch (InvalidMapLevelException* e) {
+        printf("%s\n", e->what());
+    
+    } catch (InvalidPlayerLevelException* e) {
         printf("%s\n", e->what());
     }
 

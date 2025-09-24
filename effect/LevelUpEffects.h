@@ -8,11 +8,11 @@ class EffectsList;
 
 class LevelUpEffects {
     private:
-        std::map<int, std::vector<EffectsList*>> levelUpEffects;
+        std::vector<std::vector<EffectsList*>> levelUpEffects;
 
     public:
         LevelUpEffects();
-        void addLevel(int level, std::vector<EffectsList*> effects);
+        void addLevel(std::vector<EffectsList*> effects);
         EffectsList* chooseLevelUpEffects(int level);
 };
 

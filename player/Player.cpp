@@ -92,7 +92,7 @@ void Player::applyEffect(Effect* e) {
 
 void Player::applyEffects(EffectsList* e) {
     int count = e->size();
-    
+
     for (int i=0; i < count; i++) {
         applyEffect(e->popEffect());
     }
