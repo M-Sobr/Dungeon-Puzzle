@@ -1,4 +1,5 @@
 #include "QFTypes.h"
+#include "../FileExceptions.h"
 
 QFValue::QFValue(QFTypes type) : value_type(type) {
     ;
@@ -11,10 +12,16 @@ QFPair::QFPair(std::string k, QFValue* v) :
 }
 
 std::string QFPair::getKey() {
+    if (this == nullptr) {
+        throw new NullPointerException("This QFDict is null!");
+    }
     return this->key;
 }
 
 QFValue* QFPair::getValue() {
+    if (this == nullptr) {
+        throw new NullPointerException("This QFDict is null!");
+    }
     return this->value;
 }
 
@@ -26,7 +33,7 @@ QFString::QFString(std::string v) :
 
 std::string QFString::getValue() {
     if (this == nullptr) {
-        return "";
+        throw new NullPointerException("This QFString is null!");
     }
     return this->value;
 }
@@ -38,7 +45,7 @@ QFInt::QFInt(int v) :
 
 int QFInt::getValue() {
     if (this == nullptr) {
-        return -1;
+        throw new NullPointerException("This QFInt is null!");
     }
     return this->value;
 }
@@ -48,15 +55,28 @@ QFDouble::QFDouble(double v) :
     ;
 }
 
+double QFDouble::getValue() {
+    if (this == nullptr) {
+        throw new NullPointerException("This QFDouble is null!");
+    }
+    return this->value;
+}
+
 QFList::QFList() : QFValue::QFValue(QFTypes::QF_LIST) {
     ;
 }
 
 void QFList::addValue(QFValue* value) {
+    if (this == nullptr) {
+        throw new NullPointerException("This QFList is null!");
+    }
     this->values.push_back(value);
 }
 
 std::vector<QFValue*> QFList::getValues() {
+    if (this == nullptr) {
+        throw new NullPointerException("This QFList is null!");
+    }
     return this->values;
 }
 
@@ -65,14 +85,23 @@ QFDict::QFDict() : QFValue::QFValue(QFTypes::QF_DICT) {
 }
 
 void QFDict::addPair(QFPair* pair) {
+    if (this == nullptr) {
+        throw new NullPointerException("This QFDict is null!");
+    }
     this->pairs.push_back(pair);
 }
 
 std::vector<QFPair*> QFDict::getPairs() {
+    if (this == nullptr) {
+        throw new NullPointerException("This QFDict is null!");
+    }
     return this->pairs;
 }
 
 QFValue* QFDict::getValueFromKey(std::string key) {
+    if (this == nullptr) {
+        throw new NullPointerException("This QFDict is null!");
+    }
     QFPair* qf_pair;
     for (int i=0; i < (this->pairs).size(); i++) {
         qf_pair = (this->pairs)[i];

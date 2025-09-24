@@ -65,6 +65,8 @@ class QFDouble : public QFValue {
     
     public:
         QFDouble(double value);
+
+        double getValue();
 };
 
 /** Represents a list of values associated with a key. 

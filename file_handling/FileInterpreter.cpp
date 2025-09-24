@@ -18,8 +18,10 @@ LevelLayer FileInterpreter::loadLayer(QFList* layer_contents) {
     // Create layer from strings
     std::string layer_string;
     for (QFValue* value : layer_contents->getValues()) {
-        layer_string = dynamic_cast<QFString*>(value)->getValue();
-        if (layer_string == "") {
+        try {
+            layer_string = dynamic_cast<QFString*>(value)->getValue();
+        } catch (NullPointerException* e) {
+            delete e;
             throw new InvalidLevelException("Row is empty or not QFString!");
         }
         layer.addRow(layer_string);
@@ -39,15 +41,20 @@ Level* FileInterpreter::loadLevel(QFDict* level_contents) {
     Level::LevelBuilder level_builder = Level::LevelBuilder();
 
     // Get level name
-    level_name = dynamic_cast<QFString*>(level_contents->getValueFromKey("Level Name"))->getValue();
-    if (level_name == "") {
+    try {    
+        level_name = dynamic_cast<QFString*>(level_contents->getValueFromKey("Level Name"))->getValue();
+    } catch (NullPointerException* e) {
+        delete e;
         throw new InvalidLevelException("Level name is empty or not QFString!");
-    }
+    }    
     level_builder.setName(level_name);
 
     // Get level layout
-    QFList* layout = dynamic_cast<QFList*>(level_contents->getValueFromKey("Layout"));
-    if (layout == nullptr) {
+    QFList* layout;
+    try {
+        layout = dynamic_cast<QFList*>(level_contents->getValueFromKey("Layout"));
+    } catch (NullPointerException* e) {
+        delete e;
         throw new InvalidLevelException("Layout is empty or not QFList!");
     }
     
@@ -74,8 +81,11 @@ int FileInterpreter::loadLevels(std::vector<Level*>* levels) {
         throw e;
     }
 
-    QFList* map_levels_list = dynamic_cast<QFList*>(level_file_contents.getValueFromKey("Map Levels"));
-    if (map_levels_list == nullptr) {
+    QFList* map_levels_list;
+    try {
+        map_levels_list = dynamic_cast<QFList*>(level_file_contents.getValueFromKey("Map Levels"));
+    } catch (NullPointerException* e) {
+        delete e;
         throw new InvalidFileFormatException("No QFList in a \"Map Levels\" key found.");
     }
 

@@ -31,4 +31,13 @@ class InvalidLevelException : public std::exception {
         const char* what();
 };  
 
+class NullPointerException : public std::exception {
+    private:
+        std::string msg;
+    
+    public:
+    NullPointerException(const std::string msg);
+        const char* what();
+};  
+
 #endif
