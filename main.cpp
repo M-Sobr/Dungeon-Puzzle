@@ -4,12 +4,16 @@
 #include "player/PastAction.h"
 #include "file_handling/FileInterpreter.h"
 #include "file_handling/FileExceptions.h"
+#include "effect/LevelUpEffects.h"
 
 #include <iostream>
 #include <string>
 
 #define LEVEL_COUNT 10
 #define START_LEVEL 1  // Temporary while saves are not implemented
+
+// Global variables
+LevelUpEffects level_up_effects = LevelUpEffects::LevelUpEffects();
 
 enum LevelFinishResult {
     LEVEL_VICTORY,

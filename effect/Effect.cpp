@@ -45,21 +45,24 @@ Effect* Effect::copy() {
 }
 
 std::string Effect::toString() {
-    char s[MAX_EFFECT_LINE_LENGTH];
+    std::string s;
+    char c[MAX_EFFECT_LINE_LENGTH];
+    
     switch (this->type) {
         case EffectTypes::GAIN_MAX_HEALTH:
-            sprintf_s(s, "+%d Max Health", this->value);
+            sprintf_s(c, "+%d Max Health", this->value);
             break;
         case EffectTypes::GAIN_HEALTH:
-            sprintf_s(s, "+%d Health", this->value);  
+            sprintf_s(c, "+%d Health", this->value);  
             break;
         case EffectTypes::GAIN_EXPERIENCE:
-            sprintf_s(s, "+%d XP", this->value);
+            sprintf_s(c, "+%d XP", this->value);
             break;
         case EffectTypes::TAKE_DAMAGE:
-            sprintf_s(s, "-%d Health", this->value);
+            sprintf_s(c, "-%d Health", this->value);
             break;
     }
+    s.append(c);
     return s;
 }
 
@@ -72,6 +75,10 @@ EffectsList::~EffectsList() {
     }
 }
 
+int EffectsList::size() {
+    return (int)effects.size();
+}
+
 void EffectsList::addEffect(Effect* e) {
     this->effects.push_back(e);
 }
@@ -82,21 +89,13 @@ Effect* EffectsList::popEffect() {
     return e;
 }
 
-Effect* EffectsList::chooseEffect(char title[]) {
-    // Print out dialogue for effect choosing
-    std::cout << title << '\n';
-    for (int i=0; i < this->effects.size(); i++) {
-        std::cout << i+1 << ") " << this->effects.at(i)->toString() << '\n';
+std::string EffectsList::toString() {
+    std::string s;
+    int last_effect_index = (int)this->effects.size() - 1;
+    for (int i=0; i < last_effect_index; i++) {
+        s.append(this->effects.at(i)->toString()).append(",\n   ");
     }
-    char s[10];
-    while (true) {
-        // Get user input
-        std::cin >> s;
-        int option = atoi(s);
-        if (option > 0) {
-            return (this->effects.at(option - 1))->copy();
-        }
-    }
+    return s.append(this->effects.at(last_effect_index)->toString());
 }
 
 

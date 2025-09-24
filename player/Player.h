@@ -38,6 +38,7 @@ class Player {
         void increaseMaxHealth(int health);
         bool isAlive();
         void applyEffect(Effect* e);
+        void applyEffects(EffectsList* e);
         void undoEffect();
 };
 

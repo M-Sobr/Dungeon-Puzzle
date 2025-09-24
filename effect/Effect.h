@@ -36,9 +36,10 @@ class EffectsList {
     public:
         EffectsList();
         ~EffectsList();
+        int size();
         void addEffect(Effect* effect);
         Effect* popEffect();
-        Effect* chooseEffect(char title[]);
+        std::string toString();
 };
 
 

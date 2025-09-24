@@ -1,6 +1,8 @@
 #include "Player.h"
 #include "../effect/LevelUpEffects.h"
 
+extern LevelUpEffects level_up_effects;
+
 Player::Player(std::string input_name) :
     name(input_name), 
     level(1), 
@@ -51,9 +53,9 @@ void Player::levelUp() {
     this->level += 1;
     this->movement += 1;
     this->applyEffect(new Effect(EffectTypes::GAIN_MAX_HEALTH, 5));
-    EffectsList* effects = getEffectsListFromLevel(this->level);
-    this->applyEffect(effects->chooseEffect("You have levelled up to Level 2!"));
-    delete effects;
+
+    // Get level choices
+    this->applyEffects(level_up_effects.chooseLevelUpEffects(level));
 }
 
 void Player::levelDown() {
@@ -86,6 +88,15 @@ void Player::applyEffect(Effect* e) {
     e->applyEffect(this);
     this->effect_counter += 1;
     this->appliedEffects.addEffect(e);
+}
+
+void Player::applyEffects(EffectsList* e) {
+    int count = e->size();
+    
+    for (int i=0; i < count; i++) {
+        applyEffect(e->popEffect());
+    }
+    delete e;
 }
 
 void Player::undoEffect() {
