@@ -26,7 +26,7 @@ class Action {
     public:
         // Return true if this action involves moving the player.
         bool involvesMovement(); 
-        static Action fromText(char text[]);
+        static Action fromText(const char text[]);
         ActionType getType();
         PastAction* resolveAction(Level* level, Player* player);
         

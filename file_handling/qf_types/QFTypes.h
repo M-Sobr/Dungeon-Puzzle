@@ -21,6 +21,9 @@ class QFValue {
     public:
         QFValue(QFTypes value_type);
         virtual ~QFValue() {}
+
+        template <class V>
+        V* get(const std::string errorMessage);
 };
 
 /** Represents a pair of key and value which are a key part of file formats */

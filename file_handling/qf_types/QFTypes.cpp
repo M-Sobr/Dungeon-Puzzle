@@ -5,6 +5,15 @@ QFValue::QFValue(QFTypes type) : value_type(type) {
     ;
 }
 
+template<class V>
+V* QFValue::get(const std::string errorMessage) {
+    V* value = dynamic_cast<V*>(this);
+    if (value == nullptr) {
+        throw new NullPointerException(errorMessage);
+    }
+    return value;
+}
+
 QFPair::QFPair(std::string k, QFValue* v) : 
     key(k), value(v) {
     
@@ -110,4 +119,13 @@ QFValue* QFDict::getValueFromKey(std::string key) {
         }
     }
     return nullptr;
+}
+
+/** Never call this function */
+void IntialiseGenerics() {
+    QFValue f = QFValue::QFValue(QF_VALUE);
+    f.get<QFString>("");
+    f.get<QFList>("");
+    f.get<QFDict>("");
+    f.get<QFInt>("");
 }

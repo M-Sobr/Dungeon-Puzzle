@@ -20,7 +20,7 @@ bool equalsIgnoreCase(char char1, char char2) {
     return char1 == char2;
 }
 
-bool equalsIgnoreCase(char text1[], char text2[], int charCount) {
+bool equalsIgnoreCase(const char text1[], const char text2[], int charCount) {
     for (int i=0; i<charCount; i++) {
         if (!equalsIgnoreCase(text1[i], text2[i])) {
             return false;

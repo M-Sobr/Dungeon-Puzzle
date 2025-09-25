@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include <exception>
 
 #define MAX_EFFECT_LINE_LENGTH 20
 
@@ -15,6 +16,15 @@ enum EffectTypes {
 
 class Player;
 
+class InvalidEffectNameException : public std::exception {
+    private:
+        std::string msg;
+
+    public:
+        InvalidEffectNameException(const std::string msg);
+        const char* what();
+};
+
 class Effect {
     private:
         EffectTypes type;
@@ -22,6 +32,7 @@ class Effect {
 
     public:
         Effect(EffectTypes type, int value);
+        Effect(const char type_string[], int value);
         int applyEffect(Player* player);
         void undoEffect(Player* player);
         /** Copy this effect and return a new effect */

@@ -1,8 +1,34 @@
 #include "Effect.h" 
 #include "../player/Player.h"
+#include "../utils/Utils.h"
+
+InvalidEffectNameException::InvalidEffectNameException(const std::string m) {
+    this->msg = m;
+}
+
+const char* InvalidEffectNameException::what() {
+    return msg.c_str();
+}
 
 Effect::Effect(EffectTypes t, int v) : 
     type(t), value(v) {
+}
+
+Effect::Effect(const char type_string[], int v) :
+    value(v) {
+
+    if (equalsIgnoreCase(type_string, "GAIN_MAX_HEALTH", 16)) {
+        this->type = EffectTypes::GAIN_MAX_HEALTH;
+    } else if (equalsIgnoreCase(type_string, "GAIN_HEALTH", 12)) {
+        this->type = EffectTypes::GAIN_HEALTH;
+    } else if (equalsIgnoreCase(type_string, "GAIN_EXPERIENCE", 12)) {
+        this->type = EffectTypes::GAIN_EXPERIENCE;
+    } else if (equalsIgnoreCase(type_string, "TAKE_DAMAGE", 12)) {
+        this->type = EffectTypes::TAKE_DAMAGE;
+    } else {
+        std::string s;
+        throw new InvalidEffectNameException(s.append(type_string).append(" is not a valid effect type name!"));
+    }
 }
 
 int Effect::applyEffect(Player* player) {

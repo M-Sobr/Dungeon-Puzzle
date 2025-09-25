@@ -13,196 +13,150 @@
 #define PLAYER_LEVEL_DIRECTORY "config/player_levels.txt"
 
 LevelLayer FileInterpreter::loadMapLayer(QFList* layer_contents) {
-    LevelLayer layer;
-    if (layer_contents == nullptr) {
-        throw new InvalidMapLevelException("Layer contents are empty or not QFList!");
-    }
-    
-    // Create layer from strings
-    std::string layer_string;
-    for (QFValue* value : layer_contents->getValues()) {
-        try {
-            layer_string = dynamic_cast<QFString*>(value)->getValue();
-        } catch (NullPointerException* e) {
-            delete e;
-            throw new InvalidMapLevelException("Row is empty or not QFString!");
+    try {
+        LevelLayer layer;
+        std::string layer_string;
+
+        // Create layer from strings
+        for (QFValue* value : layer_contents->getValues()) {
+            layer.addRow(value->get<QFString>("Row is empty or not QFString!")->getValue());
         }
-        layer.addRow(layer_string);
+        return layer;
+    } catch (NullPointerException* e) {
+        throw e;
     }
-    return layer;
 }
 
 Level* FileInterpreter::loadMapLevel(QFDict* level_contents) {
-    // Check if level_contents is null
-    if (level_contents == nullptr) {
-        throw new InvalidMapLevelException("Level contents is empty or not QFDict!");
-    }
-    
-    // Initialisation of variables
-    std::string level_name;
-    std::string level_string;
-    Level::LevelBuilder level_builder = Level::LevelBuilder();
-
-    // Get level name
-    try {    
-        level_name = dynamic_cast<QFString*>(level_contents->getValueFromKey("Level Name"))->getValue();
-    } catch (NullPointerException* e) {
-        delete e;
-        throw new InvalidMapLevelException("Level name is empty or not QFString!");
-    }    
-    level_builder.setName(level_name);
-
-    // Get level layout
-    QFList* layout;
     try {
-        layout = dynamic_cast<QFList*>(level_contents->getValueFromKey("Layout"));
-    } catch (NullPointerException* e) {
-        delete e;
-        throw new InvalidMapLevelException("Layout is empty or not QFList!");
-    }
-    
-    try {
+        // Initialisation of variables
+        std::string level_string;
+        Level::LevelBuilder level_builder = Level::LevelBuilder();
+
+        // Get level name 
+        std::string level_name = level_contents->getValueFromKey("Level Name")->get<QFString>("Level name is empty or not QFString!")->getValue();
+        level_builder.setName(level_name);
+
+        // Get level layout
+        QFList* layout = level_contents->getValueFromKey("Layout")->get<QFList>("Layout is empty or not QFList!");
+        
         for (QFValue* layer : layout->getValues()) {
-            level_builder.addLayer(loadMapLayer(dynamic_cast<QFList*>(layer)));
+            level_builder.addLayer(loadMapLayer(layer->get<QFList>("Layer contents are empty or not QFList!")));
         }
+        return level_builder.build();;
+
     } catch (InvalidMapLevelException* e) {
         throw e;
+    
+    } catch (NullPointerException* e) {
+        throw e;
     }
-
-    //new Level(char level_name[MAX_LEVEL_NAME_LENGTH], char level_string[MAX_LEVEL_CHARACTERS], int level_rows, int level_cols);
-    return level_builder.build();;
 }
 
 int FileInterpreter::loadMapLevels(std::vector<Level*>* levels) {
-    
-    // Intialise variables and read file
-    FileReader level_file_reader(MAP_LEVEL_DIRECTORY);
-    QFDict level_file_contents;
     try {
+        // Intialise variables
+        FileReader level_file_reader(MAP_LEVEL_DIRECTORY);
+        QFDict level_file_contents;
+        QFList* map_levels_list;
+        
+        // Read File
         level_file_reader.readFile(&level_file_contents);
-    } catch (InvalidFileException* e) {
-        throw e;
-    }
 
-    // Get list of map levels
-    QFList* map_levels_list;
-    try {
-        map_levels_list = dynamic_cast<QFList*>(level_file_contents.getValueFromKey("Map Levels"));
-    } catch (NullPointerException* e) {
-        delete e;
-        throw new InvalidFileFormatException("No QFList in a \"Map Levels\" key found.");
-    }
+        // Get list of map levels
+        map_levels_list = level_file_contents.getValueFromKey("Map Levels")->get<QFList>("No QFList in a \"Map Levels\" key found.");
+        
+        std::vector<QFValue*> map_level_values = map_levels_list->getValues();
 
-    std::vector<QFValue*> map_level_values = map_levels_list->getValues();
-
-    try {
         for (QFValue* dict : map_level_values) {
-            levels->push_back(loadMapLevel(dynamic_cast<QFDict*>(dict)));
+            levels->push_back(loadMapLevel(dict->get<QFDict>("Entry in Map Levels list is not QFDict!")));
         }
+
+        return (int)levels->size();
+    
+    } catch (InvalidFileException* e) { 
+        throw e;
     } catch (InvalidMapLevelException* e) {
         throw e;
+    } catch (NullPointerException* e) {
+        throw e;
     }
-
-    return (int)levels->size();
 } 
 
 Effect* FileInterpreter::loadEffect(QFPair* effect_info) {
-    if (effect_info == nullptr) {
-        throw new InvalidPlayerLevelException("Effect info is not QFPair!");
-    }
-
     // Value needs to be int
-    QFInt* value = dynamic_cast<QFInt*>(effect_info->getValue());
-    if (value == nullptr) {
-        throw new InvalidPlayerLevelException("Effect value is not QFInt!");
-    }
+    try {
+        QFInt* qf_int = effect_info->getValue()->get<QFInt>("Effect value is not QFInt!");
+        std::string key = effect_info->getKey();
 
-    std::string key = effect_info->getKey();
-    if (key == "GAIN_MAX_HEALTH") {
-        return new Effect(EffectTypes::GAIN_MAX_HEALTH, value->getValue());
+        return new Effect(key.c_str(), qf_int->getValue());
     
-    } else if (key == "GAIN_HEALTH") {
-        return new Effect(EffectTypes::GAIN_HEALTH, value->getValue());
-    
-    } else if (key == "GAIN_EXPERIENCE") {
-        return new Effect(EffectTypes::GAIN_EXPERIENCE, value->getValue());
-    
-    } else if (key == "TAKE_DAMAGE") {
-        return new Effect(EffectTypes::TAKE_DAMAGE, value->getValue());
-    
+    } catch (NullPointerException* e) {
+        throw e;
+    } catch (InvalidEffectNameException* e) {
+        throw new InvalidPlayerLevelException(e->what());
     }
-    throw new InvalidPlayerLevelException("Effect key is not a valid effect name!");
-
 }
 
 EffectsList* FileInterpreter::loadEffectsList(QFDict* effects_list_info) {
-    if (effects_list_info == nullptr) {
-        throw new InvalidPlayerLevelException("Effects list info is not QFDict!");
-    }
-
-    EffectsList* effects_list = new EffectsList();
     try {
+
+        EffectsList* effects_list = new EffectsList();
+       
         for (QFPair* qf_pair : effects_list_info->getPairs()) {
             effects_list->addEffect(loadEffect(qf_pair));
         }
+        return effects_list;
 
     } catch(InvalidPlayerLevelException* e) {
         throw e;
+    } catch(NullPointerException* e) {
+        throw e;
     }
-    return effects_list;
 }
 
 std::vector<EffectsList*> FileInterpreter::loadPlayerLevel(QFList* level_effects_list) {
-    // Check if level_effects_list is null
-    if (level_effects_list == nullptr) {
-        throw new InvalidPlayerLevelException("Player level effects list is not QFList!");
-    }
-
-    std::vector<EffectsList*> effects_list;
-
     try {
-        for (QFValue* value : level_effects_list->getValues()) {
-            effects_list.push_back(loadEffectsList(dynamic_cast<QFDict*>(value)));
-        }
+        std::vector<EffectsList*> effects_list;
 
+        for (QFValue* dict : level_effects_list->getValues()) {
+            effects_list.push_back(loadEffectsList(dict->get<QFDict>("Effects list info is not QFDict!")));
+        }
+        return effects_list;
+    
     } catch(InvalidPlayerLevelException* e) {
         throw e;
+    } catch(NullPointerException* e) {
+        throw e;
     }
-    return effects_list;
 }
 
 void FileInterpreter::loadPlayerLevels(LevelUpEffects* level_up_effects) {
-    
-    // Intialise variables and read file
-    FileReader level_file_reader(PLAYER_LEVEL_DIRECTORY);
-    QFDict level_file_contents;
     try {
+        // Intialise variables and read file
+        FileReader level_file_reader(PLAYER_LEVEL_DIRECTORY);
+        QFDict level_file_contents;
         level_file_reader.readFile(&level_file_contents);
-    } catch (InvalidFileException* e) {
-        throw e;
-    }
 
-    // Get dict of player levels
-    QFDict* player_levels_dict = dynamic_cast<QFDict*>(level_file_contents.getValueFromKey("Player Levels"));
-    if (player_levels_dict == nullptr) {
-        throw new InvalidFileFormatException("No QFDict in a \"Player Levels\" key found.");
-    }
+        // Get dict of player levels
+        QFDict* player_levels_dict = level_file_contents.getValueFromKey("Player Levels")->
+            get<QFDict>("No QFDict in a \"Player Levels\" key found.");
 
-    // Get list of player level effects
-    QFList* player_effects_list = dynamic_cast<QFList*>(player_levels_dict->getValueFromKey("Effects"));
-    if (player_effects_list == nullptr) {
-        throw new InvalidFileFormatException("No QFDict in a \"Player Levels\" key found.");
-    }
+        // Get list of player level effects
+        QFList* player_effects_list = player_levels_dict->getValueFromKey("Effects")->
+            get<QFList>("No QFList in a \"Effects\" key found.");
 
-    *level_up_effects = LevelUpEffects::LevelUpEffects();
+        *level_up_effects = LevelUpEffects::LevelUpEffects();
 
-    try {
         for (QFValue* list : player_effects_list->getValues()) {
-            level_up_effects->addLevel(loadPlayerLevel(dynamic_cast<QFList*>(list)));
+            level_up_effects->addLevel(loadPlayerLevel(list->get<QFList>("Player level effects list is not QFList!")));
         }
+
     } catch (InvalidPlayerLevelException* e) {
         throw e;
+    } catch (InvalidFileException* e) {
+        throw e;
+    } catch (NullPointerException* e) {
+        throw e;
     }
-
-
 }

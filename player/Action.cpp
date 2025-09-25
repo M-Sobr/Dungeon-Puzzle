@@ -5,7 +5,7 @@
 #include "../level/Level.h"
 #include "Player.h"
 
-Action Action::fromText(char text[]) {
+Action Action::fromText(const char text[]) {
     if (equalsIgnoreCase(text[0], 'w')) {
         return Action::Action(ActionType::MOVE_UP);
     } else if (equalsIgnoreCase(text[0], 'a')) {
