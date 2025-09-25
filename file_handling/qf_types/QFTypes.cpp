@@ -7,6 +7,7 @@ QFValue::QFValue(QFTypes type) : value_type(type) {
 
 template<class V>
 V* QFValue::get(const std::string errorMessage) {
+    
     V* value = dynamic_cast<V*>(this);
     if (value == nullptr) {
         throw new NullPointerException(errorMessage);

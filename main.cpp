@@ -91,6 +91,9 @@ int main(void) {
     
     } catch (InvalidPlayerLevelException* e) {
         printf("%s\n", e->what());
+    
+    } catch (NullPointerException* e) {
+        printf("%s\n", e->what());
     }
 
     int currentLevelIndex = START_LEVEL - 1;
