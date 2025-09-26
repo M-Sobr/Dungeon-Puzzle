@@ -6,16 +6,16 @@ QFEntry::QFEntry(const int start) :
     ;
 }
 
-int QFEntry::getStartLine() {
+int inline QFEntry::getStartLine() {
     return this->start_line;
 }
 
 void QFEntry::setEndLine(const int end) {
-    printf("Start = %d, End = %d\n", this->start_line, end);
+    //printf("Start = %d, End = %d\n", this->start_line, end);  // Temporary
     this->end_line = end;
 }
 
-int QFEntry::getEndLine() {
+int inline QFEntry::getEndLine() {
     return this->end_line;
 }
 
@@ -29,7 +29,7 @@ V* QFValue::get(const std::string errorMessage) {
     
     V* value = dynamic_cast<V*>(this);
     if (value == nullptr) {
-        throw new NullPointerException(errorMessage);
+        throw new NullPointerException(errorMessage, this->getStartLine(), this->getEndLine());
     }
     return value;
 }

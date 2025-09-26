@@ -5,12 +5,17 @@
 #include "FileReader.h"
 #include "../level/Level.h"
 #include "qf_types/QFTypes.h"
-#include "FileExceptions.h"
 #include "../effect/LevelUpEffects.h"
 #include "../effect/Effect.h"
 
 #define MAP_LEVEL_DIRECTORY  "config/map_levels.txt"
 #define PLAYER_LEVEL_DIRECTORY "config/player_levels.txt"
+
+FileInterpreter::FileInterpreter() {}
+
+void inline FileInterpreter::addException(FileInterpreterException* e) {
+    this->exceptions += e;
+}
 
 LevelLayer FileInterpreter::loadMapLayer(QFList* layer_contents) {
     try {
@@ -41,7 +46,7 @@ Level* FileInterpreter::loadMapLevel(QFDict* level_contents) {
         QFList* layout = level_contents->getValueFromKey("Layout")->get<QFList>("Layout is empty or not QFList!");
         
         for (QFValue* layer : layout->getValues()) {
-            level_builder.addLayer(loadMapLayer(layer->get<QFList>("Layer contents are empty or not QFList!")));
+            level_builder.addLayer(this->loadMapLayer(layer->get<QFList>("Layer contents are empty or not QFList!")));
         }
         return level_builder.build();;
 
@@ -59,7 +64,8 @@ int FileInterpreter::loadMapLevels(std::vector<Level*>* levels) {
         FileReader level_file_reader(MAP_LEVEL_DIRECTORY);
         QFDict level_file_contents(1);
         QFList* map_levels_list;
-        
+        FileInterpreter fileInterpreter;
+
         // Read File
         level_file_reader.readFile(&level_file_contents);
 
@@ -69,7 +75,7 @@ int FileInterpreter::loadMapLevels(std::vector<Level*>* levels) {
         std::vector<QFValue*> map_level_values = map_levels_list->getValues();
 
         for (QFValue* dict : map_level_values) {
-            levels->push_back(loadMapLevel(dict->get<QFDict>("Entry in Map Levels list is not QFDict!")));
+            levels->push_back(fileInterpreter.loadMapLevel(dict->get<QFDict>("Entry in Map Levels list is not QFDict!")));
         }
 
         return (int)levels->size();
@@ -94,7 +100,7 @@ Effect* FileInterpreter::loadEffect(QFPair* effect_info) {
     } catch (NullPointerException* e) {
         throw e;
     } catch (InvalidEffectNameException* e) {
-        throw new InvalidPlayerLevelException(e->what());
+        throw new InvalidPlayerLevelException(e->what(), effect_info->getStartLine(), effect_info->getEndLine());
     }
 }
 

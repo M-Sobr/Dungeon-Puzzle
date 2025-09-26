@@ -1,6 +1,8 @@
 #ifndef FILE_INTERPRETER_H
 #define FILE_INTERPRETER_H
 
+#include "FileExceptions.h"
+
 #include <set>
 #include <vector>
 
@@ -16,15 +18,18 @@ class EffectsList;
 class FileInterpreter {
     private:
 
-        static LevelLayer loadMapLayer(QFList* layer_contents);
-        static Level* loadMapLevel(QFDict* level_info);
+        FileInterpreterExceptionList exceptions;
+
+        LevelLayer loadMapLayer(QFList* layer_contents);
+        Level* loadMapLevel(QFDict* level_info);
 
         static Effect* loadEffect(QFPair* effect_info);
         static EffectsList* loadEffectsList(QFDict* effects_list_info);
         
         static std::vector<EffectsList*> loadPlayerLevel(QFList* level_effects_list);
         
-
+        FileInterpreter();
+        void addException(FileInterpreterException* e);
 
     public:
 

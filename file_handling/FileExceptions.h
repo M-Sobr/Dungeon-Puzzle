@@ -25,35 +25,40 @@ class InvalidFileFormatException : public std::exception {
 
 class FileInterpreterException : public std::exception {
     private:
-        std::string msg;
+        const std::string msg;
+        const int start_line;
+        const int end_line;
     
     public:
-        FileInterpreterException(const std::string msg);
+        FileInterpreterException(const std::string msg, const int start_line, const int end_line);
+        const std::string generateMessage(const std::string msg, const int start_line, const int end_line);
         const char* what();
 };
 
 class FileInterpreterExceptionList : public std::exception {
     private:
-        std::queue<FileInterpreterException> msg;
+        std::queue<FileInterpreterException*> exceptions;
     
     public:
         FileInterpreterExceptionList();
+        void operator+=(FileInterpreterException* e);
         const char* what();
 };
 
 class InvalidMapLevelException : public FileInterpreterException {
     public:
-        InvalidMapLevelException(const std::string msg);
+        InvalidMapLevelException(const std::string msg, const int start_line, const int end_line);
 };  
 
 class InvalidPlayerLevelException : public FileInterpreterException {
     public:
-        InvalidPlayerLevelException(const std::string msg);
+        InvalidPlayerLevelException(const std::string msg, const int start_line, const int end_line);
 };
 
 class NullPointerException : public FileInterpreterException {
     public:
-        NullPointerException(const std::string msg);
+        NullPointerException(const std::string msg);    
+        NullPointerException(const std::string msg, const int start_line, const int end_line);
 };  
 
 #endif
