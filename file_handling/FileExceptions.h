@@ -3,6 +3,7 @@
 
 #include <exception>
 #include <string>
+#include <queue>
 
 class InvalidFileException : public std::exception {
     private:
@@ -22,31 +23,37 @@ class InvalidFileFormatException : public std::exception {
         const char* what();
 };  
 
-class InvalidMapLevelException : public std::exception {
+class FileInterpreterException : public std::exception {
     private:
         std::string msg;
     
     public:
-    InvalidMapLevelException(const std::string msg);
-        const char* what();
-};  
-
-class InvalidPlayerLevelException : public std::exception {
-    private:
-        std::string msg; 
-
-    public:
-        InvalidPlayerLevelException(const std::string msg);
+        FileInterpreterException(const std::string msg);
         const char* what();
 };
 
-class NullPointerException : public std::exception {
+class FileInterpreterExceptionList : public std::exception {
     private:
-        std::string msg;
+        std::queue<FileInterpreterException> msg;
     
     public:
-    NullPointerException(const std::string msg);
+        FileInterpreterExceptionList();
         const char* what();
+};
+
+class InvalidMapLevelException : public FileInterpreterException {
+    public:
+        InvalidMapLevelException(const std::string msg);
+};  
+
+class InvalidPlayerLevelException : public FileInterpreterException {
+    public:
+        InvalidPlayerLevelException(const std::string msg);
+};
+
+class NullPointerException : public FileInterpreterException {
+    public:
+        NullPointerException(const std::string msg);
 };  
 
 #endif

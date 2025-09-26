@@ -3,7 +3,7 @@
 #include "../utils/Utils.h"
 #include "FileExceptions.h"
 
-FileReader::FileReader(char filename[]) : file_data(filename) {
+FileReader::FileReader(char filename[]) : file_data(filename), currentLine(1) {
     skipChar();
 }
 
@@ -12,14 +12,18 @@ FileReader::~FileReader() {
 }
 
 char inline FileReader::peekChar() {
-    return currentChar;
+    return this->currentChar;
 }
 
 
 void FileReader::skipChar() {
     do {
-        currentChar = (char)file_data.get();
-    } while (isBlank(currentChar));
+        this->currentChar = (char)file_data.get();
+        if (this->currentChar == '\n') {
+            this->currentLine ++;
+            continue;
+        }
+    } while (isBlank(this->currentChar));
 }
 
 
@@ -29,13 +33,18 @@ char FileReader::nextChar() {
     return ch;
 }
 
-void FileReader::readString(std::string* s) {
+int inline FileReader::getLine() {
+    return this->currentLine;
+}
+
+void FileReader::readString(std::string* s, int* end_line) {
     // Read the string
     char ch;
     while ((ch = this->peekChar()) != '"' && ch != EOF) {
         s->push_back(ch);
         this->currentChar = (char)file_data.get();
     }
+    *end_line = this->getLine();
     this->skipChar();
 }
 
@@ -97,35 +106,39 @@ void FileReader::readKey(std::string* s) {
     if (this->nextChar() != '"') {
         throw new InvalidFileFormatException("Key must be a string!");
     }
-    return this->readString(s);
+    int dummy_end;
+    return this->readString(s, &dummy_end);
 }
 
 QFValue* FileReader::readValue() {
     QFValue* qf_value;
+    int start_line = this->getLine();
     char ch = this->nextChar();
 
     try {
         if (ch == '"') {
             std::string s;
-            this->readString(&s);
-            qf_value = new QFString(s);
+            int end_line;
+            this->readString(&s, &end_line);
+            qf_value = new QFString(s, start_line);
+            qf_value->setEndLine(end_line);
 
         } else if (ch == 'i') {
             int i;
             this->readInt(&i);
-            qf_value = new QFInt(i);    
+            qf_value = new QFInt(i, start_line);    
         
         } else if (ch == 'd') {
             double d;
             this->readDouble(&d);
-            qf_value = new QFDouble(d);
+            qf_value = new QFDouble(d, start_line);
         
         } else if (ch == '[') {
-            qf_value = new QFList();
+            qf_value = new QFList(start_line);
             this->readList(dynamic_cast<QFList*>(qf_value));
         
         } else if (ch == '{') {
-            qf_value = new QFDict();
+            qf_value = new QFDict(start_line);
             this->readDict(dynamic_cast<QFDict*>(qf_value));
         
         } else {
@@ -158,6 +171,7 @@ void FileReader::readList(QFList* qf_list) {
     } catch (InvalidFileFormatException* e) {
         throw e;
     }
+    qf_list->setEndLine(this->getLine());
     this->skipChar();
 }
 
@@ -182,6 +196,7 @@ void FileReader::readDict(QFDict* qf_dict) {
     } catch (InvalidFileFormatException* e) {
         throw e;
     }
+    qf_dict->setEndLine(this->getLine());
     this->skipChar();
 }
 
@@ -190,6 +205,7 @@ QFPair* FileReader::readPair() {
     
     // Get the key
     try {
+        int start_line = this->getLine();
         this->readKey(&key);
 
         // Check that the key and value are separated by a colon
@@ -199,7 +215,11 @@ QFPair* FileReader::readPair() {
 
         // Get the value
         QFValue* value = this->readValue();
-        return new QFPair(key, value);
+        
+        // Return the pair formed
+        QFPair* pair = new QFPair(key, value, start_line);
+        pair->setEndLine(value->getEndLine());
+        return pair;
     
     } catch (InvalidFileFormatException* e) {
         throw e;
@@ -212,6 +232,7 @@ void FileReader::readFile(QFDict* qf_dict) {
     }
     try {
         this->readDict(qf_dict);
+        qf_dict->setEndLine(this->getLine());
     } catch (InvalidFileFormatException* e) {
         throw e;
     }

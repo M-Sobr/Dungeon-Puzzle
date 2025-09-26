@@ -57,7 +57,7 @@ int FileInterpreter::loadMapLevels(std::vector<Level*>* levels) {
     try {
         // Intialise variables
         FileReader level_file_reader(MAP_LEVEL_DIRECTORY);
-        QFDict level_file_contents;
+        QFDict level_file_contents(1);
         QFList* map_levels_list;
         
         // Read File
@@ -135,7 +135,7 @@ void FileInterpreter::loadPlayerLevels(LevelUpEffects* level_up_effects) {
     try {
         // Intialise variables and read file
         FileReader level_file_reader(PLAYER_LEVEL_DIRECTORY);
-        QFDict level_file_contents;
+        QFDict level_file_contents(1);
         level_file_reader.readFile(&level_file_contents);
 
         // Get dict of player levels

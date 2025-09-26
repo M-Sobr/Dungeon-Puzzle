@@ -86,14 +86,9 @@ int main(void) {
     } catch (InvalidFileFormatException* e) {
         printf("%s\n",e->what());
     
-    } catch (InvalidMapLevelException* e) {
+    } catch (FileInterpreterException* e) {
         printf("%s\n", e->what());
     
-    } catch (InvalidPlayerLevelException* e) {
-        printf("%s\n", e->what());
-    
-    } catch (NullPointerException* e) {
-        printf("%s\n", e->what());
     }
 
     int currentLevelIndex = START_LEVEL - 1;

@@ -1,7 +1,26 @@
 #include "QFTypes.h"
 #include "../FileExceptions.h"
 
-QFValue::QFValue(QFTypes type) : value_type(type) {
+QFEntry::QFEntry(const int start) : 
+    start_line(start) {
+    ;
+}
+
+int QFEntry::getStartLine() {
+    return this->start_line;
+}
+
+void QFEntry::setEndLine(const int end) {
+    printf("Start = %d, End = %d\n", this->start_line, end);
+    this->end_line = end;
+}
+
+int QFEntry::getEndLine() {
+    return this->end_line;
+}
+
+
+QFValue::QFValue(const int start_line) : QFEntry(start_line) {
     ;
 }
 
@@ -15,8 +34,8 @@ V* QFValue::get(const std::string errorMessage) {
     return value;
 }
 
-QFPair::QFPair(std::string k, QFValue* v) : 
-    key(k), value(v) {
+QFPair::QFPair(std::string k, QFValue* v, const int start_line) : 
+    key(k), value(v), QFEntry(start_line) {
     
     ;
 }
@@ -35,8 +54,8 @@ QFValue* QFPair::getValue() {
     return this->value;
 }
 
-QFString::QFString(std::string v) : 
-    QFValue::QFValue(QFTypes::QF_STRING), value(v) {
+QFString::QFString(std::string v, const int start_line) : 
+    QFValue::QFValue(start_line), value(v) {
     
     ;
 }
@@ -48,9 +67,10 @@ std::string QFString::getValue() {
     return this->value;
 }
 
-QFInt::QFInt(int v) : 
-    QFValue::QFValue(QFTypes::QF_INT), value(v) {
-    ;
+QFInt::QFInt(int v, const int line) : 
+    QFValue::QFValue(line), value(v) {
+    
+    this->setEndLine(line);
 }
 
 int QFInt::getValue() {
@@ -60,9 +80,10 @@ int QFInt::getValue() {
     return this->value;
 }
 
-QFDouble::QFDouble(double v) :
-    QFValue::QFValue(QFTypes::QF_DOUBLE), value(v) {
-    ;
+QFDouble::QFDouble(double v, const int line) :
+    QFValue::QFValue(line), value(v) {
+    
+    this->setEndLine(line);
 }
 
 double QFDouble::getValue() {
@@ -72,7 +93,7 @@ double QFDouble::getValue() {
     return this->value;
 }
 
-QFList::QFList() : QFValue::QFValue(QFTypes::QF_LIST) {
+QFList::QFList(const int start_line) : QFValue::QFValue(start_line) {
     ;
 }
 
@@ -90,7 +111,7 @@ std::vector<QFValue*> QFList::getValues() {
     return this->values;
 }
 
-QFDict::QFDict() : QFValue::QFValue(QFTypes::QF_DICT) {
+QFDict::QFDict(const int start_line) : QFValue::QFValue(start_line) {
     ;
 }
 
@@ -124,7 +145,7 @@ QFValue* QFDict::getValueFromKey(std::string key) {
 
 /** Never call this function */
 void IntialiseGenerics() {
-    QFValue f = QFValue::QFValue(QF_VALUE);
+    QFValue f = QFValue::QFValue(0);
     f.get<QFString>("");
     f.get<QFList>("");
     f.get<QFDict>("");

@@ -16,26 +16,33 @@ const char* InvalidFileFormatException::what() {
     return msg.c_str();
 }
 
-InvalidMapLevelException::InvalidMapLevelException(const std::string m) {
+FileInterpreterException::FileInterpreterException(const std::string m) {
     this->msg = m;
 }
 
-const char* InvalidMapLevelException::what() {
+const char* FileInterpreterException::what() {
     return msg.c_str();
 }
 
-InvalidPlayerLevelException::InvalidPlayerLevelException(const std::string m) {
-    this->msg = m;
+FileInterpreterExceptionList::FileInterpreterExceptionList() {
+    ;
 }
 
-const char* InvalidPlayerLevelException::what() {
-    return msg.c_str();
+const char* FileInterpreterExceptionList::what() {
+    return "temp";
 }
 
-NullPointerException::NullPointerException(const std::string m) {
-    this->msg = m;
+InvalidMapLevelException::InvalidMapLevelException(const std::string m) :
+    FileInterpreterException::FileInterpreterException(m) {
+    ;   
 }
 
-const char* NullPointerException::what() {
-    return msg.c_str();
+InvalidPlayerLevelException::InvalidPlayerLevelException(const std::string m):
+    FileInterpreterException::FileInterpreterException(m) {
+    ;
+}
+
+NullPointerException::NullPointerException(const std::string m):
+    FileInterpreterException::FileInterpreterException(m) {
+    ;
 }

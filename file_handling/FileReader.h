@@ -13,6 +13,7 @@ class FileReader {
     private:
         std::ifstream file_data;
         char currentChar;
+        int currentLine;
 
         /** Look at the next character from the file, ignoring blanks. */
         char peekChar();
@@ -23,8 +24,11 @@ class FileReader {
         /** Get the next character from the file, ignoring blanks. */
         char nextChar();
 
+        /** Get the current line in the file */
+        int getLine();
+
         /** Fill in the following string from the file details */
-        void readString(std::string* string);
+        void readString(std::string* string, int* end_line);
 
         /** Fill in the following int from the file details */
         void readInt(int* value);

@@ -4,22 +4,23 @@
 #include <string>
 #include <vector>
 
-enum QFTypes {
-    QF_VALUE,
-    QF_STRING,
-    QF_INT,
-    QF_DOUBLE,
-    QF_LIST,
-    QF_DICT
+class QFEntry {
+    private:
+        const int start_line;
+        int end_line;
+    
+    public:
+        QFEntry(const int start_line);
+        int getStartLine();
+        void setEndLine(const int end_line);
+        int getEndLine();
+        virtual ~QFEntry() {}
 };
 
 /** A generic value which can be handled in files */
-class QFValue {
-    private:
-        QFTypes value_type;
-
+class QFValue : public QFEntry {
     public:
-        QFValue(QFTypes value_type);
+        QFValue(const int start_line);
         virtual ~QFValue() {}
 
         template <class V>
@@ -27,13 +28,13 @@ class QFValue {
 };
 
 /** Represents a pair of key and value which are a key part of file formats */
-class QFPair {
+class QFPair : public QFEntry {
     private:
         std::string key;
         QFValue* value;
 
     public:
-        QFPair(std::string key, QFValue* value);   
+        QFPair(std::string key, QFValue* value, const int start_line);   
         std::string getKey();
         QFValue* getValue(); 
 };
@@ -44,7 +45,7 @@ class QFString: public QFValue {
         std::string value;
 
     public:
-        QFString(std::string value);   
+        QFString(std::string value, const int start_line);   
         
         std::string getValue();
 };
@@ -55,7 +56,7 @@ class QFInt: public QFValue {
         int value;
         
     public:
-        QFInt(int value);  
+        QFInt(int value, const int line);  
         
         /** Get the value associated with this QFInt (or -1 if null) */
         int getValue();
@@ -67,7 +68,7 @@ class QFDouble : public QFValue {
         double value;
     
     public:
-        QFDouble(double value);
+        QFDouble(double value, const int line);
 
         double getValue();
 };
@@ -80,7 +81,7 @@ class QFList: public QFValue {
         std::vector<QFValue*> values;
 
     public:
-        QFList();    
+        QFList(const int start_line);    
         void addValue(QFValue* value);
         std::vector<QFValue*> getValues();
 };
@@ -91,7 +92,7 @@ class QFDict: public QFValue {
         std::vector<QFPair*> pairs;
 
     public:
-        QFDict();
+        QFDict(const int start_line);
         void addPair(QFPair* pair);
         std::vector<QFPair*> getPairs();
         QFValue* getValueFromKey(std::string key);
