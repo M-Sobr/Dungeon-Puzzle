@@ -25,7 +25,10 @@ const std::string FileInterpreterException::generateMessage(const std::string m,
     char c[100];
     std::string message;
 
-    if (start == end) {
+    if (start == -1) {
+        sprintf_s(c, "%s", m.c_str());
+    
+    } else if (start == end) {
         sprintf_s(c, "Line %d: %s", start, m.c_str());
     
     } else {
@@ -40,16 +43,24 @@ const char* FileInterpreterException::what() {
     return msg.c_str();
 }
 
-FileInterpreterExceptionList::FileInterpreterExceptionList() {
-    ;
+FileInterpreterExceptionList::FileInterpreterExceptionList(std::string filename) {
+    this->msg.append(filename).append(":\n");
 }
 
 void FileInterpreterExceptionList::operator+=(FileInterpreterException* e) {
+    if (this->exceptions.size() > 0) {
+        msg.append("\n");
+    }
     this->exceptions.push(e);
+    msg.append("- ").append(e->what());
+}
+
+int FileInterpreterExceptionList::size() {
+    return (int)this->exceptions.size();
 }
 
 const char* FileInterpreterExceptionList::what() {
-    return "temp";
+    return msg.c_str();
 }
 
 InvalidMapLevelException::InvalidMapLevelException(const std::string m, const int start_line, const int end_line) :
@@ -70,4 +81,20 @@ NullPointerException::NullPointerException(const std::string m):
 NullPointerException::NullPointerException(const std::string m, const int start_line, const int end_line):
     FileInterpreterException::FileInterpreterException(m, start_line, end_line) {
     ;
+}
+
+NoKeyFoundException::NoKeyFoundException(const std::string m) {
+    this->msg = m;
+}
+
+const char* NoKeyFoundException::what() {
+    return msg.c_str();
+}
+
+LevelBuilderException::LevelBuilderException(const std::string m) {
+    this->msg = m;
+}
+
+const char* LevelBuilderException::what() {
+    return msg.c_str();
 }

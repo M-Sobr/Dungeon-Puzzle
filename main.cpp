@@ -76,8 +76,22 @@ LevelFinishResult playLevel(Level level) {
 int main(void) {
     std::vector<Level*> levels;
     int levelQuantity = 0;
+    
     try {
         levelQuantity = FileInterpreter::loadMapLevels(&levels);
+    
+    } catch (InvalidFileException* e) {
+        printf("%s\n", e->what());
+    
+    } catch (InvalidFileFormatException* e) {
+        printf("%s\n",e->what());
+    
+    } catch (FileInterpreterExceptionList* e) {
+        printf("%s\n", e->what());
+    } 
+    
+    
+    try {
         FileInterpreter::loadPlayerLevels(&level_up_effects);
     
     } catch (InvalidFileException* e) {
@@ -86,10 +100,9 @@ int main(void) {
     } catch (InvalidFileFormatException* e) {
         printf("%s\n",e->what());
     
-    } catch (FileInterpreterException* e) {
+    } catch (FileInterpreterExceptionList* e) {
         printf("%s\n", e->what());
-    
-    }
+    } 
 
     int currentLevelIndex = START_LEVEL - 1;
 

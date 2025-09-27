@@ -1,5 +1,6 @@
 #include "Level.h"
 #include "Tile.h"
+#include "../file_handling/FileExceptions.h"
 
 Level::LevelBuilder::LevelBuilder() : necessary_fields_set(0), start_layer(-1), objective_tiles(0) {
     ;
@@ -50,7 +51,7 @@ Level::LevelBuilder* Level::LevelBuilder::addLayer(LevelLayer layer) {
 
 Level* Level::LevelBuilder::build() {
     if (necessary_fields_set < 2) {
-        return nullptr;
+        throw new LevelBuilderException("Not enough level fields set!");
     }
     return new Level(this->level_name, this->layout_layers, this->player_pos, this->start_layer, this->objective_tiles);
 }

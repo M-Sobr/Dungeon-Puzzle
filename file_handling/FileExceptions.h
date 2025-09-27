@@ -38,10 +38,12 @@ class FileInterpreterException : public std::exception {
 class FileInterpreterExceptionList : public std::exception {
     private:
         std::queue<FileInterpreterException*> exceptions;
+        std::string msg;
     
     public:
-        FileInterpreterExceptionList();
+        FileInterpreterExceptionList(std::string filename);
         void operator+=(FileInterpreterException* e);
+        int size();
         const char* what();
 };
 
@@ -60,5 +62,24 @@ class NullPointerException : public FileInterpreterException {
         NullPointerException(const std::string msg);    
         NullPointerException(const std::string msg, const int start_line, const int end_line);
 };  
+
+class NoKeyFoundException {
+    private:
+        std::string msg;
+
+    public:
+        NoKeyFoundException(const std::string msg);
+        const char* what();
+};
+
+class LevelBuilderException {
+    private:
+        std::string msg;
+
+    public:
+        LevelBuilderException(const std::string msg);
+        const char* what();
+
+};
 
 #endif

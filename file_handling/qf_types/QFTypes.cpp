@@ -140,7 +140,7 @@ QFValue* QFDict::getValueFromKey(std::string key) {
             return qf_pair->getValue();
         }
     }
-    return nullptr;
+    throw new NoKeyFoundException("There is no key of value \"" + key + "\"");
 }
 
 /** Never call this function */

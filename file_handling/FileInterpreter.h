@@ -18,18 +18,19 @@ class EffectsList;
 class FileInterpreter {
     private:
 
-        FileInterpreterExceptionList exceptions;
+        FileInterpreterExceptionList* exceptions;
 
         LevelLayer loadMapLayer(QFList* layer_contents);
         Level* loadMapLevel(QFDict* level_info);
 
-        static Effect* loadEffect(QFPair* effect_info);
-        static EffectsList* loadEffectsList(QFDict* effects_list_info);
+        Effect* loadEffect(QFPair* effect_info);
+        EffectsList* loadEffectsList(QFDict* effects_list_info);
         
-        static std::vector<EffectsList*> loadPlayerLevel(QFList* level_effects_list);
+        std::vector<EffectsList*> loadPlayerLevel(QFList* level_effects_list);
         
-        FileInterpreter();
+        FileInterpreter(const std::string file_name);
         void addException(FileInterpreterException* e);
+        FileInterpreterExceptionList* getExceptionList();
 
     public:
 
