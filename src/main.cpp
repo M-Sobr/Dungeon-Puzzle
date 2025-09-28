@@ -5,11 +5,10 @@
 #include "file_handling/FileInterpreter.h"
 #include "file_handling/FileExceptions.h"
 #include "effect/LevelUpEffects.h"
+#include "utils/ReadInput.h"
 
 #include <iostream>
 #include <string>
-
-#define START_LEVEL 1  // Temporary while saves are not implemented
 
 // Global variables
 LevelUpEffects level_up_effects;
@@ -34,11 +33,7 @@ LevelFinishResult playLevel(Level level) {
 
         while (true) {
             // Get input from player
-            std::cout << "Action: ";
-            char s[100];
-            std::cin >> s;
-            
-            Action action = Action::fromText(s);
+            Action action = Action::fromText(ReadInput::getUserInput("Action: ").c_str());
             switch (action.getType()) {
                 case ActionType::EXIT:
                     return LevelFinishResult::LEVEL_EXIT;
@@ -104,7 +99,17 @@ int main(void) {
         printf("%s\n", e->what());
     } 
 
-    int currentLevelIndex = START_LEVEL - 1;
+    if (levelQuantity < 1) {
+        return 0;
+    }
+
+    // Get save details from player
+    std::string save_name;
+    int currentLevelIndex = -1;
+    while (currentLevelIndex == -1) {
+        save_name = ReadInput::getUserInput("Save Name: ");
+        currentLevelIndex = FileInterpreter::loadSaveFile(save_name.c_str());
+    }
 
     // Play levels
     while (currentLevelIndex < levelQuantity) {
@@ -114,6 +119,10 @@ int main(void) {
                 break;
             case LevelFinishResult::LEVEL_VICTORY:
                 currentLevelIndex ++;
+                FileInterpreter::updateSaveFile(save_name.c_str(), currentLevelIndex);
         }   
+    }
+    if (currentLevelIndex == levelQuantity) {
+        FileInterpreter::deleteSaveFile(save_name.c_str());
     }
 }

@@ -6,3 +6,4 @@
 *.obj
 
 src/compiled/compile_commands.txt
+saves/*

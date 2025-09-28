@@ -3,7 +3,7 @@
 #include "../utils/Utils.h"
 #include "FileExceptions.h"
 
-FileReader::FileReader(char filename[]) : file_data(filename), currentLine(1) {
+FileReader::FileReader(const char filename[]) : file_data(filename), currentLine(1) {
     skipChar();
 }
 

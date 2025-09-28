@@ -56,7 +56,7 @@ class FileReader {
         void readFile(QFDict* qf_dict);
 
 
-        FileReader(char filename[]);
+        FileReader(const char filename[]);
         ~FileReader();
 };
 

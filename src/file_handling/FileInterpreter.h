@@ -32,6 +32,8 @@ class FileInterpreter {
         void addException(FileInterpreterException* e);
         FileInterpreterExceptionList* getExceptionList();
 
+        static int inline resolveCorruptedSaveFile();
+
     public:
 
         /** Load the map levels from the required file into the provided array
@@ -42,6 +44,12 @@ class FileInterpreter {
         /** Load the player levels from the required file into the provided array.
          */
         static void loadPlayerLevels(LevelUpEffects* level_up_effects);
+
+        static int loadSaveFile(const char* save_name);
+
+        static void updateSaveFile(const char* save_name, int current_level);
+
+        static void deleteSaveFile(const char* save_name);
 
         
 };

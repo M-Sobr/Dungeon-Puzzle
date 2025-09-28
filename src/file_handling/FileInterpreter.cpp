@@ -7,9 +7,13 @@
 #include "qf_types/QFTypes.h"
 #include "../effect/LevelUpEffects.h"
 #include "../effect/Effect.h"
+#include "../utils/ReadInput.h"
 
-#define MAP_LEVEL_DIRECTORY  "../../config/map_levels.txt"
-#define PLAYER_LEVEL_DIRECTORY "../../config/player_levels.txt"
+#define SAVES_DIRECTORY_START "../../saves/"
+#define CONFIG_DIRECTORY_START "../../config/"
+
+#define MAP_LEVEL_DIRECTORY  "map_levels.txt"
+#define PLAYER_LEVEL_DIRECTORY "player_levels.txt"
 
 FileInterpreter::FileInterpreter(const std::string f_name) {
     this->exceptions = new FileInterpreterExceptionList(f_name);
@@ -85,10 +89,12 @@ Level* FileInterpreter::loadMapLevel(QFDict* level_contents) {
 int FileInterpreter::loadMapLevels(std::vector<Level*>* levels) {
     try {
         // Intialise variables
-        FileReader level_file_reader(MAP_LEVEL_DIRECTORY);
+        std::string path;
+        path.append(CONFIG_DIRECTORY_START).append(MAP_LEVEL_DIRECTORY);
+        FileReader level_file_reader(path.c_str());
         QFDict level_file_contents(1);
         QFList* map_levels_list;
-        FileInterpreter fileInterpreter("map_levels.txt");
+        FileInterpreter fileInterpreter(MAP_LEVEL_DIRECTORY);
 
         // Read File
         level_file_reader.readFile(&level_file_contents);
@@ -179,7 +185,9 @@ std::vector<EffectsList*> FileInterpreter::loadPlayerLevel(QFList* level_effects
 void FileInterpreter::loadPlayerLevels(LevelUpEffects* level_up_effects) {
     try {
         // Intialise variables and read file
-        FileReader level_file_reader(PLAYER_LEVEL_DIRECTORY);
+        std::string path;
+        path.append(CONFIG_DIRECTORY_START).append(PLAYER_LEVEL_DIRECTORY);
+        FileReader level_file_reader(path.c_str());
         QFDict level_file_contents(1);
         level_file_reader.readFile(&level_file_contents);
         FileInterpreter fileInterpreter("player_levels.txt");
@@ -239,4 +247,60 @@ void FileInterpreter::loadPlayerLevels(LevelUpEffects* level_up_effects) {
     } catch (InvalidFileFormatException* e) {
         throw e;
     }
+}
+
+int inline FileInterpreter::resolveCorruptedSaveFile() {
+    return ReadInput::getBinaryChoice("File data is corrupted!", "Exit Game", "Start New Game") - 2;
+}
+
+int FileInterpreter::loadSaveFile(const char* save_name) {
+    printf("%s\n", save_name);
+    
+    QFDict level_file_contents(1);
+    std::string path;
+    path.append(SAVES_DIRECTORY_START).append(save_name);
+    FileInterpreter fileInterpreter(save_name);
+    
+    try {
+        FileReader level_file_reader(path.c_str());
+        level_file_reader.readFile(&level_file_contents);
+    
+    } catch (InvalidFileFormatException*) {
+        return resolveCorruptedSaveFile();
+    
+    } catch (InvalidFileException*) {
+        std::string title;
+        title.append("Create game with name ").append(title);
+        return ReadInput::getBinaryChoice(title.c_str(), "Cancel", "Start New Game") - 2;
+    }
+    
+    int choice = ReadInput::getBinaryChoice("Load save successful!", "Continue Game", "Start New Game");
+    if (choice == 2) {
+        return 0;
+    }
+    try {
+        return level_file_contents.getValueFromKey("Current Level")->get<QFInt>("Value in Current Level is not QFInt!")->getValue() - 1;
+   
+    } catch (NoKeyFoundException*) {
+        return resolveCorruptedSaveFile();
+    
+    } catch (NullPointerException*) {
+        return resolveCorruptedSaveFile();
+    }
+}
+
+void FileInterpreter::updateSaveFile(const char* save_name, int current_level) {
+    std::string path;
+    path.append(SAVES_DIRECTORY_START).append(save_name);
+    std::ofstream output(path, std::ios::out | std::ios::trunc);
+    if (output.is_open()) {
+        output << "\"Current Level\": i" << current_level + 1;
+        output.close();
+    }
+}
+
+void FileInterpreter::deleteSaveFile(const char* save_name) {
+    std::string path;
+    path.append(SAVES_DIRECTORY_START).append(save_name);
+    std::remove(path.c_str());
 }

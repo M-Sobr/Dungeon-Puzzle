@@ -2,6 +2,7 @@
 
 #include "LevelUpEffects.h"
 #include "Effect.h"
+#include "../utils/ReadInput.h"
 
 LevelUpEffects::LevelUpEffects() {
     ;
@@ -13,22 +14,15 @@ void LevelUpEffects::addLevel(std::vector<EffectsList*> effects) {
 
 EffectsList* LevelUpEffects::chooseLevelUpEffects(int level) {
     std::vector<EffectsList*>* effectChoices = &levelUpEffects.at(level - 2);
+    std::vector<std::string> effect_names;
     
-    // Print effect choices
-    printf("You have levelled up to Level %d!\n", level);
-    for (int i=0; i < effectChoices->size(); i++) {
-        printf("%d) %s\n", i+1, effectChoices->at(i)->toString().c_str());
+    for (EffectsList* e : *effectChoices) {
+        effect_names.push_back(e->toString());
     }
 
-    std::string s;
-    while (true) {
-        // Get user input
-        printf("> ");
-        std::cin >> s;
-        int option = atoi(s.c_str());
-        if (option > 0 && option <= effectChoices->size()) {
-            printf("\n");
-            return effectChoices->at(option - 1)->copy();
-        }
-    }
+    char title[100];
+    sprintf_s(title, "You have levelled up to Level %d!\n", level);
+
+    int option = ReadInput::getNumberChoice(title, &effect_names);
+    return effectChoices->at(option - 1)->copy();
 }
