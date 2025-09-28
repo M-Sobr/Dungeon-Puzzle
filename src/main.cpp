@@ -6,6 +6,7 @@
 #include "file_handling/FileExceptions.h"
 #include "effect/LevelUpEffects.h"
 #include "utils/ReadInput.h"
+#include "utils/Utils.h"
 
 #include <iostream>
 #include <string>
@@ -108,6 +109,9 @@ int main(void) {
     int currentLevelIndex = -1;
     while (currentLevelIndex == -1) {
         save_name = ReadInput::getUserInput("Save Name: ");
+        if (equalsIgnoreCase(save_name.c_str(), "exit", 4)) {
+            return 0;
+        }
         currentLevelIndex = FileInterpreter::loadSaveFile(save_name.c_str());
     }
 
@@ -115,14 +119,12 @@ int main(void) {
     while (currentLevelIndex < levelQuantity) {
         switch (playLevel(*(levels.at(currentLevelIndex)))) {
             case LevelFinishResult::LEVEL_EXIT:
-                currentLevelIndex = levelQuantity;
-                break;
+                return 0;
             case LevelFinishResult::LEVEL_VICTORY:
                 currentLevelIndex ++;
                 FileInterpreter::updateSaveFile(save_name.c_str(), currentLevelIndex);
         }   
     }
-    if (currentLevelIndex == levelQuantity) {
-        FileInterpreter::deleteSaveFile(save_name.c_str());
-    }
+    printf("You have beaten the game!");
+    FileInterpreter::deleteSaveFile(save_name.c_str());
 }
