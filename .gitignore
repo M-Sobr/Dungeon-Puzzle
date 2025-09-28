@@ -3,7 +3,6 @@
 .vs
 
 # C Code
-*.exe
 *.obj
 
 src/compiled/compile_commands.txt
