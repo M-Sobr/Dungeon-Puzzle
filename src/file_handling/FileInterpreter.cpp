@@ -35,9 +35,13 @@ LevelLayer FileInterpreter::loadMapLayer(QFList* layer_contents) {
     for (QFValue* value : layer_contents->getValues()) {
         try {
             layer.addRow(value->get<QFString>("Row is empty or not QFString!")->getValue());
+        
         } catch (NullPointerException* e) {
             this->addException(e);
-        }    
+        
+        } catch (LevelBuilderException* e) {
+            this->addException(new InvalidMapLevelException(e->what(), value->getStartLine(), value->getEndLine()));
+        }
     }
     return layer;
 }

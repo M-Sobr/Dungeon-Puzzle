@@ -4,6 +4,7 @@
 #include <string>
 #include <fstream>
 #include <vector>
+#include <set>
 
 #define MAX_LEVEL_NAME_LENGTH 20
 #define MAX_LEVEL_CHARACTERS 1000
@@ -17,6 +18,8 @@ class LevelLayer {
     private:
         /** Fill blanks in ([0:rows-2], [cols:new_cols-1]) inclusive */
         void fillBlanks(int new_cols);
+
+        int isValidChar(char c);
     
     public:
         char contents[MAX_LEVEL_ROWS][MAX_LEVEL_COLS];
