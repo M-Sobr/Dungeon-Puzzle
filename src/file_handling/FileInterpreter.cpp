@@ -8,8 +8,8 @@
 #include "../effect/LevelUpEffects.h"
 #include "../effect/Effect.h"
 
-#define MAP_LEVEL_DIRECTORY  "config/map_levels.txt"
-#define PLAYER_LEVEL_DIRECTORY "config/player_levels.txt"
+#define MAP_LEVEL_DIRECTORY  "../../config/map_levels.txt"
+#define PLAYER_LEVEL_DIRECTORY "../../config/player_levels.txt"
 
 FileInterpreter::FileInterpreter(const std::string f_name) {
     this->exceptions = new FileInterpreterExceptionList(f_name);
