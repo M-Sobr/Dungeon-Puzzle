@@ -6,4 +6,4 @@
 *.exe
 *.obj
 
-compile_commands.txt
+src/compiled/compile_commands.txt
