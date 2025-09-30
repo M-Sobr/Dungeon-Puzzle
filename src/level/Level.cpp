@@ -70,7 +70,7 @@ void Level::movePlayerTo(int row, int col) {
             symbolUnderPlayer = EMPTY_TILE;
             objective_tiles -= 1;
             break;
-        case Tile_Type::OBJECTIVE:
+        case Tile_Type::FINISH:
             if (objective_tiles == 0) {
                 level_beaten = true;
             }    

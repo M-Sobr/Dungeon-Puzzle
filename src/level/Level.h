@@ -82,6 +82,7 @@ class Level {
                 int player_pos[2];
                 int start_layer;
                 int objective_tiles;
+                int finish_tiles;
 
                 // A counter to make sure every level field required is set before building
                 int necessary_fields_set;

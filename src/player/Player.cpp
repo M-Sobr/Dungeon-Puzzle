@@ -72,15 +72,15 @@ void Player::increaseMaxHealth(int h) {
 
 void Player::gainExperience(int xp) {
     currentXp += xp;
-    while (this->currentXp >= this->xpRequired) {
+    while ((this->currentXp >= this->xpRequired) && (this->isAlive())) {
         this->levelUp();
     } 
-    while (this->currentXp < 0) {
+    while ((this->currentXp < 0) && (this->isAlive())) {
         this->levelDown();
     }
 }
 
-bool Player::isAlive() {
+bool inline Player::isAlive() {
     return is_alive;
 }
 

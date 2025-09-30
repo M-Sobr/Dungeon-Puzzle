@@ -8,7 +8,7 @@ Tile_Type tileTypeFromChar(char c) {
     } else if (c == '+') {
         return Tile_Type::HEAL;
     } else if (c == '*') {
-        return Tile_Type::OBJECTIVE;
+        return Tile_Type::FINISH;
     }
     return Tile_Type::NULL_TILE;
 }

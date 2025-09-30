@@ -11,7 +11,7 @@ enum Tile_Type {
     NULL_TILE,
     MONSTER,
     HEAL,
-    OBJECTIVE
+    FINISH
 };
 
 Tile_Type tileTypeFromChar(char c);

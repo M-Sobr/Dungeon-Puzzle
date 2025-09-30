@@ -2,7 +2,7 @@
 #include "Tile.h"
 #include "../file_handling/FileExceptions.h"
 
-Level::LevelBuilder::LevelBuilder() : necessary_fields_set(0), start_layer(-1), objective_tiles(0) {
+Level::LevelBuilder::LevelBuilder() : necessary_fields_set(0), start_layer(-1), objective_tiles(0), finish_tiles(0) {
     ;
 }
 
@@ -16,7 +16,7 @@ bool Level::LevelBuilder::addPlayer(int row, int col, int layer) {
     
     } else {
         // Player has already been added
-        return false;
+        throw new LevelBuilderException("A level cannot have more than one player!");
     }
 }
 
@@ -36,13 +36,20 @@ Level::LevelBuilder* Level::LevelBuilder::addLayer(LevelLayer layer) {
             tile_char = layer.contents[i][j];
             if (tile_char == 'P') {
                 // Add player tile
-                this->addPlayer(i, j, ((int)layout_layers.size()) - 1);
+                try {
+                    this->addPlayer(i, j, ((int)layout_layers.size()) - 1);
+                } catch (LevelBuilderException* e) {
+                    throw e;
+                }
                 continue;
             }
             switch (tileTypeFromChar(tile_char)) {
                 case Tile_Type::MONSTER:
                 case Tile_Type::HEAL:
                     objective_tiles += 1;
+                    break;
+                case Tile_Type::FINISH:
+                    finish_tiles += 1;    
             }
         }
     }
@@ -52,6 +59,8 @@ Level::LevelBuilder* Level::LevelBuilder::addLayer(LevelLayer layer) {
 Level* Level::LevelBuilder::build() {
     if (necessary_fields_set < 2) {
         throw new LevelBuilderException("Not enough level fields set!");
+    } else if (finish_tiles == 0) {
+        throw new LevelBuilderException("This level has no finish tile!");
     }
     return new Level(this->level_name, this->layout_layers, this->player_pos, this->start_layer, this->objective_tiles);
 }

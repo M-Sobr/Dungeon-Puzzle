@@ -5,7 +5,8 @@
 std::set<char> valid_chars = {'P', '_', ' ', 'X', '*',
     '#', 
     '1', '2', '3', '4', '5', '6', '7', '8', '9',
-    '+'
+    '+',
+    'C'
 };
 
 LevelLayer::LevelLayer() :
@@ -36,7 +37,11 @@ void LevelLayer::addRow(std::string row_string) {
         if (LevelLayer::isValidChar(c)) {
             contents[rows][j] = c;
         } else {
-            throw new LevelBuilderException("Invalid level character " + c);
+            char errorMessage[30];
+            sprintf_s(errorMessage, "Invalid level character %c", c);
+            std::string s;
+            s.append(errorMessage);
+            throw new LevelBuilderException(s);
         }
     }
     for (j=row_string_size; j<cols; j++) {
