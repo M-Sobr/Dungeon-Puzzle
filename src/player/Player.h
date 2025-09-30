@@ -36,6 +36,7 @@ class Player {
         int heal();
         int heal(int health);
         void increaseMaxHealth(int health);
+        void gainMovement(int value);
         bool isAlive();
         void applyEffect(Effect* e);
         void applyEffects(EffectsList* e);

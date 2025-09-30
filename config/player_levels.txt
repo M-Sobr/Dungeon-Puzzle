@@ -1,8 +1,12 @@
 "Player Levels": {
     "Effects": [
         [
-            { "GAIN_MAX_HEALTH": i2  },
+            { "GAIN_MAX_HEALTH": i2, "GAIN_HEALTH": i2  },
             { "GAIN_HEALTH":     i5  }
+        ],
+        [
+            { "GAIN_MOVEMENT": i1 },
+            { "GAIN_HEALTH":   i3  }
         ]
     ]
 }

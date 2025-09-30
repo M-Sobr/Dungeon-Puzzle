@@ -53,6 +53,7 @@ void Player::levelUp() {
     this->level += 1;
     this->movement += 1;
     this->applyEffect(new Effect(EffectTypes::GAIN_MAX_HEALTH, 5));
+    this->applyEffect(new Effect(EffectTypes::GAIN_HEALTH, 5));
 
     // Get level choices
     this->applyEffects(level_up_effects.chooseLevelUpEffects(level));
@@ -66,8 +67,11 @@ void Player::levelDown() {
 }
 
 void Player::increaseMaxHealth(int h) {
-    this->health += h;
     this->max_health += h;
+}
+
+void Player::gainMovement(int value) {
+    this->movement += value;
 }
 
 void Player::gainExperience(int xp) {

@@ -42,7 +42,12 @@ void Level::getPlayerPos(int pos_ptr[2]) {
 }
 
 Tile* Level::getTileAtPosition(int row, int col) {
-    return Tile::tileFromChar(currentLayer.contents[row][col]);
+    if (!isSpecialTile(currentLayer.contents[row][col])) {
+        return Tile::tileFromChar(currentLayer.contents[row][col]);
+    }
+    // Temporary
+    printf("Special Tile!\n");
+    return nullptr;
 }
 
 bool Level::isBeaten() {

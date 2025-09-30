@@ -2,6 +2,12 @@
 #include "../player/Player.h"
 #include "../effect/Effect.h"
 
+#include <set>
+
+std::set<char> special_chars = {
+    'C'
+};
+
 Tile_Type tileTypeFromChar(char c) {
     if ('0' <= c && c <= '9') {
         return Tile_Type::MONSTER;
@@ -9,8 +15,14 @@ Tile_Type tileTypeFromChar(char c) {
         return Tile_Type::HEAL;
     } else if (c == '*') {
         return Tile_Type::FINISH;
+    } else if (isSpecialTile(c)) {
+        return Tile_Type::SPECIAL;
     }
     return Tile_Type::NULL_TILE;
+}
+
+bool inline isSpecialTile(char c) {
+    return special_chars.count(c);
 }
 
 Tile::Tile(char ch) : c(ch) {
@@ -26,7 +38,7 @@ Tile* Tile::tileFromChar(char c) {
         case Tile_Type::MONSTER:
             return new Monster(c); 
         case Tile_Type::HEAL:
-            return new HealTile();
+            return new HealTile();    
         default:
             return new NullTile(c);
     }
@@ -39,6 +51,10 @@ NullTile::NullTile(char ch) : Tile::Tile(ch) {
 void NullTile::resolveEffects(Player*) {};
 
 bool NullTile::isObjective() {
+    return false;
+}
+
+bool NullTile::isSpecial() {
     return false;
 }
 
@@ -57,6 +73,10 @@ bool Monster::isObjective() {
     return true;
 }
 
+bool Monster::isSpecial() {
+    return false;
+}
+
 HealTile::HealTile() : Tile::Tile(HEAL_TILE) {
     ;
 };
@@ -66,5 +86,25 @@ void HealTile::resolveEffects(Player* p) {
 }
 
 bool HealTile::isObjective() {
+    return true;
+}
+
+bool HealTile::isSpecial() {
+    return false;
+}
+
+ChestTile::ChestTile() : Tile::Tile(CHEST) {
+    ;
+};
+
+void ChestTile::resolveEffects(Player* p) {
+    p->applyEffect(new Effect(EffectTypes::GAIN_HEALTH, PLAYER_MAXIMUM_HEALTH));
+}
+
+bool ChestTile::isObjective() {
+    return true;
+}
+
+bool ChestTile::isSpecial() {
     return true;
 }

@@ -11,10 +11,13 @@ enum Tile_Type {
     NULL_TILE,
     MONSTER,
     HEAL,
-    FINISH
+    CHEST,
+    FINISH,
+    SPECIAL
 };
 
 Tile_Type tileTypeFromChar(char c);
+bool isSpecialTile(char c);
 
 class Tile {    
     private:
@@ -26,6 +29,7 @@ class Tile {
         char getChar();
 
         virtual bool isObjective() = 0;
+        virtual bool isSpecial() = 0;
 
         // Create a tile from an input character
         static Tile* tileFromChar(char c);
@@ -40,6 +44,8 @@ class NullTile : public Tile {
         NullTile(char c);
         ~NullTile() {};
         bool isObjective() override;
+        bool isSpecial() override;
+
         void resolveEffects(Player* /*player*/) override;
 };
 
@@ -52,6 +58,7 @@ class Monster : public Tile {
         Monster(char c);
         ~Monster() {};
         bool isObjective() override;
+        bool isSpecial() override;
 
         void resolveEffects(Player* player) override;
 };
@@ -63,6 +70,19 @@ class HealTile : public Tile {
         HealTile();
         ~HealTile() {};
         bool isObjective() override;
+        bool isSpecial() override;
+
+        void resolveEffects(Player* player) override;
+};
+
+class ChestTile : public Tile {
+    private:
+
+    public:
+        ChestTile();
+        ~ChestTile() {};
+        bool isObjective() override;
+        bool isSpecial() override;
 
         void resolveEffects(Player* player) override;
 };

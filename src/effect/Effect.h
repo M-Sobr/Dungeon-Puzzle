@@ -11,6 +11,7 @@ enum EffectTypes {
     GAIN_MAX_HEALTH,
     GAIN_HEALTH,
     GAIN_EXPERIENCE,
+    GAIN_MOVEMENT,
     TAKE_DAMAGE
 };
 
@@ -33,7 +34,7 @@ class Effect {
     public:
         Effect(EffectTypes type, int value);
         Effect(const char type_string[], int value);
-        int applyEffect(Player* player);
+        void applyEffect(Player* player);
         void undoEffect(Player* player);
         /** Copy this effect and return a new effect */
         Effect* copy();

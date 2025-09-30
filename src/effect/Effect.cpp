@@ -25,13 +25,15 @@ Effect::Effect(const char type_string[], int v) :
         this->type = EffectTypes::GAIN_EXPERIENCE;
     } else if (equalsIgnoreCase(type_string, "TAKE_DAMAGE", 12)) {
         this->type = EffectTypes::TAKE_DAMAGE;
+    } else if (equalsIgnoreCase(type_string, "GAIN_MOVEMENT", 14)) {
+        this->type = EffectTypes::GAIN_MOVEMENT;
     } else {
         std::string s;
         throw new InvalidEffectNameException(s.append(type_string).append(" is not a valid effect type name!"));
     }
 }
 
-int Effect::applyEffect(Player* player) {
+void Effect::applyEffect(Player* player) {
     switch (this->type) {
         case EffectTypes::GAIN_MAX_HEALTH:
             player->increaseMaxHealth(this->value);
@@ -44,9 +46,11 @@ int Effect::applyEffect(Player* player) {
             break;
         case EffectTypes::TAKE_DAMAGE:
             player->takeDamage(this->value);
-            break;         
+            break;  
+        case EffectTypes::GAIN_MOVEMENT:
+            player->gainMovement(this->value);
+            break;    
     }
-    return 0;
 }
 
 void Effect::undoEffect(Player* player) {
@@ -62,7 +66,10 @@ void Effect::undoEffect(Player* player) {
             break;
         case EffectTypes::TAKE_DAMAGE:
             player->heal(this->value);
-            break;              
+            break; 
+        case EffectTypes::GAIN_MOVEMENT:
+            player->gainMovement(-this->value);
+            break;                   
     }
 }
 
