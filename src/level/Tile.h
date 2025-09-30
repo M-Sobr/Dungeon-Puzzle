@@ -85,6 +85,10 @@ class ChestTile : public Tile {
         bool isSpecial() override;
 
         void resolveEffects(Player* player) override;
+
+        class ChestBuilder {
+            
+        };
 };
 
 #endif // TILE_H

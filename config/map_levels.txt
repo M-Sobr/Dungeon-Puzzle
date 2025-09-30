@@ -41,19 +41,15 @@
             {
                 "Position": [i1, i1, i2],
                 "Effects": [
-                    [
-                        { "GAIN_ATTACK": i1  },
-                        { "GAIN_MAX_HEALTH": i1 }
-                    ]
+                    { "GAIN_ATTACK": i1  },
+                    { "GAIN_MAX_HEALTH": i1 }
                 ]
             },
             {
                 "Position": [i1, i6, i2],
                 "Effects": [
-                    [
-                        { "GAIN_MOVEMENT": i1  },
-                        { "GAIN_HEALTH":   i3  }
-                    ]
+                    { "GAIN_MOVEMENT": i1  },
+                    { "GAIN_HEALTH":   i3  }
                 ]
             }
         ]

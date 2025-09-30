@@ -5,14 +5,15 @@
 #include <map>
 
 class EffectsList;
+class EffectChoices;
 
 class LevelUpEffects {
     private:
-        std::vector<std::vector<EffectsList*>> levelUpEffects;
+        std::vector<EffectChoices*> levelUpEffects;
 
     public:
         LevelUpEffects();
-        void addLevel(std::vector<EffectsList*> effects);
+        void addLevel(EffectChoices* effects);
         EffectsList* chooseLevelUpEffects(int level);
 };
 

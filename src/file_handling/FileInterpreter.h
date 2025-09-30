@@ -2,11 +2,11 @@
 #define FILE_INTERPRETER_H
 
 #include "FileExceptions.h"
+#include "../level/Level.h"
 
 #include <set>
 #include <vector>
 
-class Level;
 class QFPair;
 class QFDict;
 class QFList;
@@ -14,6 +14,7 @@ class LevelLayer;
 class LevelUpEffects;
 class Effect;
 class EffectsList;
+class EffectChoices;
 
 class FileInterpreter {
     private:
@@ -21,12 +22,16 @@ class FileInterpreter {
         FileInterpreterExceptionList* exceptions;
 
         LevelLayer loadMapLayer(QFList* layer_contents);
+
+        
+        void loadChests(QFDict* level_contents, Level::LevelBuilder* level_builder);
+        
         Level* loadMapLevel(QFDict* level_info);
 
         Effect* loadEffect(QFPair* effect_info);
         EffectsList* loadEffectsList(QFDict* effects_list_info);
         
-        std::vector<EffectsList*> loadPlayerLevel(QFList* level_effects_list);
+        EffectChoices* loadEffectChoices(QFList* effect_choices);
         
         FileInterpreter(const std::string file_name);
         void addException(FileInterpreterException* e);

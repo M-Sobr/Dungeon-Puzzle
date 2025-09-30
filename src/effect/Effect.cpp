@@ -1,6 +1,7 @@
 #include "Effect.h" 
 #include "../player/Player.h"
 #include "../utils/Utils.h"
+#include "../utils/ReadInput.h"
 
 InvalidEffectNameException::InvalidEffectNameException(const std::string m) {
     this->msg = m;
@@ -139,4 +140,28 @@ std::string EffectsList::toString() {
     return s.append(this->effects.at(last_effect_index)->toString());
 }
 
+EffectChoices::EffectChoices() {
+    ;
+}
 
+EffectChoices::~EffectChoices() {
+    while (choices.size() > 0) {
+        EffectsList* e = this->choices.back();
+        this->choices.pop_back();
+        delete e;
+    }
+}
+
+void EffectChoices::addEffectList(EffectsList* effectList) {
+    this->choices.push_back(effectList);
+}
+
+EffectsList* EffectChoices::chooseEffectList(const char* title) {
+    std::vector<std::string> effect_names;
+    for (EffectsList* e : this->choices) {
+        effect_names.push_back(e->toString());
+    }
+
+    int option = ReadInput::getNumberChoice(title, &effect_names);
+    return this->choices.at(option - 1)->copy();
+}

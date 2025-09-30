@@ -3,11 +3,11 @@
 
 #include "FileInterpreter.h"
 #include "FileReader.h"
-#include "../level/Level.h"
 #include "qf_types/QFTypes.h"
 #include "../effect/LevelUpEffects.h"
 #include "../effect/Effect.h"
 #include "../utils/ReadInput.h"
+#include "../level/Tile.h"
 
 #define SAVES_DIRECTORY_START "../../saves/"
 #define CONFIG_DIRECTORY_START "../../config/"
@@ -44,6 +44,60 @@ LevelLayer FileInterpreter::loadMapLayer(QFList* layer_contents) {
         }
     }
     return layer;
+}
+
+void FileInterpreter::loadChests(QFDict* level_contents, Level::LevelBuilder* level_builder) {
+    QFList* chests;
+    try {
+        chests = level_contents->getValueFromKey("Chests")->get<QFList>("");
+    
+    // Levels do not require a chests list (only if chests are in the level)
+    } catch (FileInterpreterException* e) {
+        return;
+    } catch (NoKeyFoundException* e) {
+        return;
+    }
+
+    QFDict* chest_contents;
+    int chest_pos[3];
+    bool valid_chest;
+    for (QFValue* chest : chests->getValues()) {
+        valid_chest = true;
+        try {
+            chest_contents = chest->get<QFDict>("Chest contents are not QFDict!");
+        } catch (FileInterpreterException* e) {
+            this->addException(e);
+            continue;
+        }
+
+        // Get chest position
+        QFList* chest_pos_list;
+        try {
+            chest_pos_list = chest_contents->getValueFromKey("Position")->get<QFList>("Chest position is empty or not QFList!");
+        
+        } catch (FileInterpreterException* e) {
+            this->addException(e);
+            
+        } catch (NoKeyFoundException* e) {
+            this->addException(new InvalidMapLevelException(e->what(), chest_contents->getStartLine(), chest_contents->getEndLine()));
+        }
+
+        std::vector<QFValue*> values = chest_pos_list->getValues();
+
+        if (values.size() != 3) {
+            this->addException(new InvalidMapLevelException("Chest position needs three values!", 
+                chest_pos_list->getStartLine(), chest_pos_list->getEndLine()));
+        
+        } else {
+            for (int i=0; i<3; i++) {
+                try {
+                    chest_pos[i] = values.at(i)->get<QFInt>("Chest position values must be QFInt!")->getValue();
+                } catch (FileInterpreterException* e) {
+                    this->addException(e);
+                } 
+            }
+        }
+    }
 }
 
 Level* FileInterpreter::loadMapLevel(QFDict* level_contents) {
@@ -83,6 +137,11 @@ Level* FileInterpreter::loadMapLevel(QFDict* level_contents) {
             this->addException(e);
         }
     }
+
+    // Add chests
+    this->loadChests(level_contents, &level_builder);
+
+    // Build the level
     try {
         return level_builder.build();
     } catch (LevelBuilderException* e) {
@@ -171,19 +230,19 @@ EffectsList* FileInterpreter::loadEffectsList(QFDict* effects_list_info) {
     return effects_list;
 }
 
-std::vector<EffectsList*> FileInterpreter::loadPlayerLevel(QFList* level_effects_list) {
+EffectChoices* FileInterpreter::loadEffectChoices(QFList* effect_choices_list) {
     
-    std::vector<EffectsList*> effects_list;
+    EffectChoices* effect_choices = new EffectChoices();
 
-    for (QFValue* dict : level_effects_list->getValues()) {
+    for (QFValue* dict : effect_choices_list->getValues()) {
         try {
-            effects_list.push_back(this->loadEffectsList(dict->get<QFDict>("Effects list info is not QFDict!")));
+            effect_choices->addEffectList(this->loadEffectsList(dict->get<QFDict>("Effects list info is not QFDict!")));
         
         } catch (FileInterpreterException* e) {
             this->addException(e);
         }
     }
-    return effects_list;
+    return effect_choices;
 }
 
 void FileInterpreter::loadPlayerLevels(LevelUpEffects* level_up_effects) {
@@ -233,7 +292,7 @@ void FileInterpreter::loadPlayerLevels(LevelUpEffects* level_up_effects) {
 
         for (QFValue* list : player_effects_list->getValues()) {
             try {
-                level_up_effects->addLevel(fileInterpreter.loadPlayerLevel(list->get<QFList>("Player level effects list is not QFList!")));
+                level_up_effects->addLevel(fileInterpreter.loadEffectChoices(list->get<QFList>("Player level effects list is not QFList!")));
             } catch (FileInterpreterException* e) {
                 fileInterpreter.addException(e);
             }

@@ -55,5 +55,15 @@ class EffectsList {
         std::string toString();
 };
 
+class EffectChoices {
+    private:
+        std::vector<EffectsList*> choices;
+
+    public:
+        EffectChoices();
+        ~EffectChoices();
+        void addEffectList(EffectsList* effectList);
+        EffectsList* chooseEffectList(const char* title);
+};
 
 #endif //EFFECT_H
