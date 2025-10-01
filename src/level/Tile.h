@@ -77,6 +77,7 @@ class HealTile : public Tile {
 
 class ChestTile : public Tile {
     private:
+        int pos[3];
 
     public:
         ChestTile();
@@ -87,7 +88,12 @@ class ChestTile : public Tile {
         void resolveEffects(Player* player) override;
 
         class ChestBuilder {
+            private:
+                int pos[3];
             
+            public:
+                ChestBuilder();
+                ChestBuilder* setPosition(int pos[3]);
         };
 };
 

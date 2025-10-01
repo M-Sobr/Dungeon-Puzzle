@@ -92,19 +92,3 @@ bool HealTile::isObjective() {
 bool HealTile::isSpecial() {
     return false;
 }
-
-ChestTile::ChestTile() : Tile::Tile(CHEST) {
-    ;
-};
-
-void ChestTile::resolveEffects(Player* p) {
-    p->applyEffect(new Effect(EffectTypes::GAIN_HEALTH, PLAYER_MAXIMUM_HEALTH));
-}
-
-bool ChestTile::isObjective() {
-    return true;
-}
-
-bool ChestTile::isSpecial() {
-    return true;
-}

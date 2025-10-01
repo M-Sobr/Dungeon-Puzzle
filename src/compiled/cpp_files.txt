@@ -4,6 +4,7 @@
 ../player/Action.cpp
 ../utils/Utils.cpp
 ../level/Tile.cpp
+../level/special_tiles/Chest.cpp
 ../effect/Effect.cpp
 ../effect/LevelUpEffects.cpp
 ../file_handling/FileReader.cpp 

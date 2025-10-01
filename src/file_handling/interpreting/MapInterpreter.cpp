@@ -1,6 +1,80 @@
 #include "MapInterpreter.h"
 #include "../qf_types/QFTypes.h"
 #include "../FileReader.h"
+#include "../../level/Tile.h"
+
+bool MapInterpreter::loadChestPos(QFList* pos_list, int pos[]) {
+    std::vector<QFValue*> values = pos_list->getValues();
+
+    if (values.size() != 3) {
+        this->addException(new InvalidMapLevelException("Chest position needs three values!", 
+            pos_list->getStartLine(), pos_list->getEndLine()));
+        return 0;     
+    }
+
+    bool valid_pos = 1;
+    for (int i=0; i<3; i++) {
+        try {
+            pos[i] = values.at(i)->get<QFInt>("Chest position values must be QFInt!")->getValue();
+        } catch (FileInterpreterException* e) {
+            this->addException(e);
+            valid_pos = 0;
+        } 
+    }
+    return valid_pos;
+}
+
+ChestTile* MapInterpreter::loadChest(QFDict* chest_contents) {
+    
+    // Get chest position
+    QFList* chest_pos_list;
+    bool valid_pos = 1;
+    try {
+        chest_pos_list = chest_contents->getValueFromKey("Position")->get<QFList>("Chest position is empty or not QFList!");
+    
+    } catch (FileInterpreterException* e) {
+        this->addException(e);
+        valid_pos = 0;
+        
+    } catch (NoKeyFoundException* e) {
+        this->addException(new InvalidMapLevelException(e->what(), chest_contents->getStartLine(), chest_contents->getEndLine()));
+        valid_pos = 0;
+    }
+
+    int chest_pos[3];
+    ChestTile::ChestBuilder builder;
+    if (valid_pos && !this->loadChestPos(chest_pos_list, chest_pos)) {
+        valid_pos = 0;
+    }
+    if (valid_pos) {
+        builder.setPosition(chest_pos);
+    }
+    // Temp
+    return nullptr;
+}
+
+void MapInterpreter::loadChests(QFDict* level_contents, Level::LevelBuilder* level_builder) {
+    QFList* chests;
+    try {
+        chests = level_contents->getValueFromKey("Chests")->get<QFList>("");
+    
+    // Levels do not require a chests list (only if chests are in the level)
+    } catch (FileInterpreterException* e) {
+        return;
+    } catch (NoKeyFoundException* e) {
+        return;
+    }
+
+    QFDict* chest_contents;
+    int chest_pos[3];
+    for (QFValue* chest : chests->getValues()) {
+        try {
+            ChestTile* c = this->loadChest(chest->get<QFDict>("Chest contents are not QFDict!"));
+        } catch (FileInterpreterException* e) {
+            this->addException(e);
+        }
+    }
+}
 
 LevelLayer MapInterpreter::loadMapLayer(QFList* layer_contents) {
     LevelLayer layer;
@@ -19,60 +93,6 @@ LevelLayer MapInterpreter::loadMapLayer(QFList* layer_contents) {
         }
     }
     return layer;
-}
-
-void MapInterpreter::loadChests(QFDict* level_contents, Level::LevelBuilder* level_builder) {
-    QFList* chests;
-    try {
-        chests = level_contents->getValueFromKey("Chests")->get<QFList>("");
-    
-    // Levels do not require a chests list (only if chests are in the level)
-    } catch (FileInterpreterException* e) {
-        return;
-    } catch (NoKeyFoundException* e) {
-        return;
-    }
-
-    QFDict* chest_contents;
-    int chest_pos[3];
-    bool valid_chest;
-    for (QFValue* chest : chests->getValues()) {
-        valid_chest = true;
-        try {
-            chest_contents = chest->get<QFDict>("Chest contents are not QFDict!");
-        } catch (FileInterpreterException* e) {
-            this->addException(e);
-            continue;
-        }
-
-        // Get chest position
-        QFList* chest_pos_list;
-        try {
-            chest_pos_list = chest_contents->getValueFromKey("Position")->get<QFList>("Chest position is empty or not QFList!");
-        
-        } catch (FileInterpreterException* e) {
-            this->addException(e);
-            
-        } catch (NoKeyFoundException* e) {
-            this->addException(new InvalidMapLevelException(e->what(), chest_contents->getStartLine(), chest_contents->getEndLine()));
-        }
-
-        std::vector<QFValue*> values = chest_pos_list->getValues();
-
-        if (values.size() != 3) {
-            this->addException(new InvalidMapLevelException("Chest position needs three values!", 
-                chest_pos_list->getStartLine(), chest_pos_list->getEndLine()));
-        
-        } else {
-            for (int i=0; i<3; i++) {
-                try {
-                    chest_pos[i] = values.at(i)->get<QFInt>("Chest position values must be QFInt!")->getValue();
-                } catch (FileInterpreterException* e) {
-                    this->addException(e);
-                } 
-            }
-        }
-    }
 }
 
 Level* MapInterpreter::loadMapLevel(QFDict* level_contents) {

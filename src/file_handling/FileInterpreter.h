@@ -23,7 +23,7 @@ class FileInterpreter {
         Effect* loadEffect(QFPair* effect_info);
         EffectsList* loadEffectsList(QFDict* effects_list_info);
     
-    
+        
 
         static int inline resolveCorruptedSaveFile();
 
