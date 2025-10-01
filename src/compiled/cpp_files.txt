@@ -9,6 +9,8 @@
 ../file_handling/FileReader.cpp 
 ../file_handling/qf_types/QFTypes.cpp
 ../file_handling/FileInterpreter.cpp 
+../file_handling/interpreting/MapInterpreter.cpp 
+../file_handling/interpreting/PlayerInterpreter.cpp 
 ../level/LevelBuilder.cpp 
 ../level/LevelLayer.cpp 
 ../file_handling/FileExceptions.cpp
