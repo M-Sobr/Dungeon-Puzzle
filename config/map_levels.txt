@@ -40,7 +40,7 @@
         "Chests": [
             {
                 "Position": [i1, i1, i2],
-                "Effects": [
+                "Effects": [    
                     { "GAIN_ATTACK": i1  },
                     { "GAIN_MAX_HEALTH": i1 }
                 ]

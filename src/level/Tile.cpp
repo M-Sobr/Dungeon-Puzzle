@@ -15,13 +15,13 @@ Tile_Type tileTypeFromChar(char c) {
         return Tile_Type::HEAL;
     } else if (c == '*') {
         return Tile_Type::FINISH;
-    } else if (isSpecialTile(c)) {
-        return Tile_Type::SPECIAL;
+    } else if (c == 'C') {
+        return Tile_Type::CHEST;
     }
     return Tile_Type::NULL_TILE;
 }
 
-bool inline isSpecialTile(char c) {
+bool isSpecialTile(char c) {
     return special_chars.count(c);
 }
 
@@ -31,6 +31,10 @@ Tile::Tile(char ch) : c(ch) {
 
 char Tile::getChar() {
     return this->c;
+}
+
+Tile_Type Tile::getType() {
+    return tileTypeFromChar(this->c);
 }
 
 Tile* Tile::tileFromChar(char c) {

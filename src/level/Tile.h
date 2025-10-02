@@ -8,14 +8,7 @@ class EffectChoices;
 #define EMPTY_TILE '_'
 #define HEAL_TILE '+'
 
-enum Tile_Type {
-    NULL_TILE,
-    MONSTER,
-    HEAL,
-    CHEST,
-    FINISH,
-    SPECIAL
-};
+#include "Tile_Type.h"
 
 Tile_Type tileTypeFromChar(char c);
 bool isSpecialTile(char c);
@@ -28,6 +21,8 @@ class Tile {
         Tile(char c);
         virtual ~Tile() {};
         char getChar();
+
+        Tile_Type getType();
 
         virtual bool isObjective() = 0;
         virtual bool isSpecial() = 0;

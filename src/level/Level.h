@@ -16,6 +16,8 @@
 class Tile;
 class SpecialTile;
 
+#include "Tile_Type.h"
+
 class LevelLayer {
     private:
         /** Fill blanks in ([0:rows-2], [cols:new_cols-1]) inclusive */
@@ -44,11 +46,11 @@ class Level {
         char symbolUnderPlayer;
 
         int objective_tiles;
-        std::map<int*, SpecialTile*>* special_tiles;
+        std::map<int, SpecialTile*>* special_tiles;
         bool level_beaten;
 
         /** Create a new level with a name, layers, player_pos (row, col) and objective tiles. */
-        Level(std::string level_name, std::vector<LevelLayer> layout_layers, std::map<int*, SpecialTile*>* special_tiles, int* player_pos, int start_layer, int objective_tiles);
+        Level(std::string level_name, std::vector<LevelLayer> layout_layers, std::map<int, SpecialTile*>* special_tiles, int* player_pos, int start_layer, int objective_tiles);
 
         
 
@@ -86,7 +88,7 @@ class Level {
                 int start_layer;
                 int objective_tiles;
                 int finish_tiles;
-                std::map<int*, SpecialTile*>* special_tiles;
+                std::map<int, SpecialTile*>* special_tiles;
 
                 // A counter to make sure every level field required is set before building
                 int necessary_fields_set;
@@ -96,6 +98,10 @@ class Level {
                  */
                 bool addPlayer(int row, int col, int layer);
 
+                Tile_Type getTileTypeAtPosition(int layer, int row, int col);
+
+                void checkSpecialTiles();
+
             public:
                 LevelBuilder();
                 
@@ -103,7 +109,7 @@ class Level {
                 
                 Level::LevelBuilder* addLayer(LevelLayer layer);
 
-                Level::LevelBuilder* addSpecialTile(int* pos[3], SpecialTile* tile);
+                Level::LevelBuilder* addSpecialTile(int pos[3], SpecialTile* tile);
 
                 /** Builds the level if all required fields have been set */
                 Level* build();

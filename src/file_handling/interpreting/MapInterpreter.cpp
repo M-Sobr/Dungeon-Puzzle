@@ -32,7 +32,10 @@ ChestTile* MapInterpreter::loadChest(QFDict* chest_contents, int chest_pos[3]) {
     bool valid_pos = 1;
     try {
         chest_pos_list = chest_contents->getValueFromKey("Position")->get<QFList>("Chest position is empty or not QFList!");
-    
+        if (!this->loadChestPos(chest_pos_list, chest_pos)) {
+            valid_pos = 0;
+        }
+
     } catch (FileInterpreterException* e) {
         this->addException(e);
         valid_pos = 0;
@@ -43,9 +46,6 @@ ChestTile* MapInterpreter::loadChest(QFDict* chest_contents, int chest_pos[3]) {
     }
 
     ChestTile::ChestBuilder builder;
-    if (valid_pos && !this->loadChestPos(chest_pos_list, chest_pos)) {
-        valid_pos = 0;
-    }
     if (!valid_pos) {
         chest_pos[0] = -1;  // Set to invalid position
     }
@@ -54,7 +54,6 @@ ChestTile* MapInterpreter::loadChest(QFDict* chest_contents, int chest_pos[3]) {
     try {
         chest_choices = loadEffectChoices(chest_contents->getValueFromKey("Effects")->get<QFList>("Chest effects is empty or not QFList!"));
         builder.setChoices(chest_choices);
-        printf("Choice loading successful!\n");
 
     } catch (FileInterpreterException* e) {
         this->addException(e);
@@ -79,9 +78,9 @@ void MapInterpreter::loadChests(QFDict* level_contents, Level::LevelBuilder* lev
         chests = level_contents->getValueFromKey("Chests")->get<QFList>("");
     
     // Levels do not require a chests list (only if chests are in the level)
-    } catch (FileInterpreterException* e) {
+    } catch (FileInterpreterException*) {
         return;
-    } catch (NoKeyFoundException* e) {
+    } catch (NoKeyFoundException*) {
         return;
     }
 
@@ -89,7 +88,7 @@ void MapInterpreter::loadChests(QFDict* level_contents, Level::LevelBuilder* lev
     for (QFValue* chest_dict : chests->getValues()) {
         try {
             ChestTile* chest = this->loadChest(chest_dict->get<QFDict>("Chest contents are not QFDict!"), chest_pos);
-            level_builder->addSpecialTile(&chest_pos, chest);
+            level_builder->addSpecialTile(chest_pos, chest);
         } catch (FileInterpreterException* e) {
             this->addException(e);
         }
