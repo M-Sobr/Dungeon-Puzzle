@@ -12,7 +12,8 @@ enum EffectTypes {
     GAIN_HEALTH,
     GAIN_EXPERIENCE,
     GAIN_MOVEMENT,
-    TAKE_DAMAGE
+    TAKE_DAMAGE,
+    GAIN_ATTACK
 };
 
 class Player;

@@ -28,6 +28,8 @@ Effect::Effect(const char type_string[], int v) :
         this->type = EffectTypes::TAKE_DAMAGE;
     } else if (equalsIgnoreCase(type_string, "GAIN_MOVEMENT", 14)) {
         this->type = EffectTypes::GAIN_MOVEMENT;
+    } else if (equalsIgnoreCase(type_string, "GAIN_ATTACK", 12)) {
+        this->type = EffectTypes::GAIN_ATTACK;
     } else {
         std::string s;
         throw new InvalidEffectNameException(s.append(type_string).append(" is not a valid effect type name!"));
@@ -50,7 +52,10 @@ void Effect::applyEffect(Player* player) {
             break;  
         case EffectTypes::GAIN_MOVEMENT:
             player->gainMovement(this->value);
-            break;    
+            break; 
+        case EffectTypes::GAIN_ATTACK:
+            player->gainAttack(this->value);
+            break;       
     }
 }
 
@@ -70,7 +75,10 @@ void Effect::undoEffect(Player* player) {
             break; 
         case EffectTypes::GAIN_MOVEMENT:
             player->gainMovement(-this->value);
-            break;                   
+            break;   
+        case EffectTypes::GAIN_ATTACK:
+            player->gainAttack(-this->value);
+            break;                     
     }
 }
 

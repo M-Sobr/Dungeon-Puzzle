@@ -9,9 +9,9 @@
 Level::Level() {
 }    
 
-Level::Level(std::string level_name, std::vector<LevelLayer> layers, int* p_pos, int start_layer, int obj_tiles) : 
+Level::Level(std::string level_name, std::vector<LevelLayer> layers, std::map<int*, SpecialTile*>* spec, int* p_pos, int start_layer, int obj_tiles) : 
     
-    name(level_name), layout_layers(layers), currentLayerIndex(start_layer), currentLayer(layers.at(start_layer)),
+    name(level_name), layout_layers(layers), special_tiles(spec), currentLayerIndex(start_layer), currentLayer(layers.at(start_layer)),
     symbolUnderPlayer(EMPTY_TILE), objective_tiles(obj_tiles), level_beaten(false) {
     
     player_pos[0] = p_pos[0];

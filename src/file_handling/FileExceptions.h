@@ -82,4 +82,14 @@ class LevelBuilderException {
 
 };
 
+class ChestBuilderException {
+    private:
+        std::string msg;
+
+    public:
+        ChestBuilderException(const std::string msg);
+        const char* what();
+
+};
+
 #endif

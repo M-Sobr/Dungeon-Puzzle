@@ -5,6 +5,7 @@
 #include <fstream>
 #include <vector>
 #include <set>
+#include <map>
 
 #define MAX_LEVEL_NAME_LENGTH 20
 #define MAX_LEVEL_CHARACTERS 1000
@@ -13,6 +14,7 @@
 #define MAX_LEVEL_COLS 12
 
 class Tile;
+class SpecialTile;
 
 class LevelLayer {
     private:
@@ -42,10 +44,11 @@ class Level {
         char symbolUnderPlayer;
 
         int objective_tiles;
+        std::map<int*, SpecialTile*>* special_tiles;
         bool level_beaten;
 
         /** Create a new level with a name, layers, player_pos (row, col) and objective tiles. */
-        Level(std::string level_name, std::vector<LevelLayer> layout_layers, int* player_pos, int start_layer, int objective_tiles);
+        Level(std::string level_name, std::vector<LevelLayer> layout_layers, std::map<int*, SpecialTile*>* special_tiles, int* player_pos, int start_layer, int objective_tiles);
 
         
 
@@ -83,6 +86,7 @@ class Level {
                 int start_layer;
                 int objective_tiles;
                 int finish_tiles;
+                std::map<int*, SpecialTile*>* special_tiles;
 
                 // A counter to make sure every level field required is set before building
                 int necessary_fields_set;
@@ -98,6 +102,8 @@ class Level {
                 Level::LevelBuilder* setName(std::string name);
                 
                 Level::LevelBuilder* addLayer(LevelLayer layer);
+
+                Level::LevelBuilder* addSpecialTile(int* pos[3], SpecialTile* tile);
 
                 /** Builds the level if all required fields have been set */
                 Level* build();

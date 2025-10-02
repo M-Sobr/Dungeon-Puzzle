@@ -2,6 +2,7 @@
 #include "../qf_types/QFTypes.h"
 #include "../FileReader.h"
 #include "../../level/Tile.h"
+#include "../../effect/Effect.h"
 
 bool MapInterpreter::loadChestPos(QFList* pos_list, int pos[]) {
     std::vector<QFValue*> values = pos_list->getValues();
@@ -24,7 +25,7 @@ bool MapInterpreter::loadChestPos(QFList* pos_list, int pos[]) {
     return valid_pos;
 }
 
-ChestTile* MapInterpreter::loadChest(QFDict* chest_contents) {
+ChestTile* MapInterpreter::loadChest(QFDict* chest_contents, int chest_pos[3]) {
     
     // Get chest position
     QFList* chest_pos_list;
@@ -41,16 +42,35 @@ ChestTile* MapInterpreter::loadChest(QFDict* chest_contents) {
         valid_pos = 0;
     }
 
-    int chest_pos[3];
     ChestTile::ChestBuilder builder;
     if (valid_pos && !this->loadChestPos(chest_pos_list, chest_pos)) {
         valid_pos = 0;
     }
-    if (valid_pos) {
-        builder.setPosition(chest_pos);
+    if (!valid_pos) {
+        chest_pos[0] = -1;  // Set to invalid position
     }
-    // Temp
-    return nullptr;
+
+    EffectChoices* chest_choices;
+    try {
+        chest_choices = loadEffectChoices(chest_contents->getValueFromKey("Effects")->get<QFList>("Chest effects is empty or not QFList!"));
+        builder.setChoices(chest_choices);
+        printf("Choice loading successful!\n");
+
+    } catch (FileInterpreterException* e) {
+        this->addException(e);
+        
+    } catch (NoKeyFoundException* e) {
+        this->addException(new InvalidMapLevelException(e->what(), chest_contents->getStartLine(), chest_contents->getEndLine()));
+    
+    } catch (ChestBuilderException* e) {
+        this->addException(new InvalidMapLevelException(e->what(), chest_contents->getStartLine(), chest_contents->getEndLine()));
+    }
+
+    try {
+        return builder.build();
+    } catch (ChestBuilderException* e) {
+        throw new InvalidMapLevelException(e->what(), chest_contents->getStartLine(), chest_contents->getEndLine());
+    }
 }
 
 void MapInterpreter::loadChests(QFDict* level_contents, Level::LevelBuilder* level_builder) {
@@ -65,11 +85,11 @@ void MapInterpreter::loadChests(QFDict* level_contents, Level::LevelBuilder* lev
         return;
     }
 
-    QFDict* chest_contents;
-    int chest_pos[3];
-    for (QFValue* chest : chests->getValues()) {
+    int* chest_pos = new int[3];
+    for (QFValue* chest_dict : chests->getValues()) {
         try {
-            ChestTile* c = this->loadChest(chest->get<QFDict>("Chest contents are not QFDict!"));
+            ChestTile* chest = this->loadChest(chest_dict->get<QFDict>("Chest contents are not QFDict!"), chest_pos);
+            level_builder->addSpecialTile(&chest_pos, chest);
         } catch (FileInterpreterException* e) {
             this->addException(e);
         }

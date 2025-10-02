@@ -11,7 +11,7 @@ class MapInterpreter : public FileInterpreter {
         const char* path;
 
         bool loadChestPos(QFList* pos_list, int pos[]);
-        ChestTile* loadChest(QFDict* chest_contents);
+        ChestTile* loadChest(QFDict* chest_contents, int chest_pos[3]);
         void loadChests(QFDict* level_contents, Level::LevelBuilder* level_builder);
 
         LevelLayer loadMapLayer(QFList* layer_contents);

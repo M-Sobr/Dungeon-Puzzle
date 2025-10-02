@@ -8,6 +8,7 @@ Player::Player(std::string input_name) :
     level(1), 
     health(10), max_health(10),
     movement(1), 
+    attack(0),
     currentXp(0), xpRequired(2), 
     is_alive(true), 
     effect_counter(0) {
@@ -72,6 +73,10 @@ void Player::increaseMaxHealth(int h) {
 
 void Player::gainMovement(int value) {
     this->movement += value;
+}
+
+void Player::gainAttack(int value) {
+    this->attack += value;
 }
 
 void Player::gainExperience(int xp) {

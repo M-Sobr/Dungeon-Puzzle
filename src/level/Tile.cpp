@@ -92,3 +92,12 @@ bool HealTile::isObjective() {
 bool HealTile::isSpecial() {
     return false;
 }
+
+SpecialTile::SpecialTile(char c) :
+    Tile::Tile(c) {
+    ;
+}
+
+bool SpecialTile::isSpecial() {
+    return true;
+}

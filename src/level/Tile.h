@@ -2,6 +2,7 @@
 #define TILE_H
 
 class Player;
+class EffectChoices;
 
 #define PLAYER_TILE 'P'
 #define EMPTY_TILE '_'
@@ -75,25 +76,39 @@ class HealTile : public Tile {
         void resolveEffects(Player* player) override;
 };
 
-class ChestTile : public Tile {
+class SpecialTile : public Tile {
     private:
-        int pos[3];
 
     public:
-        ChestTile();
+        SpecialTile(char c);
+        virtual ~SpecialTile() {};
+
+        virtual bool isObjective() = 0;
+        bool isSpecial() override;
+
+        virtual void resolveEffects(Player* /*player*/) = 0;
+};
+
+class ChestTile : public SpecialTile {
+    private:
+        EffectChoices* choices;
+        ChestTile(EffectChoices* choices);
+        
+    public:
         ~ChestTile() {};
         bool isObjective() override;
-        bool isSpecial() override;
 
         void resolveEffects(Player* player) override;
 
         class ChestBuilder {
             private:
-                int pos[3];
+                EffectChoices* choices;
+                bool choices_set;
             
             public:
                 ChestBuilder();
-                ChestBuilder* setPosition(int pos[3]);
+                ChestBuilder* setChoices(EffectChoices* choices);
+                ChestTile* build();
         };
 };
 

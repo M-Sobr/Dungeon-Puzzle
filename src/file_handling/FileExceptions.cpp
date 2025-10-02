@@ -98,3 +98,11 @@ LevelBuilderException::LevelBuilderException(const std::string m) {
 const char* LevelBuilderException::what() {
     return msg.c_str();
 }
+
+ChestBuilderException::ChestBuilderException(const std::string m) {
+    this->msg = m;
+}
+
+const char* ChestBuilderException::what() {
+    return msg.c_str();
+}

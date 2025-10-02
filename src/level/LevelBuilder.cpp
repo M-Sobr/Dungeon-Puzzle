@@ -2,7 +2,8 @@
 #include "Tile.h"
 #include "../file_handling/FileExceptions.h"
 
-Level::LevelBuilder::LevelBuilder() : necessary_fields_set(0), start_layer(-1), objective_tiles(0), finish_tiles(0) {
+Level::LevelBuilder::LevelBuilder() : necessary_fields_set(0), start_layer(-1), objective_tiles(0), finish_tiles(0),
+    special_tiles(new std::map<int*, SpecialTile*>()) {
     ;
 }
 
@@ -56,11 +57,16 @@ Level::LevelBuilder* Level::LevelBuilder::addLayer(LevelLayer layer) {
     return this;
 }
 
+Level::LevelBuilder* Level::LevelBuilder::addSpecialTile(int* pos[3], SpecialTile* tile) {
+    special_tiles->insert_or_assign(*pos, tile);
+    return this;
+}
+
 Level* Level::LevelBuilder::build() {
     if (necessary_fields_set < 2) {
         throw new LevelBuilderException("Not enough level fields set!");
     } else if (finish_tiles == 0) {
         throw new LevelBuilderException("This level has no finish tile!");
     }
-    return new Level(this->level_name, this->layout_layers, this->player_pos, this->start_layer, this->objective_tiles);
+    return new Level(this->level_name, this->layout_layers, this->special_tiles, this->player_pos, this->start_layer, this->objective_tiles);
 }
