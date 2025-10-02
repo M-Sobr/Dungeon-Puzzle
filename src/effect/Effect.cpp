@@ -103,6 +103,12 @@ std::string Effect::toString() {
         case EffectTypes::TAKE_DAMAGE:
             sprintf_s(c, "-%d Health", this->value);
             break;
+        case EffectTypes::GAIN_MOVEMENT:
+            sprintf_s(c, "+%d Movement", this->value);
+            break;  
+        case EffectTypes::GAIN_ATTACK:
+            sprintf_s(c, "+%d Attack", this->value);
+            break;        
     }
     s.append(c);
     return s;

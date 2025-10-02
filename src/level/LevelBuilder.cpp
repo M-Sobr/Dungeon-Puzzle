@@ -22,7 +22,7 @@ bool Level::LevelBuilder::addPlayer(int row, int col, int layer) {
 }
 
 Tile_Type Level::LevelBuilder::getTileTypeAtPosition(int layer, int row, int col) {
-    int pos = (layer+1) + 100 * (row+1) + 10000 * (col+1);
+    int pos = layer + 100 * row + 10000 * col;
     try  {
         return special_tiles->at(pos)->getType();
     } catch (std::out_of_range) {
@@ -40,7 +40,6 @@ void Level::LevelBuilder::checkSpecialTiles() {
         for (int j = 0; j < current_layer->rows; j++) {
             for (int k = 0; k < current_layer->cols; k++) {
                 if (tileTypeFromChar(current_layer->contents[j][k]) != getTileTypeAtPosition(i,j,k)) {
-                    printf("%d != %d\n", tileTypeFromChar(current_layer->contents[j][k]), getTileTypeAtPosition(i,j,k));
                     char c[60];
                     sprintf_s(c, "Tile mismatch at position [i%d, i%d, i%d]!", i+1, j+1, k+1);
                     throw new LevelBuilderException(c);
@@ -76,6 +75,7 @@ Level::LevelBuilder* Level::LevelBuilder::addLayer(LevelLayer layer) {
             switch (tileTypeFromChar(tile_char)) {
                 case Tile_Type::MONSTER:
                 case Tile_Type::HEAL:
+                case Tile_Type::CHEST:
                     objective_tiles += 1;
                     break;
                 case Tile_Type::FINISH:
@@ -87,7 +87,7 @@ Level::LevelBuilder* Level::LevelBuilder::addLayer(LevelLayer layer) {
 }
 
 Level::LevelBuilder* Level::LevelBuilder::addSpecialTile(int pos[3], SpecialTile* tile) {
-    special_tiles->insert_or_assign(pos[0] + 100 * pos[1] + 10000 * pos[2], tile);
+    special_tiles->insert_or_assign((pos[0]-1) + 100 * (pos[1]-1) + 10000 * (pos[2]-1), tile);
     return this;
 }
 

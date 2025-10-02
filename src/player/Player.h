@@ -32,6 +32,7 @@ class Player {
         Player(std::string input_name);
         void printDetails();
         int getMovement();
+        int getAttack();
         void takeDamage(int damage);
         void gainExperience(int experience);
         int heal();

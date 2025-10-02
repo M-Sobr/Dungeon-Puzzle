@@ -45,14 +45,12 @@ Tile* Level::getTileAtPosition(int row, int col) {
     if (!isSpecialTile(currentLayer.contents[row][col])) {
         return Tile::tileFromChar(currentLayer.contents[row][col]);
     }
-    // Temporary
-    printf("Special Tile!\n");
-    return nullptr;
+    return special_tiles->at(currentLayerIndex + 100 * row + 10000 * col);
 }
 
 bool Level::isBeaten() {
     return level_beaten;
-}
+}  
 
 void Level::movePlayerTo(int row, int col) {
     // Check if there is any movement
@@ -72,6 +70,7 @@ void Level::movePlayerTo(int row, int col) {
     switch (tileTypeFromChar(symbolUnderPlayer)) {
         case Tile_Type::MONSTER:
         case Tile_Type::HEAL:
+        case Tile_Type::CHEST:
             symbolUnderPlayer = EMPTY_TILE;
             objective_tiles -= 1;
             break;

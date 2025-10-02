@@ -69,7 +69,9 @@ Monster::Monster(char ch) :
 }
 
 void Monster::resolveEffects(Player* p) {
-    p->applyEffect(new Effect(EffectTypes::TAKE_DAMAGE, this->health));
+    if (this->health - p->getAttack() > 0) {
+        p->applyEffect(new Effect(EffectTypes::TAKE_DAMAGE, this->health - p->getAttack()));
+    }
     p->applyEffect(new Effect(EffectTypes::GAIN_EXPERIENCE, this->health));
 }
 

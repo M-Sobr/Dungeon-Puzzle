@@ -26,6 +26,10 @@ int Player::getMovement() {
     return this->movement;
 }
 
+int Player::getAttack() {
+    return this->attack;
+}
+
 void Player::takeDamage(int damage) {
     this->health -= damage;
     if (this->health <= 0) {

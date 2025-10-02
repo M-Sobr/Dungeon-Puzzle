@@ -73,11 +73,10 @@ PastAction* Action::resolveAction(Level* level, Player* player) {
             this->row_direction, this->col_direction, player->getMovement());
         
         if (move_count) {
-            
             tile = level->getTileAtPosition(destination[0], destination[1]);
             level->movePlayerTo(destination[0], destination[1]);
             player->applyEffect(new Effect(EffectTypes::TAKE_DAMAGE, move_count));
-            tile->resolveEffects(player);          
+            tile->resolveEffects(player);        
         }
     }
     int effect_count = player->effect_counter;
@@ -92,7 +91,9 @@ PastAction::PastAction(int prev_row, int prev_col, Tile* tile, int effect_count)
 }
 
 PastAction::~PastAction() {
-    delete tile_at_pos;
+    if (!tile_at_pos->isSpecial()) {
+        delete tile_at_pos;
+    }
 }
 
 void PastAction::undoAction(Level* level, Player* player) {

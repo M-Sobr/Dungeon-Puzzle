@@ -8,7 +8,7 @@ ChestTile::ChestTile(EffectChoices* chest_choices) :
 };
 
 void ChestTile::resolveEffects(Player* p) {
-    p->applyEffects(choices->chooseEffectList(""));
+    p->applyEffects(choices->chooseEffectList("Choose Chest Rewards:"));
 }
 
 bool ChestTile::isObjective() {
